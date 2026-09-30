@@ -17,6 +17,7 @@ dependencies = [
   "arq>=0.26",
   "redis>=5.2",
   "boto3>=1.35",
+  "python-multipart>=0.0.18",
 ]
 
 [project.scripts]

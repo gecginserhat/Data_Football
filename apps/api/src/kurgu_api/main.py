@@ -12,6 +12,7 @@ from kurgu_api.core.logging import configure_logging
 from kurgu_api.core.problems import install_problem_handlers
 from kurgu_api.health.router import router as health_router
 from kurgu_api.identity.router import router as identity_router
+from kurgu_api.imports.router import router as imports_router
 from kurgu_api.ingestion.router import router as ingestion_router
 from kurgu_api.league.router import router as league_router
 
@@ -50,6 +51,7 @@ def create_app() -> FastAPI:
     app.include_router(identity_router, prefix=API_PREFIX)
     app.include_router(league_router, prefix=API_PREFIX)
     app.include_router(ingestion_router, prefix=API_PREFIX)
+    app.include_router(imports_router, prefix=API_PREFIX)
     return app
 
 

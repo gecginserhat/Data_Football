@@ -39,6 +39,7 @@ async def test_seed_is_idempotent_and_loads_values(superuser: asyncpg.Connection
         select v.value from team_season_stats v
         join teams t on t.id = v.team_id join seasons s on s.id = v.season_id
         where t.code = 'TS' and s.code = '2025_26' and v.metric = 'set_piece_goals'
+          and v.tenant_id is null
         """
     )
     assert ts_goals == 15

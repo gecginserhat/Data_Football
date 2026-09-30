@@ -3,7 +3,7 @@ name = "kurgu-analytics"
 version = "0.0.0"
 description = "Kurgu analytics: ingestion, canonical model, set pieces, metrics, recommendations"
 requires-python = ">=3.12,<3.13"
-dependencies = ["pydantic>=2.9"]
+dependencies = ["pydantic>=2.9", "pandas>=2.2", "pandera>=0.22", "openpyxl>=3.1"]
 
 [build-system]
 requires = ["hatchling"]

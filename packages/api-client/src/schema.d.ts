@@ -4,6 +4,82 @@
  */
 
 export interface paths {
+    "/api/v1/imports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Imports */
+        get: operations["listImports"];
+        put?: never;
+        /** Create Import */
+        post: operations["createImport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/imports/{import_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Import */
+        get: operations["getImport"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/imports/{import_id}/commit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Commit Import
+         * @description Doğrulanmış içe aktarımı kiracının tablolarına yazar. Karantinadaki ya da takım onayı
+         *     bekleyen içe aktarım 409 alır.
+         */
+        post: operations["commitImport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/imports/{import_id}/mapping": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update Mapping
+         * @description Sütun ya da takım eşleştirmesini değiştirir; dosya yeniden doğrulanır.
+         */
+        put: operations["updateImportMapping"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/ingestion-runs": {
         parameters: {
             query?: never;
@@ -187,6 +263,21 @@ export interface components {
             /** Tenant Name */
             tenant_name: string;
         };
+        /** Body_createImport */
+        Body_createImport: {
+            /** File */
+            file: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "team_season_stats" | "events";
+            /**
+             * Season Id
+             * Format: uuid
+             */
+            season_id: string;
+        };
         /** CompetitionRef */
         CompetitionRef: {
             /** Code */
@@ -198,6 +289,13 @@ export interface components {
             id: string;
             /** Name */
             name: string;
+        };
+        /** FieldOut */
+        FieldOut: {
+            /** Name */
+            name: string;
+            /** Required */
+            required: boolean;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -218,6 +316,86 @@ export interface components {
              * @enum {string}
              */
             status: "ok" | "degraded";
+        };
+        /** ImportOut */
+        ImportOut: {
+            /** Columns */
+            columns: {
+                [key: string]: string | null;
+            };
+            /** Committed At */
+            committed_at: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Fields */
+            fields: components["schemas"]["FieldOut"][];
+            /** File Columns */
+            file_columns: string[];
+            /** Filename */
+            filename: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "team_season_stats" | "events";
+            /** Report */
+            report: {
+                [key: string]: unknown;
+            };
+            /** Result */
+            result: {
+                [key: string]: unknown;
+            } | null;
+            /** Sample */
+            sample: {
+                [key: string]: string;
+            }[];
+            /** Season Id */
+            season_id: string | null;
+            /** Size Bytes */
+            size_bytes: number;
+            /** Status */
+            status: string;
+            /** Team Options */
+            team_options: components["schemas"]["TeamOption"][];
+            /** Teams */
+            teams: components["schemas"]["TeamMatchOut"][];
+        };
+        /** ImportSummary */
+        ImportSummary: {
+            /** Committed At */
+            committed_at: string | null;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Filename */
+            filename: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "team_season_stats" | "events";
+            /** Season Id */
+            season_id: string | null;
+            /** Size Bytes */
+            size_bytes: number;
+            /** Status */
+            status: string;
         };
         /** IngestionRunCreate */
         IngestionRunCreate: {
@@ -255,6 +433,23 @@ export interface components {
             };
             /** Status */
             status: string;
+        };
+        /** MappingUpdate */
+        MappingUpdate: {
+            /**
+             * Columns
+             * @description Dosya sütunu → şablon alanı (`null`: yok say)
+             */
+            columns?: {
+                [key: string]: string | null;
+            } | null;
+            /**
+             * Teams
+             * @description Dosyadaki takım adı → takım kimliği (`null`: seçimi kaldır)
+             */
+            teams?: {
+                [key: string]: string | null;
+            } | null;
         };
         /** MeOut */
         MeOut: {
@@ -360,6 +555,21 @@ export interface components {
             /** Season Id */
             season_id: number;
         };
+        /** TeamMatchOut */
+        TeamMatchOut: {
+            /** Confirmed */
+            confirmed: boolean;
+            /** Manual */
+            manual: boolean;
+            /** Name */
+            name: string;
+            /** Score */
+            score: number;
+            /** Suggested */
+            suggested: string | null;
+            /** Team Id */
+            team_id: string | null;
+        };
         /** TeamMetricsOut */
         TeamMetricsOut: {
             /** As Of Week */
@@ -383,6 +593,18 @@ export interface components {
              * Format: uuid
              */
             season_id: string;
+        };
+        /** TeamOption */
+        TeamOption: {
+            /** Code */
+            code: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
         };
         /** TeamOut */
         TeamOut: {
@@ -448,6 +670,176 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    listImports: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportSummary"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    createImport: {
+        parameters: {
+            query?: never;
+            header: {
+                "Idempotency-Key": string;
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": components["schemas"]["Body_createImport"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getImport: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                import_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    commitImport: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                import_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    updateImportMapping: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                import_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MappingUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ImportOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     listIngestionRuns: {
         parameters: {
             query?: never;

@@ -1,26 +1,29 @@
-"""Sağlayıcı olaylarından çıkarılan duran top dizilerini yazar (SPEC §5.5; `source='provider'`).
+"""Olaylardan çıkarılan duran top dizilerini yazar (SPEC §5.5).
 
-Diziler paylaşılır (`tenant_id` boş) ve lisanslı maçlarda okunur. Dizideki olaylar
-`events.set_piece_id` ile diziye bağlanır.
+Sağlayıcı dizileri (`source='provider'`) paylaşılır (`tenant_id` boş) ve lisanslı maçlarda
+okunur; kiracının içe aktardığı maçların dizileri (`source='import'`) kiracıya aittir. Dizideki
+olaylar `events.set_piece_id` ile diziye bağlanır.
 """
 
 import uuid
-from typing import Any
+from collections.abc import Sequence
+from typing import Any, Literal
 
-from kurgu_analytics.canonical.model import CanonicalMatch
+from kurgu_analytics.canonical.model import Action, CanonicalMatch
 from kurgu_analytics.setpieces.extract import extract
 from sqlalchemy import bindparam, text
 from sqlalchemy.dialects.postgresql import ARRAY, INTEGER
-from sqlalchemy.ext.asyncio import AsyncConnection
+from sqlalchemy.ext.asyncio import AsyncConnection, AsyncSession
 
 INSERT = text(
     """
     insert into set_pieces (match_id, team_id, period, start_time_s, sp_type, sp_subtype, side,
       taker_id, start_x, start_y, end_x, end_y, target_zone, first_contact_team_id,
       first_contact_player_id, outcome, shots, xg_total, xg_phase1, xg_phase2, goal,
-      phase_of_goal, source)
+      phase_of_goal, source, tenant_id)
     values (:match, :team, :period, :t, :type, :subtype, :side, :taker, :sx, :sy, :ex, :ey,
-      :zone, :fc_team, :fc_player, :outcome, :shots, :xg, :xg1, :xg2, :goal, :pog, 'provider')
+      :zone, :fc_team, :fc_player, :outcome, :shots, :xg, :xg1, :xg2, :goal, :pog, :source,
+      :tenant)
     returning id
     """
 )
@@ -32,10 +35,24 @@ LINK = text(
 async def write_set_pieces(
     conn: AsyncConnection, provider: str, cm: CanonicalMatch, written: dict[str, Any]
 ) -> int:
-    teams: dict[str, uuid.UUID] = written["teams"]
-    players: dict[str, uuid.UUID] = written["players"]
-    match_id: uuid.UUID = written["match_id"]
-    sequences = extract(cm.actions)
+    """Sağlayıcı hattının yazma sonrası kancası (paylaşılan diziler)."""
+    return await insert_set_pieces(
+        conn, written["match_id"], cm.actions, written["teams"], written["players"]
+    )
+
+
+async def insert_set_pieces(
+    conn: AsyncConnection | AsyncSession,
+    match_id: uuid.UUID,
+    actions: Sequence[Action],
+    teams: dict[str, uuid.UUID],
+    players: dict[str, uuid.UUID],
+    *,
+    tenant_id: uuid.UUID | None = None,
+    source: Literal["provider", "import"] = "provider",
+) -> int:
+    """Dizileri çıkarır ve yazar. `teams`/`players`: aksiyondaki kimlik → kanonik kimlik."""
+    sequences = extract(actions)
     for sp in sequences:
         sp_id: uuid.UUID = (
             await conn.execute(
@@ -65,6 +82,8 @@ async def write_set_pieces(
                     "xg2": sp.xg_phase2,
                     "goal": sp.goal,
                     "pog": sp.phase_of_goal,
+                    "source": source,
+                    "tenant": tenant_id,
                 },
             )
         ).scalar_one()

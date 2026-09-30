@@ -161,9 +161,11 @@ async def test_app_cannot_grant_itself_a_license(
 async def _import_row(conn: asyncpg.Connection, tenant: uuid.UUID) -> uuid.UUID:
     row_id: uuid.UUID = await conn.fetchval(
         "insert into imports (tenant_id, kind, filename, content_type, size_bytes, source_hash,"
-        " storage_key) values ($1, 'events', 'a.csv', 'text/csv', 10, $2, 'k') returning id",
+        " storage_key, idempotency_key) values ($1, 'events', 'a.csv', 'text/csv', 10, $2, 'k', $3)"
+        " returning id",
         tenant,
         uuid.uuid4().hex * 2,
+        str(uuid.uuid4()),
     )
     return row_id
 
@@ -268,3 +270,40 @@ async def test_worker_writes_shared_rows_but_not_foreign_tenant_rows(
             )
     finally:
         await worker.close()
+
+
+async def test_imported_league_rows_stay_with_their_tenant(
+    app_conn: asyncpg.Connection, superuser: asyncpg.Connection, tenants: Seeded
+) -> None:
+    league = await _league(superuser)
+    for tenant in (tenants.tenant_a, tenants.tenant_b):
+        await superuser.execute(
+            "insert into data_licenses (tenant_id, provider, competition_id)"
+            " values ($1, 'test', $2)",
+            tenant,
+            league["competition"],
+        )
+    away = await superuser.fetchval(
+        "insert into teams (code, name) values ('ZZ', 'Z') returning id"
+    )
+    insert = (
+        "insert into matches (tenant_id, season_id, home_team_id, away_team_id, source)"
+        " values ($1, $2, $3, $4, 'import:test') returning id"
+    )
+
+    await _as_tenant(app_conn, tenants.tenant_a)
+    own = await app_conn.fetchval(insert, tenants.tenant_a, league["season"], league["team"], away)
+    with pytest.raises(asyncpg.InsufficientPrivilegeError):
+        await app_conn.fetchval(insert, None, league["season"], league["team"], away)
+    assert await app_conn.fetchval("select count(*) from matches where id = $1", own) == 1
+    # Paylaşılan maçı uygulama rolü değiştiremez.
+    assert (
+        await app_conn.execute("update matches set week = 9 where id = $1", league["match"])
+        == "UPDATE 0"
+    )
+
+    await _as_tenant(app_conn, tenants.tenant_b)
+    assert await app_conn.fetchval("select count(*) from matches where id = $1", own) == 0
+    assert (
+        await app_conn.fetchval("select count(*) from matches where id = $1", league["match"]) == 1
+    )

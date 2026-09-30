@@ -17,6 +17,7 @@ from .conftest import Seeded, TokenFactory, add_member
 
 SEED_DIR = Path(__file__).resolve().parents[3] / "seed"
 SEED = json.loads((SEED_DIR / "super_lig.json").read_text(encoding="utf-8"))
+SEED_SOURCE = "seed:super_lig.json"
 SP_COACH = next(str(sub) for sub, _, role in DEV_USERS if role.value == "sp_coach")
 
 
@@ -69,7 +70,7 @@ async def test_team_metrics_match_seed(client: Any, make_token: TokenFactory, se
     response = await client.get(f"/api/v1/seasons/{season}/team-metrics", headers=headers)
 
     assert response.status_code == 200
-    items = {i["team"]["code"]: i for i in response.json()["items"]}
+    items = {i["team"]["code"]: i for i in response.json()["items"] if i["source"] == SEED_SOURCE}
     assert len(items) == 18
     codes = {t["id"]: t["code"] for t in SEED["teams"]}
     for stats in SEED["seasons"]["2025_26"]["team_stats"]:
@@ -133,7 +134,8 @@ async def test_pagination_walks_all_teams(
                 f"/api/v1/seasons/{season}/team-metrics", params=params, headers=headers
             )
         ).json()
-        seen += [i["team"]["code"] for i in page["items"]]
+        # Kiracının içe aktardığı değerler ayrı kaynak olarak gelir (test_imports).
+        seen += [i["team"]["code"] for i in page["items"] if i["source"] == SEED_SOURCE]
         cursor = page["next_cursor"]
         if cursor is None:
             break

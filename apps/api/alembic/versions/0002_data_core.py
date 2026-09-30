@@ -12,9 +12,10 @@ RLS tasarımı (ADR-0002, Faz 1 notu):
   yarışmaları gösterir. Birden çok yarışmada yer alan varlıklar (`teams`, `players`,
   `provider_id_map`) kiracının geçerli en az bir lisansı varsa görünür.
 - Paylaşılan tablolara yazma yalnızca `kurgu_worker` rolüne açıktır (sağlayıcı yüklemesi).
-- Kiracı tabloları FORCE RLS kullanır. `set_pieces` iki kaynaklıdır: sağlayıcıdan çıkarılan
-  diziler paylaşılır (`tenant_id` null, `source='provider'`), canlı kayıt dizileri kiracıya
-  aittir (`source='live_tag'`).
+- Kiracı tabloları FORCE RLS kullanır. `matches`, `events`, `team_season_stats` ve `set_pieces`
+  karmadır: sağlayıcı ve tohum satırları paylaşılır (`tenant_id` null), kulübün içe aktardığı
+  ya da canlı kaydettiği satırlar kiracıya aittir (`set_pieces.source` `live_tag`/`import`).
+  Karma lig tablolarına paylaşılan satırı worker ve göç rolü (tohum) yazar.
 - `audit_log` yalnızca eklemedir: uygulama rollerine update/delete yetkisi verilmez.
 """
 
@@ -34,10 +35,13 @@ APP_ROLES = ("kurgu_app", "kurgu_worker")
 SHARED_BY_COMPETITION = {
     "competitions": "kurgu_licensed(id)",
     "seasons": "kurgu_licensed(competition_id)",
-    "matches": "kurgu_licensed_season(season_id)",
     "standings_snapshots": "kurgu_licensed_season(season_id)",
-    "team_season_stats": "kurgu_licensed_season(season_id)",
     "season_stats": "kurgu_licensed_season(season_id)",
+}
+# Lig verisi ama kiracı da içe aktarabilir (tenant_id boş = paylaşılan, dolu = kiracının).
+LEAGUE_MIXED = {
+    "matches": "kurgu_licensed_season(season_id)",
+    "team_season_stats": "kurgu_licensed_season(season_id)",
     "events": "kurgu_licensed_match(match_id)",
 }
 # Birden çok yarışmada yer alan paylaşılan varlıklar.
@@ -45,7 +49,7 @@ SHARED_ANY_LICENSE = ("teams", "players", "provider_id_map")
 SHARED_TABLES = (*SHARED_BY_COMPETITION, *SHARED_ANY_LICENSE)
 TENANT_TABLES = ("data_licenses", "audit_log", "imports", "tagging_sessions", "live_tags")
 # Kiracı ya da paylaşılan olabilen tablolar (tenant_id null = paylaşılan).
-MIXED_TABLES = ("ingestion_runs", "raw_payloads", "set_pieces")
+MIXED_TABLES = ("ingestion_runs", "raw_payloads", "set_pieces", *LEAGUE_MIXED)
 
 DDL = """
 create table competitions (
@@ -99,6 +103,7 @@ create table players (
 
 create table matches (
   id uuid primary key default gen_random_uuid(),
+  tenant_id uuid constraint fk_matches_tenant_id_tenants references tenants(id) on delete cascade,
   season_id uuid not null constraint fk_matches_season_id_seasons references seasons(id),
   week smallint,
   stage varchar(64),
@@ -119,6 +124,7 @@ create table matches (
     check (status <> 'finished' or (home_score is not null and away_score is not null))
 );
 create index ix_matches_season_week on matches (season_id, week);
+create index ix_matches_tenant_id on matches (tenant_id);
 create index ix_matches_home_team_id on matches (home_team_id);
 create index ix_matches_away_team_id on matches (away_team_id);
 
@@ -144,6 +150,8 @@ create table standings_snapshots (
 
 create table team_season_stats (
   id uuid primary key default gen_random_uuid(),
+  tenant_id uuid constraint fk_team_season_stats_tenant_id_tenants references tenants(id)
+    on delete cascade,
   season_id uuid not null
     constraint fk_team_season_stats_season_id_seasons references seasons(id),
   team_id uuid not null constraint fk_team_season_stats_team_id_teams references teams(id),
@@ -154,7 +162,7 @@ create table team_season_stats (
   is_demo boolean not null default false,
   created_at timestamptz not null default now(),
   constraint uq_team_season_stats_key
-    unique nulls not distinct (season_id, team_id, metric, source, as_of_week)
+    unique nulls not distinct (tenant_id, season_id, team_id, metric, source, as_of_week)
 );
 create index ix_team_season_stats_season_metric on team_season_stats (season_id, metric);
 
@@ -281,7 +289,8 @@ create table set_pieces (
   constraint ck_set_pieces_phase_of_goal check (phase_of_goal in (1, 2)),
   constraint ck_set_pieces_observed_scheme check (observed_scheme in ('zonal', 'man', 'hybrid')),
   constraint ck_set_pieces_source_owner check (
-    (source = 'provider' and tenant_id is null) or (source = 'live_tag' and tenant_id is not null))
+    (source = 'provider' and tenant_id is null)
+    or (source in ('live_tag', 'import') and tenant_id is not null))
 );
 create index ix_set_pieces_match_id on set_pieces (match_id);
 create index ix_set_pieces_team_type on set_pieces (team_id, sp_type);
@@ -289,6 +298,7 @@ create index ix_set_pieces_tenant_id on set_pieces (tenant_id);
 
 create table events (
   id bigint generated always as identity primary key,
+  tenant_id uuid constraint fk_events_tenant_id_tenants references tenants(id) on delete cascade,
   match_id uuid not null constraint fk_events_match_id_matches references matches(id)
     on delete cascade,
   action_index integer not null,
@@ -337,9 +347,12 @@ create table imports (
   quality_report jsonb,
   ingestion_run_id uuid
     constraint fk_imports_ingestion_run_id_ingestion_runs references ingestion_runs(id),
+  season_id uuid constraint fk_imports_season_id_seasons references seasons(id),
+  idempotency_key varchar(128) not null,
   created_by uuid constraint fk_imports_created_by_users references users(id),
   created_at timestamptz not null default now(),
   committed_at timestamptz,
+  constraint uq_imports_idempotency unique (tenant_id, idempotency_key),
   constraint ck_imports_kind check (kind in ('team_season_stats', 'events')),
   constraint ck_imports_status check (
     status in ('uploaded', 'validated', 'quarantined', 'committed', 'failed'))
@@ -481,6 +494,24 @@ def upgrade() -> None:
             " with check (tenant_id = kurgu_current_tenant())"
         )
 
+    # Karma lig tabloları: paylaşılan satırlar lisansla okunur, worker ve göç rolü (tohum)
+    # yazar; kiracının içe aktardığı satırlar yalnızca kendisine görünür.
+    for table, predicate in LEAGUE_MIXED.items():
+        op.execute(
+            f"create policy licensed_read on {table} for select"
+            f" using (tenant_id is null and {predicate})"
+        )
+        op.execute(
+            f"create policy tenant_isolation on {table}"
+            " using (tenant_id = kurgu_current_tenant())"
+            " with check (tenant_id = kurgu_current_tenant())"
+        )
+        for role in ("kurgu_worker", "kurgu_owner"):
+            op.execute(
+                f"create policy {role.removeprefix('kurgu_')}_shared on {table} for all to {role}"
+                " using (tenant_id is null) with check (tenant_id is null)"
+            )
+
     # Karma tablolar: kiracı kendi satırlarını görür; paylaşılan satırları worker yazar.
     for table in ("ingestion_runs", "raw_payloads"):
         op.execute(
@@ -515,8 +546,8 @@ def upgrade() -> None:
         op.execute(f"grant select on data_licenses to {role}")
         op.execute(
             "grant select, insert, update, delete on"
-            " imports, tagging_sessions, live_tags, ingestion_runs, raw_payloads, set_pieces"
-            f" to {role}"
+            " imports, tagging_sessions, live_tags, ingestion_runs, raw_payloads, set_pieces,"
+            f" {', '.join(LEAGUE_MIXED)} to {role}"
         )
         op.execute(f"grant select, insert on audit_log to {role}")
     op.execute(f"grant insert, update, delete on {', '.join(SHARED_TABLES)} to kurgu_worker")
