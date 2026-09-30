@@ -8,9 +8,9 @@ RLS tasarımı (ADR-0002, Faz 1 notu):
 - Paylaşılan lig tablolarında `tenant_id` yoktur. ENABLE RLS kullanılır (tablo sahibi olan
   göç rolü tohum yüklerken atlar; `kurgu_app` ve `kurgu_worker` tabidir).
 - Okuma `data_licenses` üzerinden açılır. Yarışmaya bağlı tablolar (`seasons`, `matches`,
-  `events`, `standings_snapshots`, `team_season_stats`) yalnızca lisanslı yarışmaları
-  gösterir. Birden çok yarışmada yer alan varlıklar (`teams`, `players`, `provider_id_map`)
-  kiracının geçerli en az bir lisansı varsa görünür.
+  `events`, `standings_snapshots`, `team_season_stats`, `season_stats`) yalnızca lisanslı
+  yarışmaları gösterir. Birden çok yarışmada yer alan varlıklar (`teams`, `players`,
+  `provider_id_map`) kiracının geçerli en az bir lisansı varsa görünür.
 - Paylaşılan tablolara yazma yalnızca `kurgu_worker` rolüne açıktır (sağlayıcı yüklemesi).
 - Kiracı tabloları FORCE RLS kullanır. `set_pieces` iki kaynaklıdır: sağlayıcıdan çıkarılan
   diziler paylaşılır (`tenant_id` null, `source='provider'`), canlı kayıt dizileri kiracıya
@@ -37,6 +37,7 @@ SHARED_BY_COMPETITION = {
     "matches": "kurgu_licensed_season(season_id)",
     "standings_snapshots": "kurgu_licensed_season(season_id)",
     "team_season_stats": "kurgu_licensed_season(season_id)",
+    "season_stats": "kurgu_licensed_season(season_id)",
     "events": "kurgu_licensed_match(match_id)",
 }
 # Birden çok yarışmada yer alan paylaşılan varlıklar.
@@ -109,6 +110,7 @@ create table matches (
   status varchar(16) not null default 'scheduled',
   source varchar(64) not null,
   is_demo boolean not null default false,
+  extra jsonb not null default '{}',
   created_at timestamptz not null default now(),
   constraint ck_matches_status
     check (status in ('scheduled', 'finished', 'postponed', 'cancelled')),
@@ -155,6 +157,17 @@ create table team_season_stats (
     unique nulls not distinct (season_id, team_id, metric, source, as_of_week)
 );
 create index ix_team_season_stats_season_metric on team_season_stats (season_id, metric);
+
+create table season_stats (
+  id uuid primary key default gen_random_uuid(),
+  season_id uuid not null constraint fk_season_stats_season_id_seasons references seasons(id),
+  metric varchar(64) not null,
+  value numeric not null,
+  source varchar(64) not null,
+  is_demo boolean not null default false,
+  created_at timestamptz not null default now(),
+  constraint uq_season_stats_key unique (season_id, metric, source)
+);
 
 create table provider_id_map (
   id uuid primary key default gen_random_uuid(),
@@ -524,6 +537,7 @@ def downgrade() -> None:
         "ingestion_runs",
         "data_licenses",
         "provider_id_map",
+        "season_stats",
         "team_season_stats",
         "standings_snapshots",
         "matches",

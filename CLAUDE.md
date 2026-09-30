@@ -28,7 +28,7 @@ Kurgu, profesyonel futbol kulüpleri için bir duran top analiz ve hazırlık pl
 ## Komutlar (bu listeyi güncel tut)
 - `make dev`: tüm servisleri ayağa kaldırır (göç ve geliştirme kimlikleri dahil). `make down`, `make logs`, `make ps`.
 - `make doctor`: araçları, satır sonu ayarını ve portları kontrol eder.
-- `make seed`: tohum verisini yükler (Faz 1'e kadar yalnız geliştirme kimlikleri).
+- `make seed`: tohum verisini yükler (geliştirme kimlikleri, lig verisi, lisanslar; idempotent). `make seed-report`: bütünlük raporunu yeniden üretir.
 - `make test` (`test-py`, `test-js`) · `make lint` · `make typecheck` · `make e2e`
 - `make migrate`: Alembic upgrade. `make migrate-cycle`: upgrade → downgrade → upgrade.
 - `make openapi`: OpenAPI şemasını ve TS istemcisini yeniden üretir.

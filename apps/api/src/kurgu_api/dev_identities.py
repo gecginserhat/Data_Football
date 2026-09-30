@@ -27,11 +27,11 @@ DEV_USERS: list[tuple[uuid.UUID, str, Role]] = [
 ]
 
 
-async def seed_dev_identities() -> None:
+async def seed_dev_identities(database_url: str | None = None) -> None:
     settings = get_settings()
     if settings.kurgu_env not in {"development", "test"}:
         raise SystemExit("dev identities are only for development and test environments")
-    engine = create_async_engine(settings.migrations_database_url)
+    engine = create_async_engine(database_url or settings.migrations_database_url)
     issuer = settings.oidc_issuer.rstrip("/")
     async with engine.begin() as conn:
         tenants = ((DEMO_TENANT_ID, DEMO_TENANT_NAME), (SECOND_TENANT_ID, SECOND_TENANT_NAME))

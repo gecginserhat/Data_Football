@@ -486,6 +486,12 @@ wheels = [
 name = "kurgu-analytics"
 version = "0.0.0"
 source = { editable = "analytics" }
+dependencies = [
+    { name = "pydantic" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "pydantic", specifier = ">=2.9" }]
 
 [[package]]
 name = "kurgu-api"

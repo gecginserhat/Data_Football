@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     oidc_jwks_url: str | None = None
     kurgu_require_mfa: bool = False
 
+    # Tohum dosyalarının klasörü (`make seed`); konteynerde /app/seed.
+    kurgu_seed_dir: str = "seed"
+
     cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
 
 

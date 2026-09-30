@@ -6,7 +6,7 @@ UV := uv run
 -include .env
 export
 
-.PHONY: help doctor env install dev down logs ps migrate migrate-cycle seed openapi \
+.PHONY: help doctor env install dev down logs ps migrate migrate-cycle seed seed-report openapi \
         lint typecheck test test-py test-js e2e format
 
 help: ## Komutları listeler
@@ -42,8 +42,11 @@ migrate: ## Alembic upgrade head (compose içindeki veritabanına)
 migrate-cycle: ## upgrade → downgrade → upgrade döngüsü (CI ile aynı)
 	cd apps/api && $(UV) alembic upgrade head && $(UV) alembic downgrade base && $(UV) alembic upgrade head
 
-seed: ## Tohum verisini yükler (Faz 1'de dolar; şimdilik geliştirme kimlikleri)
-	$(COMPOSE) run --rm migrate kurgu-dev-identities
+seed: ## Tohum verisini yükler (geliştirme kimlikleri, lig verisi, lisanslar; idempotent)
+	$(COMPOSE) run --rm migrate kurgu-seed
+
+seed-report: ## Tohum bütünlük raporunu docs/validation/seed_integrity.md dosyasına yazar
+	$(UV) kurgu-seed --report docs/validation/seed_integrity.md
 
 openapi: ## OpenAPI şemasından TS istemcisini yeniden üretir
 	$(UV) kurgu-openapi packages/api-client/openapi.json
