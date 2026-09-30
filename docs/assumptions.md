@@ -72,3 +72,9 @@ Kaynak dosyalar: kök `CLAUDE.md`, `SPEC.md`, `BASLANGIC.md` (WSL sürümü) esa
 **A-25 · VARSAYIM · StatsBomb koordinat dönüşümü parçalı doğrusaldır.** SPEC §4 "120 × 80 → 105 × 68, y çevrilir" diyor. Düz ölçekleme ceza sahası çizgisini 88,5 m yerine 89,25 m'ye taşıdığı için bölge sınırlarında hata yapar. Dönüşüm saha çizgilerini (altı pas, penaltı noktası, ceza sahası, orta çizgi, direkler) kanonik karşılıklarına oturtan parçalı doğrusal eşlemedir (`kurgu_analytics.canonical.coords`); referans nokta testleriyle doğrulanır. kloppy'nin standart saha dönüşümüyle aynı fikirdir.
 
 **A-26 · VARSAYIM · `zones.json` konumu.** Dosya `packages/pitch/zones.json` içinde tek kopyadır. Python tarafı `KURGU_ZONES_PATH` değişkenini, yoksa repo kökündeki yolu okur. API imajı dosyayı kopyalar ve değişkeni ayarlar; geliştirme konteyneri klasörü bağlar.
+
+**A-27 · VARSAYIM · SPADL eşleyici (A-16'nın sonucu).** socceraction bağımlılık olarak eklenmedi; ince eşleyici yazıldı ve socceraction ile %100 tür uyumu ölçüldü (ADR-0003 Faz 1 notu). socceraction'dan bilinçli farklar: sentetik `dribble` aksiyonları eklenmez (StatsBomb `Carry` zaten `dribble` olur); sol/sağ ayak `foot_left`/`foot_right` olarak korunur (korner alt türü için gerekli).
+
+**A-28 · VARSAYIM · Nesne deposu.** Ham yükler `raw/<kiracı|shared>/<sağlayıcı>/<sha256>` anahtarıyla yazılır; aynı içerik aynı anahtara gider. Yerelde ve testlerde klasör deposu (`KURGU_STORAGE_BACKEND=local`), compose'da MinIO (`s3`) kullanılır.
+
+**A-29 · VARSAYIM · Yükleme işi sahipliği.** API'den başlatılan iş kaydı isteyen kiracıya aittir (yalnız o görür), yazılan lig verisi paylaşılır ve lisansla okunur. Komut satırından (`kurgu-ingest`) başlatılan iş paylaşılandır (`tenant_id` boş). İşi yalnızca `admin` rolü başlatabilir.

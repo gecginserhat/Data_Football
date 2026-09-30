@@ -4,6 +4,41 @@
  */
 
 export interface paths {
+    "/api/v1/ingestion-runs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Ingestion Runs */
+        get: operations["listIngestionRuns"];
+        put?: never;
+        /** Create Ingestion Run */
+        post: operations["createIngestionRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/ingestion-runs/{run_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Ingestion Run */
+        get: operations["getIngestionRun"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/me": {
         parameters: {
             query?: never;
@@ -184,6 +219,43 @@ export interface components {
              */
             status: "ok" | "degraded";
         };
+        /** IngestionRunCreate */
+        IngestionRunCreate: {
+            params: components["schemas"]["StatsBombParams"];
+            /**
+             * Provider
+             * @constant
+             */
+            provider: "statsbomb_open";
+        };
+        /** IngestionRunOut */
+        IngestionRunOut: {
+            /** Error */
+            error: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Kind */
+            kind: string;
+            /** Params */
+            params: {
+                [key: string]: unknown;
+            };
+            /** Provider */
+            provider: string;
+            /** Quality Report */
+            quality_report: {
+                [key: string]: unknown;
+            } | null;
+            /** Stats */
+            stats: {
+                [key: string]: unknown;
+            };
+            /** Status */
+            status: string;
+        };
         /** MeOut */
         MeOut: {
             active_tenant: components["schemas"]["ActiveTenantOut"] | null;
@@ -277,6 +349,15 @@ export interface components {
             /** Week */
             week: number;
         };
+        /** StatsBombParams */
+        StatsBombParams: {
+            /** Competition Id */
+            competition_id: number;
+            /** Limit */
+            limit?: number | null;
+            /** Season Id */
+            season_id: number;
+        };
         /** TeamMetricsOut */
         TeamMetricsOut: {
             /** As Of Week */
@@ -365,6 +446,105 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    listIngestionRuns: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IngestionRunOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    createIngestionRun: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["IngestionRunCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IngestionRunOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getIngestionRun: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                run_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["IngestionRunOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     getMe: {
         parameters: {
             query?: never;

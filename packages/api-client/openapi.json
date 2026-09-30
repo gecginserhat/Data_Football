@@ -106,6 +106,90 @@
         "title": "HealthStatus",
         "type": "object"
       },
+      "IngestionRunCreate": {
+        "properties": {
+          "params": {
+            "$ref": "#/components/schemas/StatsBombParams"
+          },
+          "provider": {
+            "const": "statsbomb_open",
+            "title": "Provider",
+            "type": "string"
+          }
+        },
+        "required": [
+          "provider",
+          "params"
+        ],
+        "title": "IngestionRunCreate",
+        "type": "object"
+      },
+      "IngestionRunOut": {
+        "properties": {
+          "error": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Error"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "title": "Kind",
+            "type": "string"
+          },
+          "params": {
+            "additionalProperties": true,
+            "title": "Params",
+            "type": "object"
+          },
+          "provider": {
+            "title": "Provider",
+            "type": "string"
+          },
+          "quality_report": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Quality Report"
+          },
+          "stats": {
+            "additionalProperties": true,
+            "title": "Stats",
+            "type": "object"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "provider",
+          "kind",
+          "status",
+          "params",
+          "stats",
+          "quality_report",
+          "error"
+        ],
+        "title": "IngestionRunOut",
+        "type": "object"
+      },
       "MeOut": {
         "properties": {
           "active_tenant": {
@@ -372,6 +456,37 @@
         "title": "StandingsOut",
         "type": "object"
       },
+      "StatsBombParams": {
+        "properties": {
+          "competition_id": {
+            "title": "Competition Id",
+            "type": "integer"
+          },
+          "limit": {
+            "anyOf": [
+              {
+                "maximum": 500.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Limit"
+          },
+          "season_id": {
+            "title": "Season Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "competition_id",
+          "season_id"
+        ],
+        "title": "StatsBombParams",
+        "type": "object"
+      },
       "TeamMetricsOut": {
         "properties": {
           "as_of_week": {
@@ -628,6 +743,190 @@
   },
   "openapi": "3.1.0",
   "paths": {
+    "/api/v1/ingestion-runs": {
+      "get": {
+        "operationId": "listIngestionRuns",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/IngestionRunOut"
+                  },
+                  "title": "Response Listingestionruns",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Ingestion Runs",
+        "tags": [
+          "ingestion"
+        ]
+      },
+      "post": {
+        "operationId": "createIngestionRun",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IngestionRunCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "202": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IngestionRunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Ingestion Run",
+        "tags": [
+          "ingestion"
+        ]
+      }
+    },
+    "/api/v1/ingestion-runs/{run_id}": {
+      "get": {
+        "operationId": "getIngestionRun",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "run_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Run Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IngestionRunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Ingestion Run",
+        "tags": [
+          "ingestion"
+        ]
+      }
+    },
     "/api/v1/me": {
       "get": {
         "operationId": "getMe",

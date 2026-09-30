@@ -18,6 +18,8 @@ x-api-env: &api-env
   S3_ACCESS_KEY: ${S3_ACCESS_KEY}
   S3_SECRET_KEY: ${S3_SECRET_KEY}
   S3_BUCKET: ${S3_BUCKET:-kurgu}
+  KURGU_STORAGE_BACKEND: s3
+  KURGU_STATSBOMB_DIR: /app/data/statsbomb
 
 services:
   postgres:
@@ -125,6 +127,7 @@ services:
       - ../analytics:/app/analytics
       - ../seed:/app/seed:ro
       - ../packages/pitch:/app/packages/pitch:ro
+      - ../data:/app/data
     depends_on:
       postgres: { condition: service_healthy }
 

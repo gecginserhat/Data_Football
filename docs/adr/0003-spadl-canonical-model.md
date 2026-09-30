@@ -16,6 +16,13 @@ Veri birden çok kaynaktan gelecek: StatsBomb Open Data (geliştirme), lisanslı
 - **Bölgeler ve saha geometrisi** `packages/pitch/zones.json` içinde tek kaynaktır; Python (`kurgu_analytics.setpieces.zones`) ve TS (`packages/pitch`) aynı dosyayı okur, ortak test vektörleriyle doğrulanır.
 - Kulübün canlı kaydı (`live_tags`) SPADL'a zorlanmaz; doğrudan `set_pieces` satırı üretir (`source='live_tag'`). Böylece olay verisi olmayan maçlarda da duran top metrikleri oluşur.
 
+## Uygulama notu (Faz 1)
+- socceraction 1.5.3 numpy<2, pandera<0.18 ve lxml<5 sabitliyor; pandera'nın bu sürümü güncel `multimethod` ile açılmıyor bile. A-16'daki yedek plan uygulandı: StatsBomb açık JSON'u doğrudan okuyan ince bir eşleyici yazıldı (`kurgu_analytics.ingestion.statsbomb`). Tür, sonuç ve vücut bölgesi kuralları socceraction'ın StatsBomb dönüştürücüsünü izler.
+- Uyum ayrı, geçici bir ortamda socceraction ile ölçülür (`make spadl-compare`, `docs/validation/spadl_socceraction.md`). 30 maçta ortak olaylarda tür uyumu %100, tür + sonuç + vücut bölgesi uyumu %99,78.
+- kloppy StatsBomb için kullanılmıyor; açık JSON yeterli. Takip verisi (P2) geldiğinde kloppy eklenir.
+- Kanonik katman en alttadır; `ingestion` onun üstündedir (import-linter sözleşmesi buna göre sıralandı).
+- Koordinat dönüşümü parçalı doğrusaldır (A-25).
+
 ## Sonuçlar
 - **Artı:** Yeni sağlayıcı = yeni adaptör; çıkarım ve metrikler değişmez.
 - **Artı:** Açık kaynak futbol ekosistemiyle (VAEP, xT; P2) doğrudan uyum.
