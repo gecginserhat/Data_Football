@@ -6,7 +6,7 @@ UV := uv run
 -include .env
 export
 
-.PHONY: help doctor env install dev down logs ps migrate migrate-cycle seed seed-report statsbomb-fetch statsbomb-load spadl-compare openapi \
+.PHONY: help doctor env install dev down logs ps migrate migrate-cycle seed seed-report statsbomb-fetch statsbomb-load validate spadl-compare openapi \
         lint typecheck test test-py test-js e2e format
 
 help: ## Komutları listeler
@@ -55,6 +55,9 @@ statsbomb-load: ## İndirilen StatsBomb maçlarını worker ile yükler (DK 2022
 	$(COMPOSE) run --rm worker kurgu-ingest statsbomb_open --competition 43 --season 106
 	$(COMPOSE) run --rm worker kurgu-ingest statsbomb_open --competition 55 --season 282
 	$(COMPOSE) run --rm worker kurgu-ingest statsbomb_open --competition 9 --season 281
+
+validate: ## Duran top çıkarımı doğrulama raporunu üretir (docs/validation/setpiece_extraction.md)
+	$(UV) python -m kurgu_analytics.setpieces.validation data/statsbomb > docs/validation/setpiece_extraction.md
 
 spadl-compare: ## SPADL eşleyicisini socceraction ile karşılaştırır (geçici ortam; A-16)
 	uv run --isolated --no-project --python 3.12 --with socceraction==1.5.3 --with "multimethod<1.11" \

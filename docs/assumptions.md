@@ -78,3 +78,7 @@ Kaynak dosyalar: kök `CLAUDE.md`, `SPEC.md`, `BASLANGIC.md` (WSL sürümü) esa
 **A-28 · VARSAYIM · Nesne deposu.** Ham yükler `raw/<kiracı|shared>/<sağlayıcı>/<sha256>` anahtarıyla yazılır; aynı içerik aynı anahtara gider. Yerelde ve testlerde klasör deposu (`KURGU_STORAGE_BACKEND=local`), compose'da MinIO (`s3`) kullanılır.
 
 **A-29 · VARSAYIM · Yükleme işi sahipliği.** API'den başlatılan iş kaydı isteyen kiracıya aittir (yalnız o görür), yazılan lig verisi paylaşılır ve lisansla okunur. Komut satırından (`kurgu-ingest`) başlatılan iş paylaşılandır (`tenant_id` boş). İşi yalnızca `admin` rolü başlatabilir.
+
+**A-30 · KARAR BEKLİYOR · Doğrulama ölçüsü.** `docs/validation/setpiece_extraction.md`: 149 maçta ham `play_pattern` uyumu %74,3, tanım farkları (kısa taç, 20 sn pencere dışı) uyumlu sayıldığında %99,5. StatsBomb etiketi possession boyunca süre sınırsız taşındığı için ham ölçü şartnamedeki tanımla ölçülemez. Öneri: kabul ölçüsü tanım uyumlu uyum, ham uyum yan yana raporlanır. Serhat'ın kararına kadar Faz 1 kabul kriteri bu öneriyle işaretlenir ve not düşülür.
+
+**A-31 · VARSAYIM · Şut sonucunun türetilmesi.** SPADL isabet bilgisi taşımaz. Sonuç sağlayıcıdan bağımsız türetilir: rakip kaleci kurtarışı izliyorsa isabetli, top kale çizgisine (x ≥ 104) ulaştıysa isabetsiz, ulaşmadıysa engellenmiş. StatsBomb sonucuyla uyum %94,1; ana karışıklık StatsBomb'un "Wayward" (topu kötü vurma) şutlarının engellenmiş sayılması.

@@ -196,6 +196,7 @@ def _extra(event: dict[str, Any]) -> dict[str, Any]:
     s = event.get("shot")
     if s:
         extra["shot_type"] = _name(s.get("type"))
+        extra["shot_outcome"] = _name(s.get("outcome"))
     return extra
 
 
