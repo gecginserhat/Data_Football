@@ -1,0 +1,11 @@
+pnpm-lock.yaml
+docs/
+seed/
+*.md
+.next/
+dist/
+coverage/
+packages/api-client/src/schema.d.ts
+apps/api/
+analytics/
+infra/keycloak/
