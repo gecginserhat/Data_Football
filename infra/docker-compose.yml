@@ -1,0 +1,217 @@
+# Kurgu yerel geliştirme ortamı (SPEC §17). Çalıştırma: `make dev` (repo kökünden).
+# Tüm portlar .env üzerinden değiştirilebilir. Keycloak, tarayıcı ve konteynerlerden aynı
+# adresle (keycloak.localhost) erişilsin diye ağ takma adı kullanır; tarayıcılar *.localhost
+# adreslerini kendiliğinden 127.0.0.1'e çözer.
+name: kurgu
+
+x-api-env: &api-env
+  KURGU_ENV: ${KURGU_ENV:-development}
+  KURGU_LOG_LEVEL: ${KURGU_LOG_LEVEL:-INFO}
+  DATABASE_URL: postgresql+asyncpg://kurgu_app:${KURGU_APP_PASSWORD}@postgres:5432/${POSTGRES_DB:-kurgu}
+  MIGRATIONS_DATABASE_URL: postgresql+asyncpg://kurgu_owner:${KURGU_OWNER_PASSWORD}@postgres:5432/${POSTGRES_DB:-kurgu}
+  REDIS_URL: redis://redis:6379/0
+  OIDC_ISSUER: http://keycloak.localhost:${KEYCLOAK_PORT:-8080}/realms/kurgu
+  OIDC_AUDIENCE: ${OIDC_AUDIENCE:-kurgu-api}
+  KURGU_REQUIRE_MFA: ${KURGU_REQUIRE_MFA:-false}
+  CORS_ORIGINS: '["http://localhost:${WEB_PORT:-3000}"]'
+  S3_ENDPOINT_URL: http://minio:9000
+  S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+  S3_SECRET_KEY: ${S3_SECRET_KEY}
+  S3_BUCKET: ${S3_BUCKET:-kurgu}
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_SUPERUSER_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-kurgu}
+      KURGU_OWNER_PASSWORD: ${KURGU_OWNER_PASSWORD}
+      KURGU_APP_PASSWORD: ${KURGU_APP_PASSWORD}
+      KURGU_WORKER_PASSWORD: ${KURGU_WORKER_PASSWORD}
+    ports: ["${POSTGRES_PORT:-5432}:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d ${POSTGRES_DB:-kurgu}"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  redis:
+    image: redis:7-alpine
+    ports: ["${REDIS_PORT:-6379}:6379"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 3s
+      timeout: 3s
+      retries: 30
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY}
+    ports:
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
+    volumes: [miniodata:/data]
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  minio-init:
+    image: minio/mc:latest
+    depends_on:
+      minio: { condition: service_healthy }
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - >
+        mc alias set local http://minio:9000 "$${S3_ACCESS_KEY}" "$${S3_SECRET_KEY}" &&
+        mc mb --ignore-existing "local/$${S3_BUCKET}"
+    environment:
+      S3_ACCESS_KEY: ${S3_ACCESS_KEY}
+      S3_SECRET_KEY: ${S3_SECRET_KEY}
+      S3_BUCKET: ${S3_BUCKET:-kurgu}
+
+  keycloak:
+    image: quay.io/keycloak/keycloak:26.0
+    command: ["start-dev", "--import-realm", "--http-port=${KEYCLOAK_PORT:-8080}"]
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: ${KEYCLOAK_ADMIN:-admin}
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD}
+      KC_HOSTNAME: http://keycloak.localhost:${KEYCLOAK_PORT:-8080}
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "false"
+      KC_HTTP_ENABLED: "true"
+      KC_HEALTH_ENABLED: "true"
+      # Realm dosyasındaki ${...} yer tutucuları bu değişkenlerle doldurulur.
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+      KURGU_DEV_USER_PASSWORD: ${KURGU_DEV_USER_PASSWORD}
+      WEB_PORT: ${WEB_PORT:-3000}
+    ports: ["${KEYCLOAK_PORT:-8080}:${KEYCLOAK_PORT:-8080}"]
+    volumes:
+      - ./keycloak/kurgu-realm.json:/opt/keycloak/data/import/kurgu-realm.json:ro
+    networks:
+      default:
+        aliases: [keycloak.localhost]
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >
+          exec 3<>/dev/tcp/127.0.0.1/9000 &&
+          printf 'GET /health/ready HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3 &&
+          grep -q '"UP"' <&3
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 20s
+
+  mailpit:
+    image: axllent/mailpit:latest
+    ports:
+      - "${MAILPIT_UI_PORT:-8025}:8025"
+      - "${MAILPIT_SMTP_PORT:-1025}:1025"
+
+  migrate:
+    build: { context: .., dockerfile: infra/docker/api.Dockerfile, target: dev }
+    command: ["sh", "-c", "alembic -c apps/api/alembic.ini upgrade head && kurgu-dev-identities"]
+    environment:
+      <<: *api-env
+    volumes: &api-volumes
+      - ../apps/api:/app/apps/api
+      - ../analytics:/app/analytics
+      - ../seed:/app/seed:ro
+    depends_on:
+      postgres: { condition: service_healthy }
+
+  api:
+    build: { context: .., dockerfile: infra/docker/api.Dockerfile, target: dev }
+    command:
+      [
+        "uvicorn",
+        "kurgu_api.main:app",
+        "--host",
+        "0.0.0.0",
+        "--port",
+        "8000",
+        "--reload",
+        "--reload-dir",
+        "/app/apps/api/src",
+        "--reload-dir",
+        "/app/analytics",
+      ]
+    environment:
+      <<: *api-env
+      WATCHFILES_FORCE_POLLING: "true"
+    ports: ["${API_PORT:-8000}:8000"]
+    volumes: *api-volumes
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+      keycloak: { condition: service_healthy }
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/readyz')",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  worker:
+    build: { context: .., dockerfile: infra/docker/api.Dockerfile, target: dev }
+    command: ["arq", "kurgu_api.worker.WorkerSettings"]
+    environment:
+      <<: *api-env
+      DATABASE_URL: postgresql+asyncpg://kurgu_worker:${KURGU_WORKER_PASSWORD}@postgres:5432/${POSTGRES_DB:-kurgu}
+    volumes: *api-volumes
+    depends_on:
+      migrate: { condition: service_completed_successfully }
+      redis: { condition: service_healthy }
+
+  web:
+    build: { context: .., dockerfile: infra/docker/web.Dockerfile, target: dev }
+    environment:
+      WEB_PORT: ${WEB_PORT:-3000}
+      AUTH_SECRET: ${AUTH_SECRET}
+      AUTH_URL: http://localhost:${WEB_PORT:-3000}
+      OIDC_ISSUER: http://keycloak.localhost:${KEYCLOAK_PORT:-8080}/realms/kurgu
+      OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-kurgu-web}
+      OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
+      API_INTERNAL_URL: http://api:8000
+      WATCHPACK_POLLING: "true"
+      NEXT_TELEMETRY_DISABLED: "1"
+    ports: ["${WEB_PORT:-3000}:${WEB_PORT:-3000}"]
+    volumes:
+      - ..:/repo
+      - web_node_modules:/repo/node_modules
+      - web_app_node_modules:/repo/apps/web/node_modules
+      - web_next:/repo/apps/web/.next
+    depends_on:
+      api: { condition: service_healthy }
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:'+process.env.WEB_PORT+'/signin').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))",
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 60
+      start_period: 30s
+
+volumes:
+  pgdata:
+  miniodata:
+  web_node_modules:
+  web_app_node_modules:
+  web_next:

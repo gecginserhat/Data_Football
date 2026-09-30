@@ -1,0 +1,129 @@
+{
+  "app": {
+    "name": "Kurgu",
+    "tagline": "Duran top analiz ve hazırlık platformu",
+    "skipToContent": "İçeriğe geç",
+    "menu": "Menü",
+    "closeMenu": "Menüyü kapat",
+    "mainNav": "Ana menü",
+    "tabNav": "Hızlı erişim",
+    "yourClub": "Kulübünüz",
+    "noClub": "Kulüp seçilmedi",
+    "switchClub": "Kulüp değiştir",
+    "signOut": "Çıkış yap",
+    "language": "Dil"
+  },
+  "nav": {
+    "overview": "Genel bakış",
+    "prep": "Maç hazırlığı",
+    "opponents": "Rakip analizi",
+    "league": "Lig",
+    "routines": "Rutinler",
+    "live": "Canlı kayıt",
+    "video": "Video",
+    "reports": "Raporlar",
+    "performance": "Performans",
+    "me": "Profilim",
+    "admin": "Yönetim",
+    "methodology": "Metodoloji"
+  },
+  "pages": {
+    "overview": {
+      "title": "Genel bakış",
+      "emptyTitle": "Henüz gösterilecek veri yok",
+      "emptyDescription": "Tohum verisi yüklendiğinde kulübünüzün durumu, sıradaki maç ve öneriler burada görünür. Yönetici “make seed” komutunu çalıştırabilir."
+    },
+    "prep": {
+      "title": "Maç hazırlığı",
+      "emptyTitle": "Hazırlanacak maç yok",
+      "emptyDescription": "Fikstür yüklendiğinde sıradaki maçı seçip önerileri ve haftalık planı buradan hazırlayabilirsiniz."
+    },
+    "opponents": {
+      "title": "Rakip analizi",
+      "emptyTitle": "Rakip seçilmedi",
+      "emptyDescription": "Lig verisi yüklendiğinde bir rakip seçerek duran top profilini, bulguları ve dizileri inceleyebilirsiniz."
+    },
+    "league": {
+      "title": "Lig",
+      "emptyTitle": "Lig verisi yok",
+      "emptyDescription": "Puan durumu ve duran top tabloları, lig verisi yüklendiğinde burada görünür."
+    },
+    "routines": {
+      "title": "Rutinler",
+      "emptyTitle": "Kütüphanede rutin yok",
+      "emptyDescription": "Şablonlardan ilk rutininizi oluşturabileceksiniz. Rutin editörü Faz 3'te gelir."
+    },
+    "live": {
+      "title": "Canlı kayıt",
+      "emptyTitle": "Kayıt oturumu yok",
+      "emptyDescription": "Maç günü bir fikstür seçerek duran topları tablette kaydedebilirsiniz. Çevrimdışı çalışır."
+    },
+    "video": {
+      "title": "Video merkezi",
+      "emptyTitle": "Video yüklenmedi",
+      "emptyDescription": "Maç videosu yükleyip duran top kliplerini kayıtlara bağlayabileceksiniz."
+    },
+    "reports": {
+      "title": "Raporlar",
+      "emptyTitle": "Rapor arşivi boş",
+      "emptyDescription": "Rakip raporu ve maç planı PDF'leri üretildikçe burada listelenir."
+    },
+    "performance": {
+      "title": "Performans",
+      "emptyTitle": "Yük verisi yok",
+      "emptyDescription": "Antrenman yükü, iyi oluş ve sıçrama kayıtları girildiğinde trendler burada görünür."
+    },
+    "me": {
+      "title": "Profilim",
+      "account": "Hesap",
+      "email": "E-posta",
+      "memberships": "Kulüp üyelikleri",
+      "roles": "Roller",
+      "activeClub": "Aktif kulüp",
+      "noMemberships": "Henüz bir kulübe üye değilsiniz. Kulübünüzün yöneticisinden erişim isteyin.",
+      "selectClub": "Birden fazla kulüpte üyeliğiniz var. Çalışmak istediğiniz kulübü seçin.",
+      "select": "Seç",
+      "active": "Aktif"
+    },
+    "admin": {
+      "title": "Yönetim",
+      "emptyTitle": "Yönetim araçları hazırlanıyor",
+      "emptyDescription": "Kullanıcılar, roller, veri kaynakları, içe aktarım ve kurallar burada yönetilecek."
+    },
+    "methodology": {
+      "title": "Metodoloji",
+      "emptyTitle": "Tanımlar ve kaynaklar",
+      "emptyDescription": "Metrik tanımları, veri kaynakları, lisans koşulları ve sınırlamalar bu sayfada belgelenecek."
+    },
+    "detail": {
+      "emptyDescription": "Bu kayıt için henüz veri yok."
+    }
+  },
+  "roles": {
+    "admin": "Yönetici",
+    "head_coach": "Teknik direktör",
+    "sp_coach": "Duran top antrenörü",
+    "analyst": "Analist",
+    "performance": "Performans antrenörü",
+    "medical": "Sağlık ekibi",
+    "player": "Oyuncu",
+    "viewer": "İzleyici"
+  },
+  "states": {
+    "loading": "Yükleniyor",
+    "errorTitle": "Bir şeyler ters gitti",
+    "errorDescription": "Veri alınamadı. Bağlantınızı kontrol edip tekrar deneyin.",
+    "retry": "Tekrar dene",
+    "lowSample": "Az veri",
+    "forbiddenTitle": "Bu sayfaya erişiminiz yok",
+    "forbiddenDescription": "Rolünüz bu sayfayı görmeye izin vermiyor. Erişim gerekiyorsa kulübünüzün yöneticisine başvurun.",
+    "notFoundTitle": "Sayfa bulunamadı",
+    "notFoundDescription": "Aradığınız sayfa taşınmış ya da hiç var olmamış olabilir.",
+    "backHome": "Genel bakışa dön"
+  },
+  "auth": {
+    "title": "Kurgu'ya giriş",
+    "description": "Kulübünüzün kimlik sağlayıcısıyla giriş yapın.",
+    "signIn": "Giriş yap"
+  }
+}

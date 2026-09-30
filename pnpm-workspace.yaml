@@ -7,3 +7,7 @@ onlyBuiltDependencies:
   - sharp
   - "@tailwindcss/oxide"
   - unrs-resolver
+
+overrides:
+  # Next.js kendi postcss sürümünü sabitliyor; bilinen açıklar için yamalı sürüme zorlanır.
+  "next>postcss": ">=8.5.23"

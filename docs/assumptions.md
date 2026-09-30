@@ -47,7 +47,7 @@ Kaynak dosyalar: kök `CLAUDE.md`, `SPEC.md`, `BASLANGIC.md` (WSL sürümü) esa
 
 **A-14 · VARSAYIM · LLM ortam değişkenleri.** Kök CLAUDE.md ve SPEC §15 geçerli: `KURGU_LLM_MODEL` ve `KURGU_ANTHROPIC_API_KEY`. `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` hiçbir yerde kullanılmaz; CI'da bu adları arayan bir lint kuralı eklenir. (Eski `kurgu-claude-code/` kopyası `ANTHROPIC_MODEL` diyor; geçersiz sayıldı.)
 
-**A-15 · VARSAYIM · Sürümler.** Node LTS (22.x), pnpm 9 (corepack), Python 3.12 (`uv`), PostgreSQL 16, Redis 7, Keycloak 26, MinIO güncel kararlı. Sürümler `.tool-versions` / `package.json#engines` / `pyproject.toml` ile sabitlenir.
+**A-15 · VARSAYIM · Sürümler.** Node LTS (22.x), pnpm 10 (corepack; `packageManager` alanında sabit), Python 3.12 (`uv`), PostgreSQL 16, Redis 7, Keycloak 26, MinIO güncel kararlı. Sürümler `.tool-versions` / `package.json#engines` / `pyproject.toml` ile sabitlenir.
 
 **A-16 · VARSAYIM · socceraction ve Python 3.12.** `socceraction` güncel sürümü pandas 2 ve Python 3.12 ile çalışmazsa SPADL dönüşümü için yalnızca `kloppy` + kendi ince SPADL eşleyicimiz kullanılır; karar ADR-0003'e ek olarak yazılır.
 
@@ -56,5 +56,11 @@ Kaynak dosyalar: kök `CLAUDE.md`, `SPEC.md`, `BASLANGIC.md` (WSL sürümü) esa
 **A-18 · VARSAYIM · Göç ve RLS rolü.** Uygulama veritabanına RLS'yi atlayamayan ayrı bir rol (`kurgu_app`, `NOBYPASSRLS`, tablo sahibi değil) ile bağlanır. Göçler sahip rolüyle (`kurgu_owner`) çalışır. Aksi halde tablo sahibi RLS'yi atlar ve izolasyon testleri yanlış geçer.
 
 **A-19 · VARSAYIM · Windows/WSL ayrıntıları.** `.gitattributes` (`* text=auto eol=lf`) Faz 0'ın ilk commit'indedir. `sudo` gerektiren kurulumlar (Playwright sistem bağımlılıkları) kullanıcıya liste olarak verilir; Faz 0-1'de gereken tek şey `npx playwright install --with-deps chromium` (Faz 0 e2e dumanı için).
+
+**A-21 · VARSAYIM · Yazı tipleri yerelden sunulur.** IBM Plex, Google Fonts yerine `@fontsource` paketleriyle uygulamayla birlikte sunulur. Gerekçe: derleme dış ağa bağlı kalmaz, PWA çevrimdışı çalışır ve kullanıcı IP'si üçüncü tarafa gitmez (KVKK).
+
+**A-22 · VARSAYIM · Keycloak adresi `keycloak.localhost`.** Tarayıcı ve konteynerler aynı OIDC adresini kullanmalı, yoksa token'daki `iss` tutmaz. Tarayıcılar `*.localhost`'u 127.0.0.1'e çözer; compose içinde aynı ad ağ takma adıdır. Test kullanıcılarının Keycloak kimlikleri sabittir (`infra/keycloak/kurgu-realm.json`), böylece üyelikler girişten önce açılabilir.
+
+**A-23 · VARSAYIM · shadcn/ui.** Faz 0'da yalnız tasarım tokenları ve durum bileşenleri (`packages/ui`) yazıldı. shadcn/ui bileşenleri (dialog, select, table…) ilk ihtiyaç duyulduğu fazda eklenir.
 
 **A-20 · VARSAYIM · Portlar.** web 3000, api 8000, postgres 5432, redis 6379, minio 9000/9001, keycloak 8080, mailpit 8025. Hepsi `.env` üzerinden değiştirilebilir.

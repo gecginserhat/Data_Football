@@ -47,7 +47,10 @@ export const LOW_SAMPLE_MIN_N = 8;
 export const LOW_SAMPLE_MIN_MATCHES = 5;
 
 export function isLowSample(n?: number, matches?: number): boolean {
-  return (n !== undefined && n < LOW_SAMPLE_MIN_N) || (matches !== undefined && matches < LOW_SAMPLE_MIN_MATCHES);
+  return (
+    (n !== undefined && n < LOW_SAMPLE_MIN_N) ||
+    (matches !== undefined && matches < LOW_SAMPLE_MIN_MATCHES)
+  );
 }
 
 /** "Az veri" rozeti; örneklem yeterliyse hiçbir şey çizmez. */

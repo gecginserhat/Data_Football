@@ -9,11 +9,20 @@ export interface ErrorStateProps {
 }
 
 /** Hata durumu: tekrar dene düğmesiyle (SPEC §13.3). */
-export function ErrorState({ title, description, retryLabel, onRetry, className }: ErrorStateProps) {
+export function ErrorState({
+  title,
+  description,
+  retryLabel,
+  onRetry,
+  className,
+}: ErrorStateProps) {
   return (
     <section
       role="alert"
-      className={cn("flex flex-col items-start gap-3 rounded-lg border border-neg/40 bg-surface p-6", className)}
+      className={cn(
+        "flex flex-col items-start gap-3 rounded-lg border border-neg/40 bg-surface p-6",
+        className,
+      )}
     >
       <h2 className="font-condensed text-lg font-semibold text-neg">{title}</h2>
       <p className="max-w-prose text-sm text-ink-2">{description}</p>

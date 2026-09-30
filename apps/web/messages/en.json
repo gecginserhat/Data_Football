@@ -1,0 +1,129 @@
+{
+  "app": {
+    "name": "Kurgu",
+    "tagline": "Set-piece analysis and preparation platform",
+    "skipToContent": "Skip to content",
+    "menu": "Menu",
+    "closeMenu": "Close menu",
+    "mainNav": "Main navigation",
+    "tabNav": "Quick access",
+    "yourClub": "Your club",
+    "noClub": "No club selected",
+    "switchClub": "Switch club",
+    "signOut": "Sign out",
+    "language": "Language"
+  },
+  "nav": {
+    "overview": "Overview",
+    "prep": "Match prep",
+    "opponents": "Opponent analysis",
+    "league": "League",
+    "routines": "Routines",
+    "live": "Live tagging",
+    "video": "Video",
+    "reports": "Reports",
+    "performance": "Performance",
+    "me": "My profile",
+    "admin": "Admin",
+    "methodology": "Methodology"
+  },
+  "pages": {
+    "overview": {
+      "title": "Overview",
+      "emptyTitle": "Nothing to show yet",
+      "emptyDescription": "Once seed data is loaded, your club status, next match and recommendations appear here. An admin can run “make seed”."
+    },
+    "prep": {
+      "title": "Match prep",
+      "emptyTitle": "No match to prepare",
+      "emptyDescription": "Once fixtures are loaded, pick the next match to prepare recommendations and the weekly plan."
+    },
+    "opponents": {
+      "title": "Opponent analysis",
+      "emptyTitle": "No opponent selected",
+      "emptyDescription": "Once league data is loaded, pick an opponent to review its set-piece profile, findings and sequences."
+    },
+    "league": {
+      "title": "League",
+      "emptyTitle": "No league data",
+      "emptyDescription": "Standings and set-piece tables appear here once league data is loaded."
+    },
+    "routines": {
+      "title": "Routines",
+      "emptyTitle": "No routines in the library",
+      "emptyDescription": "You will be able to create your first routine from templates. The routine editor arrives in phase 3."
+    },
+    "live": {
+      "title": "Live tagging",
+      "emptyTitle": "No tagging session",
+      "emptyDescription": "On match day, pick a fixture to tag set pieces on a tablet. Works offline."
+    },
+    "video": {
+      "title": "Video hub",
+      "emptyTitle": "No video uploaded",
+      "emptyDescription": "You will be able to upload match video and link set-piece clips to tags."
+    },
+    "reports": {
+      "title": "Reports",
+      "emptyTitle": "Report archive is empty",
+      "emptyDescription": "Opponent reports and match plan PDFs are listed here as they are generated."
+    },
+    "performance": {
+      "title": "Performance",
+      "emptyTitle": "No load data",
+      "emptyDescription": "Trends appear here once training load, wellness and jump logs are entered."
+    },
+    "me": {
+      "title": "My profile",
+      "account": "Account",
+      "email": "Email",
+      "memberships": "Club memberships",
+      "roles": "Roles",
+      "activeClub": "Active club",
+      "noMemberships": "You are not a member of any club yet. Ask your club admin for access.",
+      "selectClub": "You are a member of several clubs. Choose the club you want to work in.",
+      "select": "Select",
+      "active": "Active"
+    },
+    "admin": {
+      "title": "Admin",
+      "emptyTitle": "Admin tools are on the way",
+      "emptyDescription": "Users, roles, data sources, imports and rules will be managed here."
+    },
+    "methodology": {
+      "title": "Methodology",
+      "emptyTitle": "Definitions and sources",
+      "emptyDescription": "Metric definitions, data sources, license terms and limitations will be documented here."
+    },
+    "detail": {
+      "emptyDescription": "There is no data for this record yet."
+    }
+  },
+  "roles": {
+    "admin": "Admin",
+    "head_coach": "Head coach",
+    "sp_coach": "Set-piece coach",
+    "analyst": "Analyst",
+    "performance": "Performance coach",
+    "medical": "Medical staff",
+    "player": "Player",
+    "viewer": "Viewer"
+  },
+  "states": {
+    "loading": "Loading",
+    "errorTitle": "Something went wrong",
+    "errorDescription": "We could not load the data. Check your connection and try again.",
+    "retry": "Try again",
+    "lowSample": "Small sample",
+    "forbiddenTitle": "You do not have access to this page",
+    "forbiddenDescription": "Your role does not allow viewing this page. Ask your club admin if you need access.",
+    "notFoundTitle": "Page not found",
+    "notFoundDescription": "The page you are looking for may have moved or never existed.",
+    "backHome": "Back to overview"
+  },
+  "auth": {
+    "title": "Sign in to Kurgu",
+    "description": "Sign in with your club's identity provider.",
+    "signIn": "Sign in"
+  }
+}

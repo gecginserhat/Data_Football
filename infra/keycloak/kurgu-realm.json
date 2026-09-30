@@ -1,0 +1,193 @@
+{
+  "realm": "kurgu",
+  "enabled": true,
+  "displayName": "Kurgu (yerel)",
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "accessTokenLifespan": 600,
+  "ssoSessionIdleTimeout": 36000,
+  "internationalizationEnabled": true,
+  "supportedLocales": [
+    "tr",
+    "en"
+  ],
+  "defaultLocale": "tr",
+  "clients": [
+    {
+      "clientId": "kurgu-web",
+      "name": "Kurgu Web",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "secret": "${OIDC_CLIENT_SECRET}",
+      "clientAuthenticatorType": "client-secret",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
+      "redirectUris": [
+        "http://localhost:${WEB_PORT}/*"
+      ],
+      "webOrigins": [
+        "http://localhost:${WEB_PORT}"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256",
+        "post.logout.redirect.uris": "http://localhost:${WEB_PORT}/*"
+      },
+      "defaultClientScopes": [
+        "profile",
+        "email",
+        "roles",
+        "web-origins",
+        "acr",
+        "basic"
+      ],
+      "protocolMappers": [
+        {
+          "name": "kurgu-api-audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-audience-mapper",
+          "consentRequired": false,
+          "config": {
+            "included.custom.audience": "kurgu-api",
+            "access.token.claim": "true",
+            "id.token.claim": "false",
+            "introspection.token.claim": "true"
+          }
+        }
+      ]
+    }
+  ],
+  "users": [
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "username": "admin",
+      "email": "admin@kurgu.local",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Yönetici",
+      "lastName": "Test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "${KURGU_DEV_USER_PASSWORD}",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000002",
+      "username": "head-coach",
+      "email": "head-coach@kurgu.local",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Teknik",
+      "lastName": "Direktör",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "${KURGU_DEV_USER_PASSWORD}",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000003",
+      "username": "sp-coach",
+      "email": "sp-coach@kurgu.local",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Duran",
+      "lastName": "Top Antrenörü",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "${KURGU_DEV_USER_PASSWORD}",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000004",
+      "username": "analyst",
+      "email": "analyst@kurgu.local",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Analist",
+      "lastName": "Test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "${KURGU_DEV_USER_PASSWORD}",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000005",
+      "username": "performance",
+      "email": "performance@kurgu.local",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Performans",
+      "lastName": "Antrenörü",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "${KURGU_DEV_USER_PASSWORD}",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000006",
+      "username": "medical",
+      "email": "medical@kurgu.local",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Sağlık",
+      "lastName": "Ekibi",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "${KURGU_DEV_USER_PASSWORD}",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000007",
+      "username": "player",
+      "email": "player@kurgu.local",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "Oyuncu",
+      "lastName": "Test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "${KURGU_DEV_USER_PASSWORD}",
+          "temporary": false
+        }
+      ]
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000008",
+      "username": "viewer",
+      "email": "viewer@kurgu.local",
+      "emailVerified": true,
+      "enabled": true,
+      "firstName": "İzleyici",
+      "lastName": "Test",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "${KURGU_DEV_USER_PASSWORD}",
+          "temporary": false
+        }
+      ]
+    }
+  ]
+}

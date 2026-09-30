@@ -9,3 +9,4 @@ packages/api-client/src/schema.d.ts
 apps/api/
 analytics/
 infra/keycloak/
+packages/api-client/openapi.json

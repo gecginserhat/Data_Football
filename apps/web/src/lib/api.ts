@@ -1,0 +1,43 @@
+import "server-only";
+import { createKurguClient, TENANT_HEADER, type Me } from "@kurgu/api-client";
+import { cookies } from "next/headers";
+import { cache } from "react";
+import { getAccessToken } from "./session";
+
+export const TENANT_COOKIE = "kurgu_tenant";
+
+const baseUrl = process.env.API_INTERNAL_URL ?? "http://localhost:8000";
+
+/** Oturumdaki kullanıcı adına API istemcisi (yalnızca sunucuda). */
+export async function apiClient() {
+  const token = await getAccessToken();
+  const tenant = (await cookies()).get(TENANT_COOKIE)?.value;
+  const headers: Record<string, string> = {};
+  if (token) headers.Authorization = `Bearer ${token}`;
+  if (tenant) headers[TENANT_HEADER] = tenant;
+  return createKurguClient({ baseUrl, headers });
+}
+
+export type MeResult =
+  | { status: "ok"; me: Me }
+  | { status: "unauthenticated" }
+  | { status: "error"; httpStatus?: number };
+
+export async function fetchMe(): Promise<MeResult> {
+  try {
+    const client = await apiClient();
+    const { data, response } = await client.GET("/api/v1/me");
+    if (data) return { status: "ok", me: data };
+    if (response.status === 401) return { status: "unauthenticated" };
+    return { status: "error", httpStatus: response.status };
+  } catch {
+    return { status: "error" };
+  }
+}
+
+export function permissionSet(me: Me): Set<string> {
+  return new Set(Object.keys(me.active_tenant?.permissions ?? {}));
+}
+
+/** İstek başına tek `/me` çağrısı (layout ve sayfalar paylaşır). */
+export const getMe = cache(fetchMe);

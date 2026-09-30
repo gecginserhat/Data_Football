@@ -20,6 +20,7 @@ dependencies = [
 
 [project.scripts]
 kurgu-openapi = "kurgu_api.openapi:main"
+kurgu-dev-identities = "kurgu_api.dev_identities:main"
 
 [build-system]
 requires = ["hatchling"]

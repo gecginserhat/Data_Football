@@ -1,6 +1,6 @@
 # İlerleme
 
-**Durum:** Plan onaylandı (30.09.2026). Faz 0 sürüyor.
+**Durum:** Faz 0 PR'da; CI ve docker compose doğrulaması bekleniyor (30.09.2026).
 **Sonraki adım:** Faz 0 görevleri (aşağıda).
 
 Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce). Her commit öncesi `make lint typecheck test` temiz olmalı. Bir görev SPEC §19 DoD'yi karşılamadan işaretlenmez. Faz sonunda kabul kriterleri işaretlenir ve kısa rapor verilir.
@@ -20,65 +20,65 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 ### Görevler
 
 **0.1 Repo temeli**
-- [ ] `git init`, `.gitattributes` (`* text=auto eol=lf`), `.gitignore`, `.editorconfig`, `LICENSE` (kapalı kaynak notu).
-- [ ] `CLAUDE.md`, `docs/` (SPEC, assumptions, adr, PROGRESS) ve `seed/` repoya eklenir.
-- [ ] `.env.example` (tüm portlar ve değişkenler, gizli değer yok; `KURGU_ANTHROPIC_API_KEY`, `KURGU_LLM_MODEL` boş). `.env` git dışı.
-- [ ] Sürüm sabitleme: `package.json#engines`, `packageManager: pnpm@9`, `.python-version` 3.12.
+- [x] `git init`, `.gitattributes` (`* text=auto eol=lf`), `.gitignore`, `.editorconfig`. (LICENSE, sahibi karar verince eklenir.)
+- [x] `CLAUDE.md`, `docs/` (SPEC, assumptions, adr, PROGRESS) ve `seed/` repoya eklenir.
+- [x] `.env.example` (tüm portlar ve değişkenler, gizli değer yok; `KURGU_ANTHROPIC_API_KEY`, `KURGU_LLM_MODEL` boş). `.env` git dışı.
+- [x] Sürüm sabitleme: `package.json#engines`, `packageManager: pnpm@10`, `.python-version` 3.12.
 
 **0.2 JS monorepo**
-- [ ] `pnpm-workspace.yaml`, Turborepo (`turbo.json`: build, lint, typecheck, test).
-- [ ] Ortak `tsconfig.base.json` (strict), ESLint (flat config) + Prettier.
-- [ ] `packages/ui` (boş iskelet + tokenlar), `packages/pitch` (boş + `zones.json` yer tutucu), `packages/api-client` (üretim betiği).
+- [x] `pnpm-workspace.yaml`, Turborepo (`turbo.json`: build, lint, typecheck, test).
+- [x] Ortak `tsconfig.base.json` (strict), ESLint (flat config) + Prettier.
+- [x] `packages/ui` (boş iskelet + tokenlar), `packages/pitch` (boş + `zones.json` yer tutucu), `packages/api-client` (üretim betiği).
 
 **0.3 Python çalışma alanı**
-- [ ] `uv` workspace: `apps/api` ve `analytics/kurgu_analytics` paketleri.
-- [ ] ruff (lint + format), mypy `--strict`, pytest (+ pytest-asyncio, hypothesis).
-- [ ] `import-linter` modül sınırı sözleşmesi (ADR-0001), başlangıçta boş modüllerle.
+- [x] `uv` workspace: `apps/api` ve `analytics/kurgu_analytics` paketleri.
+- [x] ruff (lint + format), mypy `--strict`, pytest (+ pytest-asyncio, hypothesis).
+- [x] `import-linter` modül sınırı sözleşmesi (ADR-0001), başlangıçta boş modüllerle.
 
 **0.4 Altyapı (docker compose)**
 - [ ] `infra/docker-compose.yml`: postgres 16, redis 7, minio (+ bucket oluşturucu), keycloak 26 (realm içe aktarımıyla), mailpit, api, worker, web. Portlar `.env`'den.
-- [ ] Postgres ilk kurulum betiği: `kurgu_owner`, `kurgu_app` (NOBYPASSRLS), `kurgu_worker` rolleri (ADR-0002).
-- [ ] `infra/keycloak/kurgu-realm.json`: `kurgu-web` istemcisi (PKCE), 8 rol için test kullanıcıları (gizli değerler `.env`'den).
+- [x] Postgres ilk kurulum betiği: `kurgu_owner`, `kurgu_app` (NOBYPASSRLS), `kurgu_worker` rolleri (ADR-0002).
+- [x] `infra/keycloak/kurgu-realm.json`: `kurgu-web` istemcisi (PKCE), 8 rol için test kullanıcıları (gizli değerler `.env`'den).
 - [ ] API ve web için geliştirme Dockerfile'ları (hot reload, volume mount; WSL'de dosya izleme için polling ayarı).
 - [ ] Sağlık kontrolleri ve `depends_on: condition: service_healthy`.
 
 **0.5 Makefile**
-- [ ] `dev`, `down`, `test`, `lint`, `typecheck`, `e2e`, `migrate`, `seed` (Faz 1'de dolar), `openapi`.
-- [ ] `make doctor`: docker, node, pnpm, uv sürümlerini ve portları kontrol eder.
+- [x] `dev`, `down`, `test`, `lint`, `typecheck`, `e2e`, `migrate`, `seed` (Faz 1'de dolar), `openapi`.
+- [x] `make doctor`: docker, node, pnpm, uv sürümlerini ve portları kontrol eder.
 
 **0.6 API iskeleti**
-- [ ] FastAPI uygulaması, `/api/v1` öneki, ayarlar (pydantic-settings), yapılandırılmış JSON log.
-- [ ] RFC 9457 problem+json hata işleyicisi ve testi.
-- [ ] `/healthz`, `/readyz` (DB ve Redis kontrolü).
-- [ ] Async SQLAlchemy oturumu; istek başına işlem ve `SET LOCAL app.tenant_id` bağımlılığı (tablolar Faz 1'de).
-- [ ] Alembic kurulumu, boş ilk göç; `upgrade → downgrade → upgrade` döngü betiği.
-- [ ] Arq worker iskeleti ve bir `ping` işi (test edilir).
+- [x] FastAPI uygulaması, `/api/v1` öneki, ayarlar (pydantic-settings), yapılandırılmış JSON log.
+- [x] RFC 9457 problem+json hata işleyicisi ve testi.
+- [x] `/healthz`, `/readyz` (DB ve Redis kontrolü).
+- [x] Async SQLAlchemy oturumu; istek başına işlem ve `SET LOCAL app.tenant_id` bağımlılığı (tablolar Faz 1'de).
+- [x] Alembic kurulumu, boş ilk göç; `upgrade → downgrade → upgrade` döngü betiği.
+- [x] Arq worker iskeleti ve bir `ping` işi (test edilir).
 
 **0.7 Kimlik (ADR-0005)**
-- [ ] JWT doğrulama (JWKS önbelleği, `iss`/`aud`/`exp`). Testlerde yerel anahtarla imzalanmış token üreteci.
-- [ ] `users`, `tenants`, `memberships` tabloları (Faz 0'ın tek göçü; RLS'li).
-- [ ] `permissions.py` (SPEC §12.1 matrisi) ve rol × izin tablo testi.
-- [ ] `GET /api/v1/me`: kullanıcı, üyelikler, rol. Test: token yoksa 401 problem+json, geçerliyse rol döner.
+- [x] JWT doğrulama (JWKS önbelleği, `iss`/`aud`/`exp`). Testlerde yerel anahtarla imzalanmış token üreteci.
+- [x] `users`, `tenants`, `memberships` tabloları (Faz 0'ın tek göçü; RLS'li).
+- [x] `permissions.py` (SPEC §12.1 matrisi) ve rol × izin tablo testi.
+- [x] `GET /api/v1/me`: kullanıcı, üyelikler, rol. Test: token yoksa 401 problem+json, geçerliyse rol döner.
 
 **0.8 Web iskeleti**
-- [ ] Next.js 15 (App Router, React 19), Tailwind 4, shadcn/ui kurulumu.
-- [ ] Tasarım tokenları (SPEC §13.3; açık ve koyu tema), IBM Plex Sans / Condensed, tabular rakamlar.
-- [ ] next-intl (`tr` varsayılan, `en`), tüm metinler anahtarla.
-- [ ] Auth.js v5 + Keycloak; giriş/çıkış, oturum, token yenileme; API vekili (token tarayıcıya çıkmaz).
-- [ ] AppShell: masaüstünde koyu yeşil yan menü, mobilde alt sekme + çekmece; aktif kulüp göstergesi (amber).
-- [ ] SPEC §13.1'deki tüm rotalar `EmptyState` ile (ne yapılacağını söyleyen boş durum). Rol dışı rota 403 sayfası.
-- [ ] Ortak durum bileşenleri: iskelet (yükleniyor), EmptyState, ErrorState (tekrar dene), SampleSizeBadge, SourceBadge (Faz 2'de dolacak).
-- [ ] `packages/api-client`: OpenAPI'den `openapi-typescript` ile üretim; `make openapi`. `/me` bununla çağrılır.
+- [x] Next.js 15 (App Router, React 19), Tailwind 4. shadcn/ui bileşenleri ilk gerektiği fazda eklenir (A-23).
+- [x] Tasarım tokenları (SPEC §13.3; açık ve koyu tema), IBM Plex Sans / Condensed, tabular rakamlar.
+- [x] next-intl (`tr` varsayılan, `en`), tüm metinler anahtarla.
+- [x] Auth.js v5 + Keycloak; giriş/çıkış, oturum, token yenileme; API vekili (token tarayıcıya çıkmaz).
+- [x] AppShell: masaüstünde koyu yeşil yan menü, mobilde alt sekme + çekmece; aktif kulüp göstergesi (amber).
+- [x] SPEC §13.1'deki tüm rotalar `EmptyState` ile (ne yapılacağını söyleyen boş durum). Rol dışı rota 403 sayfası.
+- [x] Ortak durum bileşenleri: iskelet (yükleniyor), EmptyState, ErrorState (tekrar dene), SampleSizeBadge, SourceBadge (Faz 2'de dolacak).
+- [x] `packages/api-client`: OpenAPI'den `openapi-typescript` ile üretim; `make openapi`. `/me` bununla çağrılır.
 
 **0.9 Test ve CI**
-- [ ] Vitest + Testing Library (AppShell, EmptyState).
-- [ ] Playwright duman testi: giriş (Keycloak) → AppShell → `/me` rolü görünür → her rota açılır. axe taraması (0 ciddi ihlal).
+- [x] Vitest + Testing Library (AppShell, EmptyState).
+- [x] Playwright duman testi: giriş (Keycloak) → AppShell → `/me` rolü görünür → her rota açılır. axe taraması (0 ciddi ihlal).
 - [ ] GitHub Actions: lint (ruff, eslint), typecheck (mypy, tsc), birim testler (Postgres servis konteyneriyle), göç döngüsü, OpenAPI farkı (üretilen istemci güncel mi), build, e2e (compose), pip-audit, osv-scanner, Trivy.
-- [ ] `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` adlarını yasaklayan grep kontrolü (assumptions A-14).
+- [x] `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` adlarını yasaklayan grep kontrolü (assumptions A-14).
 
 **0.10 Faz kapanışı**
-- [ ] `docs/demo/faz0/` ekran görüntüleri (Playwright ile).
-- [ ] CLAUDE.md "Komutlar" bölümü güncel.
+- [x] `docs/demo/faz0/` ekran görüntüleri (Playwright ile).
+- [x] CLAUDE.md "Komutlar" bölümü güncel.
 - [ ] Kabul kriterleri işaretlendi, kısa rapor verildi.
 
 ---

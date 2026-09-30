@@ -22,8 +22,8 @@
   --focus: #e3a008;
 
   --radius: 0.5rem;
-  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-condensed: "IBM Plex Sans Condensed", "IBM Plex Sans", ui-sans-serif, sans-serif;
+  --kurgu-font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --kurgu-font-condensed: "IBM Plex Sans Condensed", "IBM Plex Sans", ui-sans-serif, sans-serif;
 }
 
 :root[data-theme="dark"] {
