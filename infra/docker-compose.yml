@@ -48,9 +48,11 @@ services:
       timeout: 3s
       retries: 30
 
+  # MinIO resmi imajları Docker Hub'dan kaldırıldı; Chainguard'ın güncel MinIO derlemesi kullanılır.
   minio:
-    image: minio/minio:latest
-    command: server /data --console-address ":9001"
+    image: chainguard/minio:latest
+    user: "0"
+    command: ["server", "/data", "--console-address", ":9001"]
     environment:
       MINIO_ROOT_USER: ${S3_ACCESS_KEY}
       MINIO_ROOT_PASSWORD: ${S3_SECRET_KEY}
@@ -58,20 +60,17 @@ services:
       - "${MINIO_PORT:-9000}:9000"
       - "${MINIO_CONSOLE_PORT:-9001}:9001"
     volumes: [miniodata:/data]
-    healthcheck:
-      test: ["CMD", "mc", "ready", "local"]
-      interval: 5s
-      timeout: 5s
-      retries: 30
 
   minio-init:
-    image: minio/mc:latest
-    depends_on:
-      minio: { condition: service_healthy }
+    image: chainguard/minio-client:latest-dev
+    depends_on: [minio]
     entrypoint: ["/bin/sh", "-c"]
     command:
       - >
-        mc alias set local http://minio:9000 "$${S3_ACCESS_KEY}" "$${S3_SECRET_KEY}" &&
+        for i in $$(seq 1 30); do
+          mc alias set local http://minio:9000 "$${S3_ACCESS_KEY}" "$${S3_SECRET_KEY}" && break;
+          sleep 2;
+        done &&
         mc mb --ignore-existing "local/$${S3_BUCKET}"
     environment:
       S3_ACCESS_KEY: ${S3_ACCESS_KEY}

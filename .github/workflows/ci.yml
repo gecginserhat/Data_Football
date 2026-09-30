@@ -108,7 +108,11 @@ jobs:
           cp .env.example .env
           sed -i "s|^AUTH_SECRET=.*|AUTH_SECRET=$(openssl rand -base64 32)|" .env
       - name: Start stack
-        run: docker compose --env-file .env -f infra/docker-compose.yml up --build -d --wait --wait-timeout 600
+        run: |
+          docker compose --env-file .env -f infra/docker-compose.yml -f infra/docker-compose.ci.yml up --build -d
+          scripts/wait-for-stack.sh
+        env:
+          COMPOSE_FILES: -f infra/docker-compose.yml -f infra/docker-compose.ci.yml
       - run: pnpm install --frozen-lockfile
       - run: pnpm --filter @kurgu/web exec playwright install --with-deps chromium
       - name: Playwright
@@ -118,7 +122,9 @@ jobs:
           KURGU_DEV_USER_PASSWORD: change-me-dev-user
       - name: Compose logs
         if: failure()
-        run: docker compose --env-file .env -f infra/docker-compose.yml logs --tail=200
+        run: |
+          docker compose --env-file .env -f infra/docker-compose.yml -f infra/docker-compose.ci.yml ps -a
+          docker compose --env-file .env -f infra/docker-compose.yml -f infra/docker-compose.ci.yml logs --tail=200
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

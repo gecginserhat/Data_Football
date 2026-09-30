@@ -23,9 +23,9 @@ install: ## JS ve Python bağımlılıklarını kurar
 	uv sync --all-packages --frozen
 
 dev: env ## Tüm servisleri ayağa kaldırır (web: http://localhost:3000)
-	$(COMPOSE) up --build -d --wait
-	@echo ""
-	@echo "Kurgu hazır: http://localhost:$${WEB_PORT:-3000}  (test kullanıcıları: docs/runbooks/local-dev.md)"
+	$(COMPOSE) up --build -d
+	@scripts/wait-for-stack.sh
+	@echo "Test kullanıcıları: docs/runbooks/local-dev.md"
 
 down: ## Servisleri durdurur (veri kalır)
 	$(COMPOSE) down

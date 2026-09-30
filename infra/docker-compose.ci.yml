@@ -1,0 +1,8 @@
+# CI eki: web servisini üretim derlemesiyle çalıştırır (e2e testleri dev derleyicisini beklemesin).
+services:
+  web:
+    build: { context: .., dockerfile: infra/docker/web.Dockerfile, target: prod }
+    command: !reset null
+    environment:
+      PORT: ${WEB_PORT:-3000}
+    volumes: !reset []
