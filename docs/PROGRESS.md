@@ -1,7 +1,7 @@
 # İlerleme
 
-**Durum:** Faz 0 PR'da; CI ve docker compose doğrulaması bekleniyor (30.09.2026).
-**Sonraki adım:** Faz 0 görevleri (aşağıda).
+**Durum:** Faz 0 tamam, PR #1 incelemede (30.09.2026). CI'da compose üzerinde e2e dahil tüm işler yeşil.
+**Sonraki adım:** PR #1 birleşince Faz 1 (veri çekirdeği).
 
 Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce). Her commit öncesi `make lint typecheck test` temiz olmalı. Bir görev SPEC §19 DoD'yi karşılamadan işaretlenmez. Faz sonunda kabul kriterleri işaretlenir ve kısa rapor verilir.
 
@@ -12,10 +12,15 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 ## Faz 0: İskelet
 
 ### Kabul kriterleri (SPEC §19)
-- [ ] Monorepo, docker compose ve `make dev` tek komutla ayağa kalkar.
-- [ ] CI yeşil.
-- [ ] Keycloak ile giriş çalışır; `/me` rol döner.
-- [ ] Tasarım tokenları ve AppShell hazır; tüm rotalar boş durumda erişilebilir.
+- [x] Monorepo, docker compose ve `make dev` tek komutla ayağa kalkar.
+- [x] CI yeşil.
+- [x] Keycloak ile giriş çalışır; `/me` rol döner.
+- [x] Tasarım tokenları ve AppShell hazır; tüm rotalar boş durumda erişilebilir.
+
+### Rapor
+- **Yapıldı:** Tüm Faz 0 görevleri. Ayrıntı PR #1 açıklamasında.
+- **Sapmalar:** MinIO resmi imajları Docker Hub'dan kalktığı için Chainguard MinIO derlemesi kullanılıyor. Yazı tipleri yerelden sunuluyor (A-21). Keycloak `keycloak.localhost` adında (A-22). shadcn/ui bileşenleri ertelendi (A-23).
+- **Riskler:** Web geliştirme konteyneri (`make dev`) CI'da değil, üretim derlemesi test ediliyor; WSL'de ilk `make dev` denemesi geri bildirim için önemli.
 
 ### Görevler
 
@@ -36,11 +41,11 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 - [x] `import-linter` modül sınırı sözleşmesi (ADR-0001), başlangıçta boş modüllerle.
 
 **0.4 Altyapı (docker compose)**
-- [ ] `infra/docker-compose.yml`: postgres 16, redis 7, minio (+ bucket oluşturucu), keycloak 26 (realm içe aktarımıyla), mailpit, api, worker, web. Portlar `.env`'den.
+- [x] `infra/docker-compose.yml`: postgres 16, redis 7, minio (+ bucket oluşturucu), keycloak 26 (realm içe aktarımıyla), mailpit, api, worker, web. Portlar `.env`'den.
 - [x] Postgres ilk kurulum betiği: `kurgu_owner`, `kurgu_app` (NOBYPASSRLS), `kurgu_worker` rolleri (ADR-0002).
 - [x] `infra/keycloak/kurgu-realm.json`: `kurgu-web` istemcisi (PKCE), 8 rol için test kullanıcıları (gizli değerler `.env`'den).
-- [ ] API ve web için geliştirme Dockerfile'ları (hot reload, volume mount; WSL'de dosya izleme için polling ayarı).
-- [ ] Sağlık kontrolleri ve `depends_on: condition: service_healthy`.
+- [x] API ve web için geliştirme Dockerfile'ları (hot reload, volume mount; WSL'de dosya izleme için polling ayarı).
+- [x] Sağlık kontrolleri ve `depends_on: condition: service_healthy`.
 
 **0.5 Makefile**
 - [x] `dev`, `down`, `test`, `lint`, `typecheck`, `e2e`, `migrate`, `seed` (Faz 1'de dolar), `openapi`.
@@ -73,13 +78,13 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 **0.9 Test ve CI**
 - [x] Vitest + Testing Library (AppShell, EmptyState).
 - [x] Playwright duman testi: giriş (Keycloak) → AppShell → `/me` rolü görünür → her rota açılır. axe taraması (0 ciddi ihlal).
-- [ ] GitHub Actions: lint (ruff, eslint), typecheck (mypy, tsc), birim testler (Postgres servis konteyneriyle), göç döngüsü, OpenAPI farkı (üretilen istemci güncel mi), build, e2e (compose), pip-audit, osv-scanner, Trivy.
+- [x] GitHub Actions: lint (ruff, eslint), typecheck (mypy, tsc), birim testler (Postgres servis konteyneriyle), göç döngüsü, OpenAPI farkı (üretilen istemci güncel mi), build, e2e (compose), pip-audit, osv-scanner, Trivy.
 - [x] `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` adlarını yasaklayan grep kontrolü (assumptions A-14).
 
 **0.10 Faz kapanışı**
 - [x] `docs/demo/faz0/` ekran görüntüleri (Playwright ile).
 - [x] CLAUDE.md "Komutlar" bölümü güncel.
-- [ ] Kabul kriterleri işaretlendi, kısa rapor verildi.
+- [x] Kabul kriterleri işaretlendi, kısa rapor verildi.
 
 ---
 
@@ -157,7 +162,7 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 
 **1.10 Faz kapanışı**
 - [ ] `docs/demo/faz1/` ekran görüntüleri; CLAUDE.md komutları güncel.
-- [ ] Kabul kriterleri işaretlendi, kısa rapor verildi.
+- [x] Kabul kriterleri işaretlendi, kısa rapor verildi.
 
 ---
 
