@@ -25,6 +25,7 @@ class StatsBombParams(BaseModel):
     competition_id: int
     season_id: int
     limit: int | None = Field(default=None, ge=1, le=500)
+    reprocess: bool | None = None
 
 
 class IngestionRunCreate(BaseModel):

@@ -2,15 +2,17 @@
 
 Her maç kendi işleminde yazılır; bir maçın hatası öncekileri geri almaz. Kritik kalite
 bulgusu olan maç yazılmaz ve iş sonunda `quarantined` olur. Aynı ham yük (aynı `source_hash`)
-daha önce işlenmişse maç atlanır.
+daha önce işlenmişse maç atlanır; `params.reprocess` verilirse (ör. çıkarım algoritması
+değiştiğinde) kanonik olaylar ve diziler yeniden yazılır.
 """
 
 import asyncio
 import uuid
-from collections.abc import Callable
+from collections.abc import Awaitable, Callable
 from pathlib import Path
 from typing import Any
 
+from kurgu_analytics.canonical.model import CanonicalMatch
 from kurgu_analytics.canonical.quality import check_match, report
 from kurgu_analytics.ingestion.base import Provider
 from kurgu_analytics.ingestion.statsbomb import StatsBombOpenData
@@ -19,6 +21,7 @@ from sqlalchemy.ext.asyncio import AsyncConnection, AsyncEngine
 
 from kurgu_api.config import get_settings
 from kurgu_api.ingestion.runs import RunStatus, store_raw, transition
+from kurgu_api.ingestion.setpieces import write_set_pieces
 from kurgu_api.ingestion.storage import ObjectStore
 from kurgu_api.ingestion.writer import write_canonical
 
@@ -36,9 +39,9 @@ def _statsbomb() -> Provider:
 
 PROVIDERS: dict[str, ProviderFactory] = {"statsbomb_open": _statsbomb}
 
-# Maç yazıldıktan sonra çalışan adımlar (ör. duran top çıkarımı, Faz 1.7).
-PostWriteHook = Callable[[AsyncConnection, str, dict[str, Any]], Any]
-POST_WRITE_HOOKS: list[PostWriteHook] = []
+# Maç yazıldıktan sonra aynı işlemde çalışan adımlar: duran top çıkarımı (Faz 1.7).
+PostWriteHook = Callable[[AsyncConnection, str, CanonicalMatch, dict[str, Any]], Awaitable[Any]]
+POST_WRITE_HOOKS: list[PostWriteHook] = [write_set_pieces]
 
 
 async def _context(conn: AsyncConnection, tenant_id: uuid.UUID | None) -> None:
@@ -88,7 +91,8 @@ async def run_ingestion(
                     content_type=raw.content_type,
                     run_id=run_id,
                 )
-                if not new and await _already_loaded(conn, raw_id):
+                reprocess = bool(params.get("reprocess"))
+                if not new and not reprocess and await _already_loaded(conn, raw_id):
                     stats["skipped"] += 1
                     continue
                 cm = await asyncio.to_thread(provider.to_canonical, match, raw)
@@ -102,7 +106,7 @@ async def run_ingestion(
                     continue
                 written = await write_canonical(conn, provider.name, cm, raw_id)
                 for hook in POST_WRITE_HOOKS:
-                    await hook(conn, provider.name, written)
+                    await hook(conn, provider.name, cm, written)
                 stats["loaded"] += 1
     except Exception as exc:
         async with engine.begin() as conn:

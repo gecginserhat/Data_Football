@@ -475,6 +475,17 @@
             ],
             "title": "Limit"
           },
+          "reprocess": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reprocess"
+          },
           "season_id": {
             "title": "Season Id",
             "type": "integer"

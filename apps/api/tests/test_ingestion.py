@@ -46,6 +46,8 @@ class FakeProvider:
         for i in range(count):
             ev.pass_(i * 2.0, (40 + i % 30, 40), (50 + i % 30, 42), player=i % 11 + 1)
         ev.shot(900, (110, 40), outcome="Goal", xg=0.5)
+        ev.pass_(950, (120, 80), (114, 36), pass_type="Corner", height="High Pass")
+        ev.shot(951.5, (114, 36), outcome="Goal", xg=0.4, body_part="Head", player=9)
         return RawPayload(self.name, "events", match.provider_id, json.dumps(ev.events).encode())
 
     def to_canonical(self, match: Match, raw: RawPayload) -> CanonicalMatch:
@@ -94,9 +96,23 @@ async def test_pipeline_loads_and_is_idempotent(
         " and provider_id = $1",
         str(ids[0]),
     )
-    assert (
-        await superuser.fetchval("select count(*) from events where match_id = $1", match_id) == 401
+    events = "select count(*) from events where match_id = $1"
+    assert await superuser.fetchval(events, match_id) == 403
+    sp = await superuser.fetchrow(
+        "select id, sp_type, target_zone, goal, phase_of_goal, xg_total, outcome, source, tenant_id"
+        " from set_pieces where match_id = $1",
+        match_id,
     )
+    assert (sp["sp_type"], sp["target_zone"], sp["outcome"], sp["source"]) == (
+        "corner",
+        "FP",  # StatsBomb (114, 36) → kanonik (99,5, 37,66): arka direk
+        "goal",
+        "provider",
+    )
+    assert (sp["goal"], sp["phase_of_goal"], sp["tenant_id"]) == (True, 1, None)
+    assert sp["xg_total"] == pytest.approx(0.4)
+    linked = "select count(*) from events where set_piece_id = $1"
+    assert await superuser.fetchval(linked, sp["id"]) == 2
     raw = await superuser.fetchrow(
         "select storage_key, tenant_id from raw_payloads where id ="
         " (select raw_ref from events where match_id = $1 limit 1)",
@@ -110,9 +126,9 @@ async def test_pipeline_loads_and_is_idempotent(
         worker_engine, store, rerun, tenant_id=None, provider=provider, params={}
     )
     assert stats["skipped"] == 1
-    assert (
-        await superuser.fetchval("select count(*) from events where match_id = $1", match_id) == 401
-    )
+    assert await superuser.fetchval(events, match_id) == 403
+    set_pieces = "select count(*) from set_pieces where match_id = $1"
+    assert await superuser.fetchval(set_pieces, match_id) == 1
 
 
 async def test_quality_failure_quarantines_match(

@@ -53,16 +53,19 @@ async def _cli(provider: str, params: dict[str, Any]) -> dict[str, Any]:
 
 
 def main() -> None:
-    """`kurgu-ingest statsbomb_open --competition 43 --season 106 [--limit N]`."""
+    """`kurgu-ingest statsbomb_open --competition 43 --season 106 [--limit N] [--reprocess]`."""
     parser = argparse.ArgumentParser(prog="kurgu-ingest")
     parser.add_argument("provider", choices=sorted(PROVIDERS))
     parser.add_argument("--competition", type=int, required=True)
     parser.add_argument("--season", type=int, required=True)
     parser.add_argument("--limit", type=int)
+    parser.add_argument("--reprocess", action="store_true", help="işlenmiş maçları yeniden yaz")
     args = parser.parse_args()
     params: dict[str, Any] = {"competition_id": args.competition, "season_id": args.season}
     if args.limit:
         params["limit"] = args.limit
+    if args.reprocess:
+        params["reprocess"] = True
     stats = asyncio.run(_cli(args.provider, params))
     print(f"ingestion finished: {stats}")
 

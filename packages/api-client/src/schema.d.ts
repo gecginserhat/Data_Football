@@ -355,6 +355,8 @@ export interface components {
             competition_id: number;
             /** Limit */
             limit?: number | null;
+            /** Reprocess */
+            reprocess?: boolean | null;
             /** Season Id */
             season_id: number;
         };
