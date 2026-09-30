@@ -64,3 +64,11 @@ Kaynak dosyalar: kök `CLAUDE.md`, `SPEC.md`, `BASLANGIC.md` (WSL sürümü) esa
 **A-23 · VARSAYIM · shadcn/ui.** Faz 0'da yalnız tasarım tokenları ve durum bileşenleri (`packages/ui`) yazıldı. shadcn/ui bileşenleri (dialog, select, table…) ilk ihtiyaç duyulduğu fazda eklenir.
 
 **A-20 · VARSAYIM · Portlar.** web 3000, api 8000, postgres 5432, redis 6379, minio 9000/9001, keycloak 8080, mailpit 8025. Hepsi `.env` üzerinden değiştirilebilir.
+
+## Faz 1
+
+**A-24 · VARSAYIM · Bölge tanımlarındaki boşluk.** SPEC §3.3 eşikleriyle x ∈ [97, 99,5) ve y' ∈ [31,5, 36,5] alanı (altı pasın hemen önü, merkez) hiçbir bölgeye girmez; ceza sahası içinde olduğu için `SH` de olamaz ve `OT` sayılır. Eşikler şartnameye sadık bırakıldı; kulüp analistleri isterse `zones.json` üzerinden `C6` alt sınırı 97'ye çekilebilir. Test vektörü bu davranışı sabitler.
+
+**A-25 · VARSAYIM · StatsBomb koordinat dönüşümü parçalı doğrusaldır.** SPEC §4 "120 × 80 → 105 × 68, y çevrilir" diyor. Düz ölçekleme ceza sahası çizgisini 88,5 m yerine 89,25 m'ye taşıdığı için bölge sınırlarında hata yapar. Dönüşüm saha çizgilerini (altı pas, penaltı noktası, ceza sahası, orta çizgi, direkler) kanonik karşılıklarına oturtan parçalı doğrusal eşlemedir (`kurgu_analytics.canonical.coords`); referans nokta testleriyle doğrulanır. kloppy'nin standart saha dönüşümüyle aynı fikirdir.
+
+**A-26 · VARSAYIM · `zones.json` konumu.** Dosya `packages/pitch/zones.json` içinde tek kopyadır. Python tarafı `KURGU_ZONES_PATH` değişkenini, yoksa repo kökündeki yolu okur. API imajı dosyayı kopyalar ve değişkeni ayarlar; geliştirme konteyneri klasörü bağlar.

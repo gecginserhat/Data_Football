@@ -124,6 +124,7 @@ services:
       - ../apps/api:/app/apps/api
       - ../analytics:/app/analytics
       - ../seed:/app/seed:ro
+      - ../packages/pitch:/app/packages/pitch:ro
     depends_on:
       postgres: { condition: service_healthy }
 

@@ -1,5 +1,5 @@
 {
-  "$comment": "Kanonik saha geometrisi ve teslim hedef bölgeleri (SPEC §3.3, §4). Python (kurgu_analytics.setpieces.zones) ve TS (@kurgu/pitch) bu dosyayı okur. Bölge sınırları Faz 1'de test vektörleriyle doğrulanır.",
+  "$comment": "Kanonik saha geometrisi ve teslim hedef bölgeleri (SPEC §3.3, §4). Python (kurgu_analytics.setpieces.zones) ve TS (@kurgu/pitch) bu dosyayı okur. İki taraf zones.vectors.json ortak test vektörleriyle doğrulanır. Sınırlar: x_min, y_min dahil; x_max, y_max hariç (aksi *_inclusive ile belirtilir). Bölgeler sırayla denenir.",
   "version": 1,
   "pitch": {
     "length": 105,
