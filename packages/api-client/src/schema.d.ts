@@ -21,6 +21,83 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/seasons": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Seasons */
+        get: operations["listSeasons"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/seasons/{season_id}/standings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Standings
+         * @description Puan durumu. `week` verilmezse kayıttaki son hafta.
+         */
+        get: operations["getStandings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/seasons/{season_id}/team-metrics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Team Metrics
+         * @description Takım başına sezon metrikleri (ham kayıt değerleri), takım koduna göre sıralı.
+         */
+        get: operations["listTeamMetrics"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{team_id}/profile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Team Profile
+         * @description Takım profili: sezon metrikleri ve son puan durumu satırı (Faz 1: ham değerler).
+         */
+        get: operations["getTeamProfile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/healthz": {
         parameters: {
             query?: never;
@@ -74,6 +151,18 @@ export interface components {
             tenant_id: string;
             /** Tenant Name */
             tenant_name: string;
+        };
+        /** CompetitionRef */
+        CompetitionRef: {
+            /** Code */
+            code: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -132,6 +221,128 @@ export interface components {
          * @enum {string}
          */
         Role: "admin" | "head_coach" | "sp_coach" | "analyst" | "performance" | "medical" | "player" | "viewer";
+        /** SeasonOut */
+        SeasonOut: {
+            /** Code */
+            code: string;
+            competition: components["schemas"]["CompetitionRef"];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Label */
+            label: string;
+            /** Matches Per Team */
+            matches_per_team: number | null;
+        };
+        /** SeasonPage */
+        SeasonPage: {
+            /** Items */
+            items: components["schemas"]["SeasonOut"][];
+            /** Next Cursor */
+            next_cursor: string | null;
+        };
+        /** StandingRowOut */
+        StandingRowOut: {
+            /** Drawn */
+            drawn: number;
+            /** Ga */
+            ga: number;
+            /** Gf */
+            gf: number;
+            /** Lost */
+            lost: number;
+            /** Played */
+            played: number;
+            /** Position */
+            position: number;
+            /** Pts */
+            pts: number;
+            team: components["schemas"]["TeamRef"];
+            /** Won */
+            won: number;
+        };
+        /** StandingsOut */
+        StandingsOut: {
+            /** Rows */
+            rows: components["schemas"]["StandingRowOut"][];
+            /**
+             * Season Id
+             * Format: uuid
+             */
+            season_id: string;
+            /** Source */
+            source: string;
+            /** Week */
+            week: number;
+        };
+        /** TeamMetricsOut */
+        TeamMetricsOut: {
+            /** As Of Week */
+            as_of_week: number | null;
+            /** Metrics */
+            metrics: {
+                [key: string]: number;
+            };
+            /** Source */
+            source: string;
+            team: components["schemas"]["TeamRef"];
+        };
+        /** TeamMetricsPage */
+        TeamMetricsPage: {
+            /** Items */
+            items: components["schemas"]["TeamMetricsOut"][];
+            /** Next Cursor */
+            next_cursor: string | null;
+            /**
+             * Season Id
+             * Format: uuid
+             */
+            season_id: string;
+        };
+        /** TeamOut */
+        TeamOut: {
+            /** Code */
+            code: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /** Official Name */
+            official_name: string | null;
+        };
+        /** TeamProfileOut */
+        TeamProfileOut: {
+            /** As Of Week */
+            as_of_week: number | null;
+            /** Metrics */
+            metrics: {
+                [key: string]: number;
+            };
+            season: components["schemas"]["SeasonOut"];
+            /** Source */
+            source: string | null;
+            standing: components["schemas"]["StandingRowOut"] | null;
+            /** Standing Week */
+            standing_week: number | null;
+            team: components["schemas"]["TeamOut"];
+        };
+        /** TeamRef */
+        TeamRef: {
+            /** Code */
+            code: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+        };
         /** ValidationError */
         ValidationError: {
             /** Context */
@@ -172,6 +383,147 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listSeasons: {
+        parameters: {
+            query?: {
+                cursor?: string | null;
+                limit?: number;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SeasonPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getStandings: {
+        parameters: {
+            query?: {
+                week?: number | null;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                season_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["StandingsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listTeamMetrics: {
+        parameters: {
+            query?: {
+                cursor?: string | null;
+                limit?: number;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                season_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamMetricsPage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getTeamProfile: {
+        parameters: {
+            query: {
+                /** @description Sezon kimliği */
+                season: string;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                team_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TeamProfileOut"];
                 };
             };
             /** @description Validation Error */

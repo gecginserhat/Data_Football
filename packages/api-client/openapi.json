@@ -44,6 +44,30 @@
         "title": "ActiveTenantOut",
         "type": "object"
       },
+      "CompetitionRef": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name"
+        ],
+        "title": "CompetitionRef",
+        "type": "object"
+      },
       "HTTPValidationError": {
         "properties": {
           "detail": {
@@ -196,6 +220,360 @@
         "title": "Role",
         "type": "string"
       },
+      "SeasonOut": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "competition": {
+            "$ref": "#/components/schemas/CompetitionRef"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          },
+          "matches_per_team": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Matches Per Team"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "label",
+          "matches_per_team",
+          "competition"
+        ],
+        "title": "SeasonOut",
+        "type": "object"
+      },
+      "SeasonPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/SeasonOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          }
+        },
+        "required": [
+          "items",
+          "next_cursor"
+        ],
+        "title": "SeasonPage",
+        "type": "object"
+      },
+      "StandingRowOut": {
+        "properties": {
+          "drawn": {
+            "title": "Drawn",
+            "type": "integer"
+          },
+          "ga": {
+            "title": "Ga",
+            "type": "integer"
+          },
+          "gf": {
+            "title": "Gf",
+            "type": "integer"
+          },
+          "lost": {
+            "title": "Lost",
+            "type": "integer"
+          },
+          "played": {
+            "title": "Played",
+            "type": "integer"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "pts": {
+            "title": "Pts",
+            "type": "integer"
+          },
+          "team": {
+            "$ref": "#/components/schemas/TeamRef"
+          },
+          "won": {
+            "title": "Won",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "position",
+          "team",
+          "played",
+          "won",
+          "drawn",
+          "lost",
+          "gf",
+          "ga",
+          "pts"
+        ],
+        "title": "StandingRowOut",
+        "type": "object"
+      },
+      "StandingsOut": {
+        "properties": {
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/StandingRowOut"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "season_id": {
+            "format": "uuid",
+            "title": "Season Id",
+            "type": "string"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "week": {
+            "title": "Week",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "season_id",
+          "week",
+          "source",
+          "rows"
+        ],
+        "title": "StandingsOut",
+        "type": "object"
+      },
+      "TeamMetricsOut": {
+        "properties": {
+          "as_of_week": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of Week"
+          },
+          "metrics": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Metrics",
+            "type": "object"
+          },
+          "source": {
+            "title": "Source",
+            "type": "string"
+          },
+          "team": {
+            "$ref": "#/components/schemas/TeamRef"
+          }
+        },
+        "required": [
+          "team",
+          "as_of_week",
+          "source",
+          "metrics"
+        ],
+        "title": "TeamMetricsOut",
+        "type": "object"
+      },
+      "TeamMetricsPage": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/TeamMetricsOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "next_cursor": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Next Cursor"
+          },
+          "season_id": {
+            "format": "uuid",
+            "title": "Season Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "season_id",
+          "items",
+          "next_cursor"
+        ],
+        "title": "TeamMetricsPage",
+        "type": "object"
+      },
+      "TeamOut": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "official_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Official Name"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name",
+          "official_name"
+        ],
+        "title": "TeamOut",
+        "type": "object"
+      },
+      "TeamProfileOut": {
+        "properties": {
+          "as_of_week": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "As Of Week"
+          },
+          "metrics": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "title": "Metrics",
+            "type": "object"
+          },
+          "season": {
+            "$ref": "#/components/schemas/SeasonOut"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source"
+          },
+          "standing": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/StandingRowOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "standing_week": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Standing Week"
+          },
+          "team": {
+            "$ref": "#/components/schemas/TeamOut"
+          }
+        },
+        "required": [
+          "team",
+          "season",
+          "as_of_week",
+          "source",
+          "metrics",
+          "standing",
+          "standing_week"
+        ],
+        "title": "TeamProfileOut",
+        "type": "object"
+      },
+      "TeamRef": {
+        "properties": {
+          "code": {
+            "title": "Code",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "code",
+          "name"
+        ],
+        "title": "TeamRef",
+        "type": "object"
+      },
       "ValidationError": {
         "properties": {
           "ctx": {
@@ -301,6 +679,340 @@
         "summary": "Get Me",
         "tags": [
           "identity"
+        ]
+      }
+    },
+    "/api/v1/seasons": {
+      "get": {
+        "operationId": "listSeasons",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SeasonPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Seasons",
+        "tags": [
+          "league"
+        ]
+      }
+    },
+    "/api/v1/seasons/{season_id}/standings": {
+      "get": {
+        "description": "Puan durumu. `week` verilmezse kayıttaki son hafta.",
+        "operationId": "getStandings",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "season_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Season Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "week",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "minimum": 1,
+                  "type": "integer"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Week"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StandingsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Standings",
+        "tags": [
+          "league"
+        ]
+      }
+    },
+    "/api/v1/seasons/{season_id}/team-metrics": {
+      "get": {
+        "description": "Takım başına sezon metrikleri (ham kayıt değerleri), takım koduna göre sıralı.",
+        "operationId": "listTeamMetrics",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "season_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Season Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "cursor",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Cursor"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 50,
+              "maximum": 200,
+              "minimum": 1,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamMetricsPage"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Team Metrics",
+        "tags": [
+          "league"
+        ]
+      }
+    },
+    "/api/v1/teams/{team_id}/profile": {
+      "get": {
+        "description": "Takım profili: sezon metrikleri ve son puan durumu satırı (Faz 1: ham değerler).",
+        "operationId": "getTeamProfile",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "team_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Team Id",
+              "type": "string"
+            }
+          },
+          {
+            "description": "Sezon kimliği",
+            "in": "query",
+            "name": "season",
+            "required": true,
+            "schema": {
+              "description": "Sezon kimliği",
+              "format": "uuid",
+              "title": "Season",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TeamProfileOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Team Profile",
+        "tags": [
+          "league"
         ]
       }
     },

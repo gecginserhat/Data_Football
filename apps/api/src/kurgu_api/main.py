@@ -12,6 +12,7 @@ from kurgu_api.core.logging import configure_logging
 from kurgu_api.core.problems import install_problem_handlers
 from kurgu_api.health.router import router as health_router
 from kurgu_api.identity.router import router as identity_router
+from kurgu_api.league.router import router as league_router
 
 API_PREFIX = "/api/v1"
 
@@ -43,6 +44,7 @@ def create_app() -> FastAPI:
     install_problem_handlers(app)
     app.include_router(health_router)
     app.include_router(identity_router, prefix=API_PREFIX)
+    app.include_router(league_router, prefix=API_PREFIX)
     return app
 
 
