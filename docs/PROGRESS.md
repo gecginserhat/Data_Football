@@ -1,7 +1,7 @@
 # İlerleme
 
-**Durum:** Faz 0 tamam, PR #1 incelemede (30.09.2026). CI'da compose üzerinde e2e dahil tüm işler yeşil.
-**Sonraki adım:** PR #1 birleşince Faz 1 (veri çekirdeği).
+**Durum:** Faz 0 tamam (PR #1). Faz 1 tamam, `faz-1-veri` dalında PR olarak incelemede (30.09.2026).
+**Sonraki adım:** PR'lar birleşince Faz 2 (metrikler).
 
 Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce). Her commit öncesi `make lint typecheck test` temiz olmalı. Bir görev SPEC §19 DoD'yi karşılamadan işaretlenmez. Faz sonunda kabul kriterleri işaretlenir ve kısa rapor verilir.
 
@@ -91,77 +91,83 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 ## Faz 1: Veri çekirdeği
 
 ### Kabul kriterleri (SPEC §19)
-- [ ] Şema, göçler ve RLS kurulu (kiracılar arası erişim testi 403/boş döner).
-- [ ] `make seed` tohum verisini yükler; Lig ve takım uçları tohum değerlerini birebir döner.
-- [ ] StatsBomb Open Data adaptörü ve SPADL dönüşümü çalışır.
-- [ ] Duran top çıkarımı ile doğrulama raporu hazır; `play_pattern` uyumu ≥ %95.
-- [ ] CSV içe aktarım sihirbazı ve kalite raporu çalışır; karantina akışı işler.
+- [x] Şema, göçler ve RLS kurulu (kiracılar arası erişim testi 403/boş döner).
+- [x] `make seed` tohum verisini yükler; Lig ve takım uçları tohum değerlerini birebir döner.
+- [x] StatsBomb Open Data adaptörü ve SPADL dönüşümü çalışır.
+- [x] Duran top çıkarımı ile doğrulama raporu hazır; `play_pattern` uyumu ≥ %95.
+- [x] CSV içe aktarım sihirbazı ve kalite raporu çalışır; karantina akışı işler.
+
+### Rapor
+- **Yapıldı:** 1.1–1.10. Şema ve RLS (lig tabloları paylaşılan + kiracı satırı alabilen karma yapıda), tohum yükleme ve altın testler, StatsBomb adaptörü ve SPADL, duran top çıkarımı, doğrulama raporu, CSV/Excel içe aktarım API'si ve `/admin/imports` sihirbazı. Python 245 test, web birim 7 test, e2e 12 senaryo (masaüstü ve tablet) geçiyor.
+- **Doğrulama:** 149 maçta tanım uyumlu `play_pattern` uyumu %99,5 (kabul ölçüsü, Serhat'ın kararı, A-30); ham uyum %74,3 yan yana raporlanıyor. Şut sonucu türetmesi StatsBomb ile %94,1 uyumlu (A-31).
+- **Sapmalar:** kloppy ve socceraction yerine ince SPADL eşleyici; socceraction ile %100 tür uyumu (A-27). İçe aktarımda oyuncu adları oyuncu tablosuna eşlenmiyor, olayın `extra` alanında duruyor; takımlar var olan takımlara eşleniyor, yeni takım açılmıyor (A-32, A-33). Rota düzeyi `loading.tsx` Next 15.5 üretim derlemesindeki gezinme hatası yüzünden kaldırıldı (A-34).
+- **Riskler:** Next 16'ya geçiş şartnamedeki yığını değiştirir, karar gerekiyor (A-34). Tohum dosyasında 7 takımın gol kırılımı tutmuyor, uyarı olarak raporlanıyor (A-02).
 
 ### Görevler
 
 **1.1 Şema ve göçler (SPEC §10; ADR-0002)**
-- [ ] Paylaşılan lig tabloları: `competitions`, `seasons`, `teams`, `players`, `matches`, `standings_snapshots`, `team_season_stats`, `events`, `provider_id_map`, `data_licenses`, `raw_payloads`, `ingestion_runs`.
-- [ ] Kiracı tabloları (Faz 1'de boş kalanlar dahil, şema kırılmasın diye): `audit_log`, `set_pieces` (paylaşılan + kiracı kaynaklı ayrımıyla), `tagging_sessions`, `live_tags` (ADR-0004 alanları), `imports`.
-- [ ] RLS politikaları (`force row level security`), paylaşılan tablolar için `data_licenses` okuma politikası.
-- [ ] Meta test: tüm kiracı tablolarında RLS açık.
-- [ ] Kiracılar arası erişim testi: A'nın satırı B ile listede görünmez, kimlikle istenince 404 döner.
-- [ ] `audit_log` yalnızca ekleme testi (`kurgu_app` update/delete yapamaz).
-- [ ] Her göç geri alınabilir; CI döngüsü yeşil.
+- [x] Paylaşılan lig tabloları: `competitions`, `seasons`, `teams`, `players`, `matches`, `standings_snapshots`, `team_season_stats`, `events`, `provider_id_map`, `data_licenses`, `raw_payloads`, `ingestion_runs`.
+- [x] Kiracı tabloları (Faz 1'de boş kalanlar dahil, şema kırılmasın diye): `audit_log`, `set_pieces` (paylaşılan + kiracı kaynaklı ayrımıyla), `tagging_sessions`, `live_tags` (ADR-0004 alanları), `imports`.
+- [x] RLS politikaları (`force row level security`), paylaşılan tablolar için `data_licenses` okuma politikası.
+- [x] Meta test: tüm kiracı tablolarında RLS açık.
+- [x] Kiracılar arası erişim testi: A'nın satırı B ile listede görünmez, kimlikle istenince 404 döner.
+- [x] `audit_log` yalnızca ekleme testi (`kurgu_app` update/delete yapamaz).
+- [x] Her göç geri alınabilir; CI döngüsü yeşil.
 
 **1.2 Saha geometrisi ve bölgeler (SPEC §3.3, §4; ADR-0003)**
-- [ ] `packages/pitch/zones.json`: saha ölçüleri, referans noktaları, bölge eşikleri.
-- [ ] Python `kurgu_analytics.setpieces.zones` ve TS `packages/pitch` aynı dosyayı okur; ortak test vektörleri (`zones.vectors.json`) iki tarafta da geçer.
-- [ ] Koordinat dönüşümleri: StatsBomb 120×80 → 105×68 (y ekseni çevrilir), takım yönüne normalizasyon, `y' = y | 68 − y`. Referans nokta testleri.
+- [x] `packages/pitch/zones.json`: saha ölçüleri, referans noktaları, bölge eşikleri.
+- [x] Python `kurgu_analytics.setpieces.zones` ve TS `packages/pitch` aynı dosyayı okur; ortak test vektörleri (`zones.vectors.json`) iki tarafta da geçer.
+- [x] Koordinat dönüşümleri: StatsBomb 120×80 → 105×68 (y ekseni çevrilir), takım yönüne normalizasyon, `y' = y | 68 − y`. Referans nokta testleri.
 
 **1.3 Tohum yükleme (`make seed`)**
-- [ ] Tohum JSON'ları için pandera / Pydantic şemaları.
-- [ ] `super_lig.json` → takımlar, sezonlar, 2025/26 `team_season_stats`, 2026/27 duran top verisi, puan durumu, sonuçlar, fikstür, lig kıyas değerleri. `source='seed:super_lig.json'`, `is_demo=false` (A-03).
-- [ ] Bütünlük kontrolleri raporu: kontrol 2 ve 3 hata verirse yükleme durur; kontrol 1 uyarı üretir ve `docs/validation/seed_integrity.md` yazılır (A-02).
-- [ ] Kiracılar: `Trabzonspor (demo)` ve `Test Kulübü`; `data_licenses` kayıtları; test kullanıcılarının `memberships` kayıtları (A-09, A-10).
-- [ ] Idempotent: `make seed` iki kez çalışınca satır sayısı değişmez.
-- [ ] `routine_templates.json` ve `recommendation_rules.json` şimdilik yalnızca şema doğrulamasından geçer (yükleme Faz 3 ve Faz 4).
+- [x] Tohum JSON'ları için pandera / Pydantic şemaları.
+- [x] `super_lig.json` → takımlar, sezonlar, 2025/26 `team_season_stats`, 2026/27 duran top verisi, puan durumu, sonuçlar, fikstür, lig kıyas değerleri. `source='seed:super_lig.json'`, `is_demo=false` (A-03).
+- [x] Bütünlük kontrolleri raporu: kontrol 2 ve 3 hata verirse yükleme durur; kontrol 1 uyarı üretir ve `docs/validation/seed_integrity.md` yazılır (A-02).
+- [x] Kiracılar: `Trabzonspor (demo)` ve `Test Kulübü`; `data_licenses` kayıtları; test kullanıcılarının `memberships` kayıtları (A-09, A-10).
+- [x] Idempotent: `make seed` iki kez çalışınca satır sayısı değişmez.
+- [x] `routine_templates.json` ve `recommendation_rules.json` şimdilik yalnızca şema doğrulamasından geçer (yükleme Faz 3 ve Faz 4).
 
 **1.4 Lig ve takım uçları**
-- [ ] `GET /seasons/{id}/standings?week=`, `GET /seasons/{id}/team-metrics`, `GET /teams/{id}/profile?season=` (Faz 1'de yalnızca ham tohum değerleri; türetilmiş metrikler Faz 2).
-- [ ] Altın testler: uç yanıtları tohum değerleriyle birebir (ör. 6. hafta sonu AMD 13 puanla 1.; TS 2025/26 duran top golü 15; GÖZ duran top xG 15,4).
-- [ ] İmleç sayfalama, ETag.
+- [x] `GET /seasons/{id}/standings?week=`, `GET /seasons/{id}/team-metrics`, `GET /teams/{id}/profile?season=` (Faz 1'de yalnızca ham tohum değerleri; türetilmiş metrikler Faz 2).
+- [x] Altın testler: uç yanıtları tohum değerleriyle birebir (ör. 6. hafta sonu AMD 13 puanla 1.; TS 2025/26 duran top golü 15; GÖZ duran top xG 15,4).
+- [x] İmleç sayfalama, ETag.
 
 **1.5 Ingestion çerçevesi (SPEC §5.2)**
-- [ ] Adaptör arayüzü (`Provider` protokolü: `list_matches`, `fetch_events`, `to_canonical`).
-- [ ] `raw_payloads` + MinIO'ya ham yük; `source_hash` ile idempotent yükleme.
-- [ ] `ingestion_runs` durum makinesi: `pending → running → succeeded | quarantined | failed`.
-- [ ] Worker işleri ve API'den tetikleme.
+- [x] Adaptör arayüzü (`Provider` protokolü: `list_matches`, `fetch_events`, `to_canonical`).
+- [x] `raw_payloads` + MinIO'ya ham yük; `source_hash` ile idempotent yükleme.
+- [x] `ingestion_runs` durum makinesi: `pending → running → succeeded | quarantined | failed`.
+- [x] Worker işleri ve API'den tetikleme.
 
 **1.6 StatsBomb Open Data adaptörü ve SPADL (ADR-0003)**
-- [ ] `make statsbomb-fetch`: seçili yarışmaları indirir, repoya eklemez (A-06). Atıf `docs/validation/` ve `/methodology` notuna yazılır.
-- [ ] kloppy ile ayrıştırma → SPADL → kanonik `events` (koordinat dönüşümü dahil). `play_pattern` `extra` alanına.
-- [ ] socceraction uyum kontrolü; uyumsuzsa ince SPADL eşleyici (A-16) ve ADR notu.
-- [ ] Oyuncu/takım kimlik eşleştirmesi `provider_id_map`'e (`provider='statsbomb'`).
-- [ ] Testler: bilinen bir maçta olay sayısı, gol sayısı ve birkaç örnek aksiyonun koordinatları.
+- [x] `make statsbomb-fetch`: seçili yarışmaları indirir, repoya eklemez (A-06). Atıf `docs/validation/` ve `/methodology` notuna yazılır.
+- [x] (kloppy yerine ince eşleyici, A-27) ayrıştırma → SPADL → kanonik `events` (koordinat dönüşümü dahil). `play_pattern` `extra` alanına.
+- [x] socceraction uyum kontrolü; uyumsuzsa ince SPADL eşleyici (A-16) ve ADR notu.
+- [x] Oyuncu/takım kimlik eşleştirmesi `provider_id_map`'e (`provider='statsbomb'`).
+- [x] Testler: bilinen bir maçta olay sayısı, gol sayısı ve birkaç örnek aksiyonun koordinatları.
 
 **1.7 Duran top çıkarımı (SPEC §5.5)**
-- [ ] `setpieces/extract.py`: algoritma aynen; `WINDOW_S=20`, `PHASE1_S=5` ayarlanabilir.
-- [ ] Yardımcılar: `classify` (alt tür), `side_of`, `zone`, `is_touch`, `lost_possession`, `ball_left_final_third`, `derive_outcome`.
-- [ ] Penaltılar ayrı; duran top dizilerine girmez.
-- [ ] Birim testler: el yapımı küçük olay dizileriyle her dal (uzun taç filtresi, 2. faz geçişi, pencere dışı, yeni duran top ile kesilme, doğrudan serbest vuruş şutu).
-- [ ] hypothesis ile değişmezler: faz 1 + faz 2 xG = toplam; her şut en fazla bir diziye ait.
-- [ ] `set_pieces` tablosuna yazım (`source='provider'`).
+- [x] `setpieces/extract.py`: algoritma aynen; `WINDOW_S=20`, `PHASE1_S=5` ayarlanabilir.
+- [x] Yardımcılar: `classify` (alt tür), `side_of`, `zone`, `is_touch`, `lost_possession`, `ball_left_final_third`, `derive_outcome`.
+- [x] Penaltılar ayrı; duran top dizilerine girmez.
+- [x] Birim testler: el yapımı küçük olay dizileriyle her dal (uzun taç filtresi, 2. faz geçişi, pencere dışı, yeni duran top ile kesilme, doğrudan serbest vuruş şutu).
+- [x] hypothesis ile değişmezler: faz 1 + faz 2 xG = toplam; her şut en fazla bir diziye ait.
+- [x] `set_pieces` tablosuna yazım (`source='provider'`).
 
 **1.8 Doğrulama raporu (SPEC §5.5; A-07)**
-- [ ] Şut düzeyi karşılaştırma: çıkarım ↔ StatsBomb `play_pattern`.
-- [ ] `docs/validation/setpiece_extraction.md`: uyum oranı (hedef ≥ %95), tür bazında kırılım, karışıklık matrisi, uyumsuz örnekler ve nedenleri, kullanılan veri ve atıf.
-- [ ] Rapor üretimi `make validate` ile yeniden üretilebilir.
+- [x] Şut düzeyi karşılaştırma: çıkarım ↔ StatsBomb `play_pattern`.
+- [x] `docs/validation/setpiece_extraction.md`: uyum oranı (hedef ≥ %95), tür bazında kırılım, karışıklık matrisi, uyumsuz örnekler ve nedenleri, kullanılan veri ve atıf.
+- [x] Rapor üretimi `make validate` ile yeniden üretilebilir.
 
 **1.9 CSV/Excel içe aktarım (SPEC §5.6; A-08)**
-- [ ] `POST /imports` (dosya; tür ve boyut doğrulaması), `GET /imports/{id}` (eşleştirme + kalite raporu), `POST /imports/{id}/commit`.
-- [ ] Sütun eşleştirme önerisi ve takım/oyuncu kimlik eşleştirme (bulanık, eşik altı elle onay).
-- [ ] pandera kontrolleri: zorunlu alanlar, koordinat aralıkları, periyot/zaman tutarlılığı, yinelenenler, referans bütünlüğü, maç başına makul olay sayısı.
-- [ ] Kritik hata → `quarantined`; metriklere girmez. Düzeltip yeniden yükleme akışı.
-- [ ] Web: `/admin/imports` sihirbazı (yükle → eşleştir → rapor → işle), tüm durumlarla.
-- [ ] E2E (SPEC §16 akış 4'ün Faz 1 kısmı): CSV yükle → hata gör → düzelt → işle.
+- [x] `POST /imports` (dosya; tür ve boyut doğrulaması), `GET /imports/{id}` (eşleştirme + kalite raporu), `POST /imports/{id}/commit`.
+- [x] Sütun eşleştirme önerisi ve takım kimlik eşleştirme (bulanık, eşik altı elle onay). Oyuncu eşleştirme sonraki faza (A-33).
+- [x] pandera kontrolleri: zorunlu alanlar, koordinat aralıkları, periyot/zaman tutarlılığı, yinelenenler, referans bütünlüğü, maç başına makul olay sayısı.
+- [x] Kritik hata → `quarantined`; metriklere girmez. Düzeltip yeniden yükleme akışı.
+- [x] Web: `/admin/imports` sihirbazı (yükle → eşleştir → rapor → işle), tüm durumlarla.
+- [x] E2E (SPEC §16 akış 4'ün Faz 1 kısmı): CSV yükle → hata gör → düzelt → işle.
 
 **1.10 Faz kapanışı**
-- [ ] `docs/demo/faz1/` ekran görüntüleri; CLAUDE.md komutları güncel.
+- [x] `docs/demo/faz1/` ekran görüntüleri; CLAUDE.md komutları güncel.
 - [x] Kabul kriterleri işaretlendi, kısa rapor verildi.
 
 ---

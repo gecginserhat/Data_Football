@@ -258,5 +258,29 @@
       "network": "API'ye ulaşılamadı. Tekrar deneyin.",
       "default": "İşlem tamamlanamadı ({code})."
     }
+  },
+  "methodology": {
+    "title": "Metodoloji",
+    "definitions": {
+      "title": "Duran top tanımı",
+      "body": "Duran top; korner, serbest vuruş ve hücum üçte birlik bölgesinden ceza sahasına ya da en az 20 m atılan uzun taçtır. Penaltılar duran top metriklerine girmez, ayrı raporlanır. Birinci faz teslimden sonraki ilk 5 saniye ya da en fazla bir ek pastır; toplam pencere 20 saniyedir. Koordinatlar 105 × 68 m sahada, hücum edilen kale x = 105 olacak biçimde tutulur."
+    },
+    "sources": {
+      "title": "Veri kaynakları",
+      "body": "Lig tabloları ve takım istatistikleri tohum dosyasından (seed:super_lig.json) gelir ve her sayının yanında kaynağı yazar. Web kazıma kullanılmaz; yalnızca lisanslı sağlayıcılar, StatsBomb Open Data (geliştirme ve doğrulama için) ve kulübün kendi içe aktardığı dosyalar kullanılır."
+    },
+    "statsbomb": {
+      "title": "StatsBomb Open Data",
+      "body": "Duran top çıkarımının doğrulaması StatsBomb Open Data olay verisiyle yapılmıştır. Veri StatsBomb'un açık veri lisansı ve atıf koşullarıyla kullanılır, repoya eklenmez. Veri: StatsBomb.",
+      "link": "StatsBomb Open Data (github.com/statsbomb/open-data)"
+    },
+    "imports": {
+      "title": "İçe aktarılan veri",
+      "body": "Kulübün yüklediği dosyalar kalite kontrolünden geçer. Kritik sorunu olan dosya karantinaya alınır ve metriklere girmez. İşlenen veri yalnızca yükleyen kulübe görünür ve kaynağı \"import\" olarak gösterilir."
+    },
+    "limits": {
+      "title": "Sınırlamalar",
+      "body": "Oranlar ve sayımlar küçük örneklemde büzülerek gösterilir; 8'den az deneme ya da 5'ten az maç varsa \"Az veri\" rozeti çıkar. Hava topu, faul ve uzaklaştırma savunma için dolaylı göstergedir ve öyle etiketlenir."
+    }
   }
 }

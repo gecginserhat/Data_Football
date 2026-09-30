@@ -83,3 +83,12 @@ test("imports are closed to non-admin roles", async ({ page }) => {
   await page.goto("/admin/imports");
   await expect(page.getByRole("heading", { name: "Bu sayfaya erişiminiz yok" })).toBeVisible();
 });
+
+test("methodology credits StatsBomb Open Data", async ({ page }) => {
+  await signIn(page, "viewer");
+  await page.goto("/methodology");
+  await expect(page.getByRole("heading", { name: "StatsBomb Open Data" })).toBeVisible();
+  await expect(page.getByRole("link", { name: /github\.com\/statsbomb\/open-data/ })).toBeVisible();
+  await expectNoSeriousA11yViolations(page);
+  await shot(page, "methodology");
+});

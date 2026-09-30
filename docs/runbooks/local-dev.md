@@ -35,6 +35,8 @@ Keycloak'ın adresi `keycloak.localhost`'tur: tarayıcı ve konteynerler aynı a
 ## Sık işler
 - Testler: `make test` (PostgreSQL ve Redis `make dev` ile açık olmalı). Uçtan uca: `make e2e`.
 - Göç: `make migrate`. Döngü kontrolü: `make migrate-cycle`.
+- Tohum verisi: `make seed` (idempotent). StatsBomb doğrulaması: `make statsbomb-fetch`, `make statsbomb-load`, `make validate`.
+- İçe aktarım denemesi: `admin` kullanıcısıyla `http://localhost:3000/admin/imports`. Şablon sütunları formda yazar; örnek olay dosyası üreticisi `analytics/kurgu_analytics/testing/imports.py`.
 - API şeması değişti: `make openapi` ve üretilen dosyaları commit edin.
 - Sıfırdan başlamak (veriyi siler): `docker compose --env-file .env -f infra/docker-compose.yml down -v`. Bu komut veritabanını siler; yalnızca yerelde kullanın.
 
