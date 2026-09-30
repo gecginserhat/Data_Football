@@ -1,0 +1,615 @@
+{
+ "meta": {
+  "version": "1.0.0",
+  "semantics": {
+   "rank": "1 = en yüksek değer; eşit değerler aynı sırayı alır; 18 takım.",
+   "subjects": {
+    "opponent": "rakibin 2025/26 takım metrikleri",
+    "opponent_current": "rakibin 2026/27 güncel metrikleri",
+    "club": "kulübün 2025/26 metrikleri",
+    "club_current": "kulübün 2026/27 güncel metrikleri",
+    "league": "lig toplam ve ortalamaları",
+    "own_log.routine": "kulübün kendi kaydından rutin istatistikleri (rutin başına değerlendirilir)",
+    "own_log.defense": "kulübün kendi kaydından rakip duran top özeti"
+   },
+   "derived_metrics": {
+    "set_piece_goal_share": "set_piece_goals / goals",
+    "set_piece_goals_minus_xg": "set_piece_goals - set_piece_xg",
+    "fouls_committed_per_match": "fouls_committed / matches",
+    "fouls_won_per_match": "fouls_won / matches",
+    "set_piece_goals_per_100_corners_approx": "set_piece_goals / (corners_per_match * matches) * 100 (yaklaşık: payda yalnız korner)",
+    "shot_rate_posterior": "beta-binom büzülmüş şut oranı (SPEC §6.4)"
+   },
+   "ops": [
+    "gte",
+    "lte",
+    "gt",
+    "lt",
+    "eq",
+    "rank_gte",
+    "rank_lte",
+    "pctl_gte",
+    "pctl_lte",
+    "exists"
+   ],
+   "combinators": [
+    "all",
+    "any",
+    "not"
+   ],
+   "formatters": {
+    "pct": "0-1 oranı yüzde olarak (%20,4)",
+    "pct100": "0-100 değeri yüzde olarak (%56,4)",
+    "dec1": "1 ondalık (5,7)",
+    "int": "tam sayı",
+    "signed": "işaretli 1 ondalık (+2,8)"
+   },
+   "confidence": "Örneklem ve eşikten uzaklıktan hesaplanır: high / medium / low (SPEC §7.2).",
+   "dedup": "Aynı şablona işaret eden önerilerden en yüksek öncelikli olan gösterilir."
+  },
+  "acceptance_example": "Trabzonspor (kulüp) – Samsunspor (rakip), 2026/27 7. hafta: ATK_WIN_FOULS (rakip fouls_committed_per_match sırası 4) ve DEF_CORNER_PRIORITY (rakip corners_per_match sırası 2) tetiklenmelidir."
+ },
+ "rules": [
+  {
+   "id": "ATK_AERIAL_WEAK_OPP",
+   "scope": "fixture",
+   "area": "attack",
+   "priority": 1,
+   "when": {
+    "all": [
+     {
+      "subject": "opponent",
+      "metric": "aerial_win_pct",
+      "op": "rank_gte",
+      "value": 12
+     }
+    ]
+   },
+   "title": "Ceza sahasına doğrudan orta gönderin",
+   "why": "Rakip hava topu mücadelelerinin {opponent.aerial_win_pct|pct100} kadarını kazanıyor; ligde {opponent.rank.aerial_win_pct}. sırada.",
+   "action": "Kornerlerde topu altı pas ile penaltı noktası arasına, içe dönük vuruşla gönderin. En iyi iki hava topu oyuncunuzu geç koşuyla arka direğe yönlendirin.",
+   "enabled": true,
+   "template": "tpl-arka",
+   "min_sample": {
+    "matches": 5
+   }
+  },
+  {
+   "id": "ATK_AERIAL_STRONG_OPP",
+   "scope": "fixture",
+   "area": "attack",
+   "priority": 1,
+   "when": {
+    "all": [
+     {
+      "subject": "opponent",
+      "metric": "aerial_win_pct",
+      "op": "rank_lte",
+      "value": 5
+     }
+    ]
+   },
+   "title": "Hava topunu zorlamayın, zemine indirin",
+   "why": "Rakip hava topunda güçlü: mücadelelerin {opponent.aerial_win_pct|pct100} kadarını kazanıyor (ligde {opponent.rank.aerial_win_pct}.).",
+   "action": "Kısa korner ve ceza yayına geri çekme rutinlerini öne alın; doğrudan ortayı sürpriz olarak saklayın.",
+   "enabled": true,
+   "template": "tpl-kisa",
+   "min_sample": {
+    "matches": 5
+   }
+  },
+  {
+   "id": "ATK_HEADER_POWER",
+   "scope": "fixture",
+   "area": "attack",
+   "priority": 1,
+   "when": {
+    "all": [
+     {
+      "subject": "opponent",
+      "metric": "aerial_win_pct",
+      "op": "rank_gte",
+      "value": 10
+     },
+     {
+      "subject": "club",
+      "metric": "headed_goals",
+      "op": "rank_lte",
+      "value": 6
+     }
+    ]
+   },
+   "title": "Kafa gücünüzü öne çıkarın",
+   "why": "Kafa golünde ligde {club.rank.headed_goals}. sıradasınız ({club.headed_goals|int} gol); rakip hava topunda ligin alt yarısında.",
+   "action": "Uzun taç ve arka direk rutinlerini bu maçın ana planı yapın.",
+   "enabled": true,
+   "template": "tpl-tac"
+  },
+  {
+   "id": "ATK_SECOND_BALL",
+   "scope": "fixture",
+   "area": "attack",
+   "priority": 2,
+   "when": {
+    "all": [
+     {
+      "subject": "opponent",
+      "metric": "clearances_per_match",
+      "op": "rank_lte",
+      "value": 6
+     }
+    ]
+   },
+   "title": "İkinci toplar için ceza yayına bir şutçu",
+   "why": "Rakip maç başına {opponent.clearances_per_match|dec1} uzaklaştırma yapıyor (ligde {opponent.rank.clearances_per_match}.); uzaklaştırılan toplar ceza yayı çevresine düşer.",
+   "action": "Her kornerde bir oyuncuyu ceza yayında, bir oyuncuyu da kontra riskine karşı geride tutun.",
+   "enabled": true,
+   "template": "tpl-yay"
+  },
+  {
+   "id": "ATK_WIN_FOULS",
+   "scope": "fixture",
+   "area": "attack",
+   "priority": 2,
+   "when": {
+    "all": [
+     {
+      "subject": "opponent",
+      "metric": "fouls_committed_per_match",
+      "op": "rank_lte",
+      "value": 6
+     }
+    ]
+   },
+   "title": "Ceza sahası çevresinde faul kazanın",
+   "why": "Rakip maç başına {opponent.fouls_committed_per_match|dec1} faul yapıyor (ligde {opponent.rank.fouls_committed_per_match}.).",
+   "action": "Topu tutan oyuncularınızı ceza sahası köşelerinde bire bire sokun; orta rutininizi ve direkt vuruşçunuzu hazır tutun.",
+   "enabled": true,
+   "template": "tpl-sv"
+  },
+  {
+   "id": "DEF_TARGET_MAN",
+   "scope": "fixture",
+   "area": "defense",
+   "priority": 1,
+   "when": {
+    "any": [
+     {
+      "subject": "opponent",
+      "metric": "headed_goals",
+      "op": "rank_lte",
+      "value": 5
+     },
+     {
+      "subject": "opponent",
+      "metric": "aerials_won_per_match",
+      "op": "rank_lte",
+      "value": 4
+     }
+    ]
+   },
+   "title": "Hedef oyuncuyu adam adama eşleyin",
+   "why": "Rakip kafa golünde ligde {opponent.rank.headed_goals}. ({opponent.headed_goals|int} gol) ve maç başına {opponent.aerials_won_per_match|dec1} hava topu kazanıyor (ligde {opponent.rank.aerials_won_per_match}.).",
+   "action": "Karma savunma kurun: altı pas çizgisinde üç alan oyuncusu, en uzun oyuncularınız rakibin hedef oyuncularında adam adama.",
+   "enabled": true,
+   "template": "tpl-karma"
+  },
+  {
+   "id": "DEF_DONT_CONCEDE_SP",
+   "scope": "fixture",
+   "area": "defense",
+   "priority": 1,
+   "when": {
+    "all": [
+     {
+      "subject": "opponent",
+      "metric": "set_piece_goal_share",
+      "op": "rank_lte",
+      "value": 5
+     }
+    ]
+   },
+   "title": "Rakibe duran top vermeyin",
+   "why": "Rakibin gollerinin {opponent.set_piece_goal_share|pct} kadarı duran toptan geliyor (lig ortalaması {league.set_piece_goal_share|pct}).",
+   "action": "Kendi üçte birlik bölgenizde gereksiz faulden kaçının; uzaklaştırmalarda mümkünse topu kornere değil taça gönderin.",
+   "enabled": true
+  },
+  {
+   "id": "DEF_CORNER_PRIORITY",
+   "scope": "fixture",
+   "area": "defense",
+   "priority": 2,
+   "when": {
+    "all": [
+     {
+      "subject": "opponent",
+      "metric": "corners_per_match",
+      "op": "rank_lte",
+      "value": 5
+     }
+    ]
+   },
+   "title": "Korner savunması haftanın öncelikli çalışması",
+   "why": "Rakip maç başına {opponent.corners_per_match|dec1} korner kullanıyor (ligde {opponent.rank.corners_per_match}.).",
+   "action": "Antrenmanda korner savunması tekrarlarını artırın; ilk temas ve ikinci top görevlerini netleştirin.",
+   "enabled": true,
+   "template": "tpl-karma"
+  },
+  {
+   "id": "DEF_AVOID_CONTACT",
+   "scope": "fixture",
+   "area": "defense",
+   "priority": 2,
+   "when": {
+    "all": [
+     {
+      "subject": "opponent",
+      "metric": "fouls_won_per_match",
+      "op": "rank_lte",
+      "value": 5
+     }
+    ]
+   },
+   "title": "Ceza sahası çevresinde temastan kaçının",
+   "why": "Rakip maç başına {opponent.fouls_won_per_match|dec1} faul kazanıyor (ligde {opponent.rank.fouls_won_per_match}.).",
+   "action": "Bek ve stoperler için arkadan müdahale yok kuralı; ikili sıkıştırmayı ceza sahası dışında bitirin.",
+   "enabled": true
+  },
+  {
+   "id": "DEF_WALL_GK",
+   "scope": "fixture",
+   "area": "defense",
+   "priority": 2,
+   "when": {
+    "all": [
+     {
+      "subject": "opponent",
+      "metric": "direct_fk_goals",
+      "op": "gte",
+      "value": 2
+     }
+    ]
+   },
+   "title": "Baraj ve kaleci yerleşimini çalışın",
+   "why": "Rakip geçen sezon direkt serbest vuruştan {opponent.direct_fk_goals|int} gol attı.",
+   "action": "Baraj sayısını mesafeye göre sabitleyin; kaleci topu görecek şekilde konumlansın.",
+   "enabled": true
+  },
+  {
+   "id": "DEF_QUALITY_TAKER",
+   "scope": "fixture",
+   "area": "defense",
+   "priority": 2,
+   "when": {
+    "all": [
+     {
+      "subject": "opponent",
+      "metric": "set_piece_goals_minus_xg",
+      "op": "gte",
+      "value": 2.5
+     }
+    ]
+   },
+   "title": "Kaliteli bir duran top vuruşçuları var",
+   "why": "Rakip duran topta beklenenden {opponent.set_piece_goals_minus_xg|dec1} gol fazla attı ({opponent.set_piece_goals|int} gol, {opponent.set_piece_xg|dec1} xG).",
+   "action": "Vuruşçuyu videodan belirleyin; içe ya da dışa dönük tercihini ve hedef bölgesini oyunculara gösterin.",
+   "enabled": true
+  },
+  {
+   "id": "BAL_REST_DEFENSE",
+   "scope": "fixture",
+   "area": "balance",
+   "priority": 2,
+   "when": {
+    "all": [
+     {
+      "subject": "opponent",
+      "metric": "fast_break_goals",
+      "op": "rank_lte",
+      "value": 5
+     }
+    ]
+   },
+   "title": "Kendi kornerinizde geride 2+1 bırakın",
+   "why": "Rakip hızlı hücumdan {opponent.fast_break_goals|int} gol attı (ligde {opponent.rank.fast_break_goals}.).",
+   "action": "Kornerde iki oyuncu orta sahada, bir oyuncu ceza yayında kalsın; top kaybında ilk görev geri koşu.",
+   "enabled": true
+  },
+  {
+   "id": "DEF_CURRENT_FORM",
+   "scope": "fixture",
+   "area": "defense",
+   "priority": 1,
+   "when": {
+    "all": [
+     {
+      "subject": "opponent_current",
+      "metric": "set_piece_goals",
+      "op": "gte",
+      "value": 4
+     }
+    ]
+   },
+   "title": "Bu sezon duran topta çok etkili",
+   "why": "Rakip bu sezon {opponent_current.set_piece_goals|int} duran top golü attı, {opponent_current.set_piece_xg|dec1} xG (ligde {opponent_current.rank.set_piece_goals}.).",
+   "action": "Son üç maçının duran toplarını videodan etiketleyin: kim kullanıyor, hangi bölgeye, hangi rutinle.",
+   "enabled": true,
+   "template": "tpl-karma"
+  },
+  {
+   "id": "SEASON_LOW_SHARE",
+   "scope": "season",
+   "area": "season",
+   "priority": 1,
+   "when": {
+    "all": [
+     {
+      "subject": "club",
+      "metric": "set_piece_goal_share",
+      "op": "rank_gte",
+      "value": 12
+     }
+    ]
+   },
+   "title": "Duran top üretiminizi artırın",
+   "why": "Gollerinizin {club.set_piece_goal_share|pct} kadarı duran toptan geldi (lig ortalaması {league.set_piece_goal_share|pct}; ligde {club.rank.set_piece_goal_share}.).",
+   "action": "Haftada bir duran top seansı ve kütüphaneye iki üç yeni rutin.",
+   "enabled": true,
+   "template": "tpl-yakin"
+  },
+  {
+   "id": "SEASON_UNDERPERFORM",
+   "scope": "season",
+   "area": "season",
+   "priority": 1,
+   "when": {
+    "all": [
+     {
+      "subject": "club",
+      "metric": "set_piece_goals_minus_xg",
+      "op": "lte",
+      "value": -2
+     }
+    ]
+   },
+   "title": "Pozisyon var, gol yok",
+   "why": "Duran topta {club.set_piece_xg|dec1} xG ürettiniz ama {club.set_piece_goals|int} gol attınız ({club.set_piece_goals_minus_xg|signed}).",
+   "action": "Vuruşçu ile hedef oyuncu eşleşmelerini gözden geçirin; bitirişi kafa ve ikinci top üzerinden çalışın.",
+   "enabled": true
+  },
+  {
+   "id": "SEASON_OVERPERFORM",
+   "scope": "season",
+   "area": "season",
+   "priority": 2,
+   "when": {
+    "all": [
+     {
+      "subject": "club",
+      "metric": "set_piece_goals_minus_xg",
+      "op": "gte",
+      "value": 2
+     }
+    ]
+   },
+   "title": "Beklenenin üstündesiniz; pozisyon kalitesini de artırın",
+   "why": "{club.set_piece_goals|int} gol, {club.set_piece_xg|dec1} xG ({club.set_piece_goals_minus_xg|signed}). Bu fark her sezon sürmeyebilir.",
+   "action": "Rutinlerle daha net pozisyon üretmeye odaklanın; yalnızca bitiricilik fazlasına güvenmeyin.",
+   "enabled": true
+  },
+  {
+   "id": "SEASON_CORNER_CONVERSION",
+   "scope": "season",
+   "area": "season",
+   "priority": 1,
+   "when": {
+    "all": [
+     {
+      "subject": "club",
+      "metric": "corners_per_match",
+      "op": "rank_lte",
+      "value": 8
+     },
+     {
+      "subject": "club",
+      "metric": "set_piece_goals_per_100_corners_approx",
+      "op": "rank_gte",
+      "value": 11
+     }
+    ]
+   },
+   "title": "Kornerleri gole çeviremiyorsunuz",
+   "why": "Maç başına {club.corners_per_match|dec1} korner kullandınız (ligde {club.rank.corners_per_match}.), ama 100 kornere düşen duran top golü {club.set_piece_goals_per_100_corners_approx|dec1} (ligde {club.rank.set_piece_goals_per_100_corners_approx}.).",
+   "action": "Korner rutinlerini çeşitlendirin; her kornerin sonucunu kaydedip verimsiz olanları bırakın.",
+   "enabled": true,
+   "template": "tpl-arka"
+  },
+  {
+   "id": "SEASON_AERIAL_WEAK",
+   "scope": "season",
+   "area": "season",
+   "priority": 2,
+   "when": {
+    "all": [
+     {
+      "subject": "club",
+      "metric": "aerial_win_pct",
+      "op": "rank_gte",
+      "value": 12
+     }
+    ]
+   },
+   "title": "Hava topunda ligin alt yarısındasınız",
+   "why": "Hava topu mücadelelerinin {club.aerial_win_pct|pct100} kadarını kazanıyorsunuz (ligde {club.rank.aerial_win_pct}.).",
+   "action": "Hücumda kısa korner ve zemin rutinleri, savunmada karma sistem.",
+   "enabled": true,
+   "template": "tpl-kisa"
+  },
+  {
+   "id": "SEASON_FOUL_DISCIPLINE",
+   "scope": "season",
+   "area": "season",
+   "priority": 2,
+   "when": {
+    "all": [
+     {
+      "subject": "club",
+      "metric": "fouls_committed_per_match",
+      "op": "rank_lte",
+      "value": 5
+     }
+    ]
+   },
+   "title": "Faul disiplini: rakibe serbest vuruş veriyorsunuz",
+   "why": "Maç başına {club.fouls_committed_per_match|dec1} faul yapıyorsunuz (ligde {club.rank.fouls_committed_per_match}.).",
+   "action": "Kendi yarı sahanızda faul yerine yön verin; ikili sıkıştırmayı öne çekin.",
+   "enabled": true
+  },
+  {
+   "id": "SEASON_HEADER_STRENGTH",
+   "scope": "season",
+   "area": "season",
+   "priority": 3,
+   "when": {
+    "all": [
+     {
+      "subject": "club",
+      "metric": "headed_goals",
+      "op": "rank_lte",
+      "value": 4
+     }
+    ]
+   },
+   "title": "Kafa gücünüz bir silah",
+   "why": "Kafa golünde ligde {club.rank.headed_goals}. sıradasınız ({club.headed_goals|int} gol).",
+   "action": "Rutinleri hedef oyuncularınızın koşu yollarına göre kurun; uzun taçları da bu güce bağlayın.",
+   "enabled": true,
+   "template": "tpl-tac"
+  },
+  {
+   "id": "SEASON_SP_WEAPON",
+   "scope": "season",
+   "area": "season",
+   "priority": 3,
+   "when": {
+    "all": [
+     {
+      "subject": "club",
+      "metric": "set_piece_goal_share",
+      "op": "rank_lte",
+      "value": 4
+     }
+    ]
+   },
+   "title": "Duran top ana silahınız; rakipler hazırlanacak",
+   "why": "Gollerinizin {club.set_piece_goal_share|pct} kadarı duran toptan (ligde {club.rank.set_piece_goal_share}.).",
+   "action": "Aynı rutini üst üste kullanmayın; her tür için en az iki varyasyon tutun.",
+   "enabled": true
+  },
+  {
+   "id": "SEASON_NO_SP_GOAL_YET",
+   "scope": "season",
+   "area": "season",
+   "priority": 1,
+   "when": {
+    "all": [
+     {
+      "subject": "club_current",
+      "metric": "set_piece_goals",
+      "op": "eq",
+      "value": 0
+     },
+     {
+      "subject": "club_current",
+      "metric": "set_piece_xg",
+      "op": "gte",
+      "value": 1.5
+     }
+    ]
+   },
+   "title": "Bu sezon duran toptan henüz gol yok",
+   "why": "Bu sezon {club_current.set_piece_xg|dec1} duran top xG ürettiniz ama gol çıkmadı.",
+   "action": "Pozisyon üretimi yeterli; bitiriş ve ikinci top görevlerine odaklanın.",
+   "enabled": true
+  },
+  {
+   "id": "LOG_ROUTINE_WORKS",
+   "scope": "fixture",
+   "area": "attack",
+   "priority": 1,
+   "when": {
+    "all": [
+     {
+      "subject": "own_log.routine",
+      "metric": "uses",
+      "op": "gte",
+      "value": 4
+     },
+     {
+      "subject": "own_log.routine",
+      "metric": "shot_rate_posterior",
+      "op": "gte",
+      "value": 0.5
+     }
+    ]
+   },
+   "title": "\"{routine.name}\" çalışıyor; plana alın",
+   "why": "Kayıtlarınızda {routine.uses|int} kullanımda {routine.shots|int} şut, {routine.goals|int} gol (büzülmüş şut oranı {routine.shot_rate_posterior|pct}).",
+   "action": "Bu maçta da kullanın; rakip tanımasın diye başlangıç dizilişini değiştirin.",
+   "enabled": true
+  },
+  {
+   "id": "LOG_ROUTINE_FAILS",
+   "scope": "fixture",
+   "area": "attack",
+   "priority": 2,
+   "when": {
+    "all": [
+     {
+      "subject": "own_log.routine",
+      "metric": "uses",
+      "op": "gte",
+      "value": 4
+     },
+     {
+      "subject": "own_log.routine",
+      "metric": "shots",
+      "op": "eq",
+      "value": 0
+     }
+    ]
+   },
+   "title": "\"{routine.name}\" rutinini değiştirin",
+   "why": "{routine.uses|int} kullanımda hiç şut çıkmadı.",
+   "action": "Koşu zamanlamasını ya da hedef bölgeyi değiştirin veya bu hafta kullanmayın.",
+   "enabled": true
+  },
+  {
+   "id": "LOG_DEF_SHOTS_CONCEDED",
+   "scope": "fixture",
+   "area": "defense",
+   "priority": 1,
+   "when": {
+    "all": [
+     {
+      "subject": "own_log.defense",
+      "metric": "set_pieces",
+      "op": "gte",
+      "value": 8
+     },
+     {
+      "subject": "own_log.defense",
+      "metric": "shot_rate",
+      "op": "gte",
+      "value": 0.4
+     }
+    ]
+   },
+   "title": "Rakip duran toplarında çok şut veriyorsunuz",
+   "why": "Kayıtlı {own_log.defense.set_pieces|int} rakip duran topunun {own_log.defense.shots|int} tanesi şutla bitti ({own_log.defense.shot_rate|pct}).",
+   "action": "İlk temas görevlerini ve ikinci top bölgelerini yeniden dağıtın.",
+   "enabled": true,
+   "template": "tpl-karma"
+  }
+ ]
+}

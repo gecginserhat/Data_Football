@@ -1,0 +1,1635 @@
+{
+ "meta": {
+  "compiled_at": "2026-09-28",
+  "license_note": "Kamuya açık sayfalardan elle derlenmiş takım düzeyi özetlerdir. Yalnızca geliştirme ve demo içindir; ticari ve canlı kullanımda lisanslı sağlayıcı verisiyle değiştirin. Bu verileri çekmek için web kazıma yapmayın.",
+  "sources": {
+   "set_piece_goals, set_piece_xg": "FotMob takım istatistikleri (duran top golü ve xG; penaltı hariç)",
+   "other 2025_26 team stats": "Mackolik Süper Lig 2025/2026 istatistik sayfası (Opta verisi)",
+   "standings, results, fixtures": "TFF Trendyol Süper Lig puan cetveli ve fikstür sayfası",
+   "premier_league_benchmark": "FotMob Premier League 2025/2026 set piece goals"
+  },
+  "definitions": {
+   "set_piece_goals": "Korner, serbest vuruş ve taç organizasyonlarından gelen goller; penaltı hariç.",
+   "aerial_win_pct": "Kazanılan hava topu mücadelesi yüzdesi (0-100).",
+   "per_match fields": "2025/26 için 34 maç üzerinden.",
+   "fouls_committed, fouls_won": "Sezon toplamı (maç başına için 34'e bölün)."
+  },
+  "integrity_checks": [
+   "open_play_goals + fast_break_goals + penalty_goals + set_piece_goals, goals değerini 0-1 kendi kalesine gol farkıyla verir.",
+   "Sonuçlardan yeniden hesaplanan puan tablosu standings ile birebir tutar.",
+   "Toplam duran top golü 166, toplam gol 812 (pay %20,4)."
+  ]
+ },
+ "teams": [
+  {
+   "id": "gs",
+   "code": "GS",
+   "name": "Galatasaray",
+   "official_name": "GALATASARAY A.Ş.",
+   "in_2026_27": true,
+   "promoted_2026_27": false,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "fb",
+   "code": "FB",
+   "name": "Fenerbahçe",
+   "official_name": "FENERBAHÇE A.Ş.",
+   "in_2026_27": true,
+   "promoted_2026_27": false,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "ts",
+   "code": "TS",
+   "name": "Trabzonspor",
+   "official_name": "TRABZONSPOR A.Ş.",
+   "in_2026_27": true,
+   "promoted_2026_27": false,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "bjk",
+   "code": "BJK",
+   "name": "Beşiktaş",
+   "official_name": "BEŞİKTAŞ A.Ş.",
+   "in_2026_27": true,
+   "promoted_2026_27": false,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "ibfk",
+   "code": "İBFK",
+   "name": "Başakşehir",
+   "official_name": "İSTANBUL BAŞAKŞEHİR FK",
+   "in_2026_27": true,
+   "promoted_2026_27": false,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "goz",
+   "code": "GÖZ",
+   "name": "Göztepe",
+   "official_name": "GÖZTEPE A.Ş.",
+   "in_2026_27": true,
+   "promoted_2026_27": false,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "sam",
+   "code": "SAM",
+   "name": "Samsunspor",
+   "official_name": "SAMSUNSPOR A.Ş.",
+   "in_2026_27": true,
+   "promoted_2026_27": false,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "riz",
+   "code": "RİZ",
+   "name": "Rizespor",
+   "official_name": "ÇAYKUR RİZESPOR A.Ş.",
+   "in_2026_27": true,
+   "promoted_2026_27": false,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "kon",
+   "code": "KON",
+   "name": "Konyaspor",
+   "official_name": "TÜMOSAN KONYASPOR",
+   "in_2026_27": true,
+   "promoted_2026_27": false,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "ala",
+   "code": "ALA",
+   "name": "Alanyaspor",
+   "official_name": "CORENDON ALANYASPOR",
+   "in_2026_27": true,
+   "promoted_2026_27": false,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "gfk",
+   "code": "GFK",
+   "name": "Gaziantep FK",
+   "official_name": "GAZİANTEP FUTBOL KULÜBÜ A.Ş.",
+   "in_2026_27": true,
+   "promoted_2026_27": false,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "koc",
+   "code": "KOC",
+   "name": "Kocaelispor",
+   "official_name": "KOCAELİSPOR",
+   "in_2026_27": true,
+   "promoted_2026_27": false,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "kas",
+   "code": "KAS",
+   "name": "Kasımpaşa",
+   "official_name": "KASIMPAŞA A.Ş.",
+   "in_2026_27": true,
+   "promoted_2026_27": false,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "gen",
+   "code": "GEN",
+   "name": "Gençlerbirliği",
+   "official_name": "GENÇLERBİRLİĞİ",
+   "in_2026_27": true,
+   "promoted_2026_27": false,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "eyu",
+   "code": "EYÜ",
+   "name": "Eyüpspor",
+   "official_name": "EYÜPSPOR",
+   "in_2026_27": true,
+   "promoted_2026_27": false,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "ant",
+   "code": "ANT",
+   "name": "Antalyaspor",
+   "official_name": "ANTALYASPOR",
+   "in_2026_27": false,
+   "promoted_2026_27": false,
+   "relegated_2025_26": true
+  },
+  {
+   "id": "kar",
+   "code": "KAR",
+   "name": "Fatih Karagümrük",
+   "official_name": "FATİH KARAGÜMRÜK",
+   "in_2026_27": false,
+   "promoted_2026_27": false,
+   "relegated_2025_26": true
+  },
+  {
+   "id": "kay",
+   "code": "KAY",
+   "name": "Kayserispor",
+   "official_name": "KAYSERİSPOR",
+   "in_2026_27": false,
+   "promoted_2026_27": false,
+   "relegated_2025_26": true
+  },
+  {
+   "id": "amd",
+   "code": "AMD",
+   "name": "Amedspor",
+   "official_name": "AMED SPORTİF FAALİYETLER",
+   "in_2026_27": true,
+   "promoted_2026_27": true,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "erz",
+   "code": "ERZ",
+   "name": "Erzurumspor",
+   "official_name": "ERZURUMSPOR FK",
+   "in_2026_27": true,
+   "promoted_2026_27": true,
+   "relegated_2025_26": false
+  },
+  {
+   "id": "cor",
+   "code": "ÇOR",
+   "name": "Çorum FK",
+   "official_name": "ARCA ÇORUM FK",
+   "in_2026_27": true,
+   "promoted_2026_27": true,
+   "relegated_2025_26": false
+  }
+ ],
+ "seasons": {
+  "2025_26": {
+   "competition": "Süper Lig",
+   "matches_per_team": 34,
+   "total_matches": 306,
+   "team_stats": [
+    {
+     "team_id": "gs",
+     "matches": 34,
+     "goals": 77,
+     "goals_against": 30,
+     "xg": 70.9,
+     "xga": 35,
+     "penalty_goals": 6,
+     "penalty_attempts": 6,
+     "open_play_goals": 48,
+     "fast_break_goals": 8,
+     "direct_fk_goals": 0,
+     "headed_goals": 12,
+     "corners_per_match": 5.5,
+     "aerials_won_per_match": 13.3,
+     "aerial_win_pct": 56.4,
+     "clearances_per_match": 18,
+     "fouls_committed": 425,
+     "fouls_won": 357,
+     "accurate_crosses_per_match": 6.5,
+     "set_piece_goals": 11,
+     "set_piece_xg": 13.1
+    },
+    {
+     "team_id": "fb",
+     "matches": 34,
+     "goals": 77,
+     "goals_against": 37,
+     "xg": 66.6,
+     "xga": 30.2,
+     "penalty_goals": 6,
+     "penalty_attempts": 9,
+     "open_play_goals": 47,
+     "fast_break_goals": 8,
+     "direct_fk_goals": 1,
+     "headed_goals": 10,
+     "corners_per_match": 6.9,
+     "aerials_won_per_match": 12.2,
+     "aerial_win_pct": 51.7,
+     "clearances_per_match": 16.1,
+     "fouls_committed": 407,
+     "fouls_won": 459,
+     "accurate_crosses_per_match": 4.4,
+     "set_piece_goals": 14,
+     "set_piece_xg": 11.2
+    },
+    {
+     "team_id": "ts",
+     "matches": 34,
+     "goals": 61,
+     "goals_against": 39,
+     "xg": 51.3,
+     "xga": 45.3,
+     "penalty_goals": 8,
+     "penalty_attempts": 9,
+     "open_play_goals": 33,
+     "fast_break_goals": 4,
+     "direct_fk_goals": 1,
+     "headed_goals": 20,
+     "corners_per_match": 4.6,
+     "aerials_won_per_match": 13,
+     "aerial_win_pct": 53.1,
+     "clearances_per_match": 20.1,
+     "fouls_committed": 412,
+     "fouls_won": 458,
+     "accurate_crosses_per_match": 5.3,
+     "set_piece_goals": 15,
+     "set_piece_xg": 12.2
+    },
+    {
+     "team_id": "bjk",
+     "matches": 34,
+     "goals": 59,
+     "goals_against": 40,
+     "xg": 64.7,
+     "xga": 38.5,
+     "penalty_goals": 6,
+     "penalty_attempts": 8,
+     "open_play_goals": 33,
+     "fast_break_goals": 8,
+     "direct_fk_goals": 1,
+     "headed_goals": 9,
+     "corners_per_match": 5.5,
+     "aerials_won_per_match": 15.3,
+     "aerial_win_pct": 56,
+     "clearances_per_match": 22.2,
+     "fouls_committed": 461,
+     "fouls_won": 411,
+     "accurate_crosses_per_match": 5,
+     "set_piece_goals": 11,
+     "set_piece_xg": 9.5
+    },
+    {
+     "team_id": "ibfk",
+     "matches": 34,
+     "goals": 58,
+     "goals_against": 35,
+     "xg": 55.5,
+     "xga": 43.3,
+     "penalty_goals": 6,
+     "penalty_attempts": 6,
+     "open_play_goals": 33,
+     "fast_break_goals": 5,
+     "direct_fk_goals": 1,
+     "headed_goals": 13,
+     "corners_per_match": 4.8,
+     "aerials_won_per_match": 14.9,
+     "aerial_win_pct": 55.9,
+     "clearances_per_match": 19,
+     "fouls_committed": 454,
+     "fouls_won": 421,
+     "accurate_crosses_per_match": 5,
+     "set_piece_goals": 11,
+     "set_piece_xg": 10.6
+    },
+    {
+     "team_id": "goz",
+     "matches": 34,
+     "goals": 42,
+     "goals_against": 32,
+     "xg": 49.1,
+     "xga": 38.5,
+     "penalty_goals": 3,
+     "penalty_attempts": 6,
+     "open_play_goals": 18,
+     "fast_break_goals": 8,
+     "direct_fk_goals": 1,
+     "headed_goals": 8,
+     "corners_per_match": 4.5,
+     "aerials_won_per_match": 21.6,
+     "aerial_win_pct": 47.8,
+     "clearances_per_match": 27.9,
+     "fouls_committed": 604,
+     "fouls_won": 306,
+     "accurate_crosses_per_match": 5.6,
+     "set_piece_goals": 12,
+     "set_piece_xg": 15.4
+    },
+    {
+     "team_id": "sam",
+     "matches": 34,
+     "goals": 46,
+     "goals_against": 45,
+     "xg": 44.9,
+     "xga": 41,
+     "penalty_goals": 2,
+     "penalty_attempts": 3,
+     "open_play_goals": 29,
+     "fast_break_goals": 5,
+     "direct_fk_goals": 0,
+     "headed_goals": 4,
+     "corners_per_match": 5.7,
+     "aerials_won_per_match": 13.4,
+     "aerial_win_pct": 49.5,
+     "clearances_per_match": 21.9,
+     "fouls_committed": 506,
+     "fouls_won": 389,
+     "accurate_crosses_per_match": 4,
+     "set_piece_goals": 7,
+     "set_piece_xg": 8.1
+    },
+    {
+     "team_id": "riz",
+     "matches": 34,
+     "goals": 46,
+     "goals_against": 52,
+     "xg": 47.9,
+     "xga": 47.3,
+     "penalty_goals": 3,
+     "penalty_attempts": 3,
+     "open_play_goals": 25,
+     "fast_break_goals": 8,
+     "direct_fk_goals": 1,
+     "headed_goals": 5,
+     "corners_per_match": 4.2,
+     "aerials_won_per_match": 13.4,
+     "aerial_win_pct": 48.8,
+     "clearances_per_match": 24.4,
+     "fouls_committed": 476,
+     "fouls_won": 432,
+     "accurate_crosses_per_match": 4,
+     "set_piece_goals": 9,
+     "set_piece_xg": 8.6
+    },
+    {
+     "team_id": "kon",
+     "matches": 34,
+     "goals": 43,
+     "goals_against": 50,
+     "xg": 45.3,
+     "xga": 50.1,
+     "penalty_goals": 5,
+     "penalty_attempts": 5,
+     "open_play_goals": 25,
+     "fast_break_goals": 3,
+     "direct_fk_goals": 1,
+     "headed_goals": 8,
+     "corners_per_match": 4.9,
+     "aerials_won_per_match": 13.8,
+     "aerial_win_pct": 49.3,
+     "clearances_per_match": 21.4,
+     "fouls_committed": 435,
+     "fouls_won": 409,
+     "accurate_crosses_per_match": 4.6,
+     "set_piece_goals": 8,
+     "set_piece_xg": 10.9
+    },
+    {
+     "team_id": "ala",
+     "matches": 34,
+     "goals": 41,
+     "goals_against": 41,
+     "xg": 35.8,
+     "xga": 44.9,
+     "penalty_goals": 5,
+     "penalty_attempts": 5,
+     "open_play_goals": 22,
+     "fast_break_goals": 4,
+     "direct_fk_goals": 2,
+     "headed_goals": 6,
+     "corners_per_match": 4.7,
+     "aerials_won_per_match": 11.4,
+     "aerial_win_pct": 50.1,
+     "clearances_per_match": 21.4,
+     "fouls_committed": 417,
+     "fouls_won": 480,
+     "accurate_crosses_per_match": 4.8,
+     "set_piece_goals": 10,
+     "set_piece_xg": 7.2
+    },
+    {
+     "team_id": "gfk",
+     "matches": 34,
+     "goals": 43,
+     "goals_against": 58,
+     "xg": 45,
+     "xga": 53.6,
+     "penalty_goals": 5,
+     "penalty_attempts": 7,
+     "open_play_goals": 25,
+     "fast_break_goals": 3,
+     "direct_fk_goals": 0,
+     "headed_goals": 2,
+     "corners_per_match": 5,
+     "aerials_won_per_match": 10,
+     "aerial_win_pct": 45.5,
+     "clearances_per_match": 22.2,
+     "fouls_committed": 449,
+     "fouls_won": 543,
+     "accurate_crosses_per_match": 3.2,
+     "set_piece_goals": 9,
+     "set_piece_xg": 10.7
+    },
+    {
+     "team_id": "koc",
+     "matches": 34,
+     "goals": 26,
+     "goals_against": 38,
+     "xg": 32,
+     "xga": 34.7,
+     "penalty_goals": 4,
+     "penalty_attempts": 4,
+     "open_play_goals": 15,
+     "fast_break_goals": 0,
+     "direct_fk_goals": 1,
+     "headed_goals": 2,
+     "corners_per_match": 4.2,
+     "aerials_won_per_match": 14.9,
+     "aerial_win_pct": 48.2,
+     "clearances_per_match": 21.9,
+     "fouls_committed": 522,
+     "fouls_won": 471,
+     "accurate_crosses_per_match": 3.4,
+     "set_piece_goals": 7,
+     "set_piece_xg": 9.3
+    },
+    {
+     "team_id": "kas",
+     "matches": 34,
+     "goals": 33,
+     "goals_against": 49,
+     "xg": 31.3,
+     "xga": 45.9,
+     "penalty_goals": 4,
+     "penalty_attempts": 5,
+     "open_play_goals": 16,
+     "fast_break_goals": 4,
+     "direct_fk_goals": 0,
+     "headed_goals": 7,
+     "corners_per_match": 4.2,
+     "aerials_won_per_match": 15.1,
+     "aerial_win_pct": 49.7,
+     "clearances_per_match": 25.3,
+     "fouls_committed": 527,
+     "fouls_won": 425,
+     "accurate_crosses_per_match": 4.1,
+     "set_piece_goals": 7,
+     "set_piece_xg": 7.5
+    },
+    {
+     "team_id": "gen",
+     "matches": 34,
+     "goals": 36,
+     "goals_against": 47,
+     "xg": 36.4,
+     "xga": 51.9,
+     "penalty_goals": 4,
+     "penalty_attempts": 6,
+     "open_play_goals": 15,
+     "fast_break_goals": 5,
+     "direct_fk_goals": 0,
+     "headed_goals": 8,
+     "corners_per_match": 3.9,
+     "aerials_won_per_match": 12.7,
+     "aerial_win_pct": 47.8,
+     "clearances_per_match": 26.3,
+     "fouls_committed": 434,
+     "fouls_won": 445,
+     "accurate_crosses_per_match": 3.6,
+     "set_piece_goals": 10,
+     "set_piece_xg": 10.6
+    },
+    {
+     "team_id": "eyu",
+     "matches": 34,
+     "goals": 33,
+     "goals_against": 48,
+     "xg": 36.1,
+     "xga": 51.8,
+     "penalty_goals": 4,
+     "penalty_attempts": 4,
+     "open_play_goals": 24,
+     "fast_break_goals": 2,
+     "direct_fk_goals": 0,
+     "headed_goals": 4,
+     "corners_per_match": 3.4,
+     "aerials_won_per_match": 12,
+     "aerial_win_pct": 46.7,
+     "clearances_per_match": 26.3,
+     "fouls_committed": 411,
+     "fouls_won": 487,
+     "accurate_crosses_per_match": 3.5,
+     "set_piece_goals": 2,
+     "set_piece_xg": 6
+    },
+    {
+     "team_id": "ant",
+     "matches": 34,
+     "goals": 33,
+     "goals_against": 55,
+     "xg": 27.6,
+     "xga": 56.9,
+     "penalty_goals": 0,
+     "penalty_attempts": 0,
+     "open_play_goals": 19,
+     "fast_break_goals": 5,
+     "direct_fk_goals": 1,
+     "headed_goals": 8,
+     "corners_per_match": 4.1,
+     "aerials_won_per_match": 13.4,
+     "aerial_win_pct": 49.2,
+     "clearances_per_match": 27.9,
+     "fouls_committed": 448,
+     "fouls_won": 493,
+     "accurate_crosses_per_match": 3.8,
+     "set_piece_goals": 8,
+     "set_piece_xg": 8.1
+    },
+    {
+     "team_id": "kar",
+     "matches": 34,
+     "goals": 31,
+     "goals_against": 54,
+     "xg": 34.9,
+     "xga": 50.9,
+     "penalty_goals": 2,
+     "penalty_attempts": 3,
+     "open_play_goals": 16,
+     "fast_break_goals": 2,
+     "direct_fk_goals": 0,
+     "headed_goals": 5,
+     "corners_per_match": 3.6,
+     "aerials_won_per_match": 12.2,
+     "aerial_win_pct": 47.9,
+     "clearances_per_match": 23.2,
+     "fouls_committed": 461,
+     "fouls_won": 467,
+     "accurate_crosses_per_match": 2.2,
+     "set_piece_goals": 10,
+     "set_piece_xg": 7.1
+    },
+    {
+     "team_id": "kay",
+     "matches": 34,
+     "goals": 27,
+     "goals_against": 62,
+     "xg": 37.9,
+     "xga": 53.4,
+     "penalty_goals": 0,
+     "penalty_attempts": 1,
+     "open_play_goals": 19,
+     "fast_break_goals": 2,
+     "direct_fk_goals": 0,
+     "headed_goals": 7,
+     "corners_per_match": 5.2,
+     "aerials_won_per_match": 12.8,
+     "aerial_win_pct": 48.7,
+     "clearances_per_match": 21.3,
+     "fouls_committed": 451,
+     "fouls_won": 413,
+     "accurate_crosses_per_match": 4.7,
+     "set_piece_goals": 5,
+     "set_piece_xg": 7.9
+    }
+   ]
+  },
+  "2026_27": {
+   "competition": "Süper Lig",
+   "as_of_week": 6,
+   "set_piece_to_date": [
+    {
+     "team_id": "amd",
+     "set_piece_goals": 5,
+     "set_piece_xg": 3.3
+    },
+    {
+     "team_id": "fb",
+     "set_piece_goals": 5,
+     "set_piece_xg": 3.6
+    },
+    {
+     "team_id": "goz",
+     "set_piece_goals": 5,
+     "set_piece_xg": 2.8
+    },
+    {
+     "team_id": "gs",
+     "set_piece_goals": 4,
+     "set_piece_xg": 3.9
+    },
+    {
+     "team_id": "bjk",
+     "set_piece_goals": 3,
+     "set_piece_xg": 2.7
+    },
+    {
+     "team_id": "ala",
+     "set_piece_goals": 2,
+     "set_piece_xg": 1.8
+    },
+    {
+     "team_id": "cor",
+     "set_piece_goals": 2,
+     "set_piece_xg": 0.7
+    },
+    {
+     "team_id": "gfk",
+     "set_piece_goals": 2,
+     "set_piece_xg": 1.7
+    },
+    {
+     "team_id": "kas",
+     "set_piece_goals": 2,
+     "set_piece_xg": 1.8
+    },
+    {
+     "team_id": "eyu",
+     "set_piece_goals": 1,
+     "set_piece_xg": 2.3
+    },
+    {
+     "team_id": "gen",
+     "set_piece_goals": 1,
+     "set_piece_xg": 1.6
+    },
+    {
+     "team_id": "koc",
+     "set_piece_goals": 1,
+     "set_piece_xg": 0.7
+    },
+    {
+     "team_id": "sam",
+     "set_piece_goals": 1,
+     "set_piece_xg": 1.2
+    },
+    {
+     "team_id": "ibfk",
+     "set_piece_goals": 0,
+     "set_piece_xg": 0.9
+    },
+    {
+     "team_id": "erz",
+     "set_piece_goals": 0,
+     "set_piece_xg": 1.2
+    },
+    {
+     "team_id": "kon",
+     "set_piece_goals": 0,
+     "set_piece_xg": 1.9
+    },
+    {
+     "team_id": "riz",
+     "set_piece_goals": 0,
+     "set_piece_xg": 1.7
+    },
+    {
+     "team_id": "ts",
+     "set_piece_goals": 0,
+     "set_piece_xg": 1.8
+    }
+   ],
+   "standings_after_week_6": [
+    {
+     "pos": 1,
+     "team_id": "amd",
+     "played": 6,
+     "won": 4,
+     "drawn": 1,
+     "lost": 1,
+     "gf": 15,
+     "ga": 7,
+     "pts": 13
+    },
+    {
+     "pos": 2,
+     "team_id": "gs",
+     "played": 6,
+     "won": 4,
+     "drawn": 1,
+     "lost": 1,
+     "gf": 13,
+     "ga": 10,
+     "pts": 13
+    },
+    {
+     "pos": 3,
+     "team_id": "bjk",
+     "played": 6,
+     "won": 4,
+     "drawn": 0,
+     "lost": 2,
+     "gf": 14,
+     "ga": 7,
+     "pts": 12
+    },
+    {
+     "pos": 4,
+     "team_id": "koc",
+     "played": 6,
+     "won": 4,
+     "drawn": 0,
+     "lost": 2,
+     "gf": 7,
+     "ga": 4,
+     "pts": 12
+    },
+    {
+     "pos": 5,
+     "team_id": "ala",
+     "played": 6,
+     "won": 3,
+     "drawn": 2,
+     "lost": 1,
+     "gf": 8,
+     "ga": 6,
+     "pts": 11
+    },
+    {
+     "pos": 6,
+     "team_id": "fb",
+     "played": 6,
+     "won": 3,
+     "drawn": 1,
+     "lost": 2,
+     "gf": 16,
+     "ga": 6,
+     "pts": 10
+    },
+    {
+     "pos": 7,
+     "team_id": "ts",
+     "played": 6,
+     "won": 3,
+     "drawn": 1,
+     "lost": 2,
+     "gf": 13,
+     "ga": 5,
+     "pts": 10
+    },
+    {
+     "pos": 8,
+     "team_id": "kas",
+     "played": 6,
+     "won": 2,
+     "drawn": 4,
+     "lost": 0,
+     "gf": 7,
+     "ga": 5,
+     "pts": 10
+    },
+    {
+     "pos": 9,
+     "team_id": "riz",
+     "played": 6,
+     "won": 3,
+     "drawn": 1,
+     "lost": 2,
+     "gf": 7,
+     "ga": 6,
+     "pts": 10
+    },
+    {
+     "pos": 10,
+     "team_id": "gfk",
+     "played": 6,
+     "won": 2,
+     "drawn": 2,
+     "lost": 2,
+     "gf": 7,
+     "ga": 7,
+     "pts": 8
+    },
+    {
+     "pos": 11,
+     "team_id": "cor",
+     "played": 6,
+     "won": 2,
+     "drawn": 1,
+     "lost": 3,
+     "gf": 13,
+     "ga": 12,
+     "pts": 7
+    },
+    {
+     "pos": 12,
+     "team_id": "ibfk",
+     "played": 6,
+     "won": 2,
+     "drawn": 1,
+     "lost": 3,
+     "gf": 10,
+     "ga": 11,
+     "pts": 7
+    },
+    {
+     "pos": 13,
+     "team_id": "gen",
+     "played": 6,
+     "won": 2,
+     "drawn": 1,
+     "lost": 3,
+     "gf": 5,
+     "ga": 13,
+     "pts": 7
+    },
+    {
+     "pos": 14,
+     "team_id": "erz",
+     "played": 6,
+     "won": 2,
+     "drawn": 1,
+     "lost": 3,
+     "gf": 3,
+     "ga": 11,
+     "pts": 7
+    },
+    {
+     "pos": 15,
+     "team_id": "kon",
+     "played": 6,
+     "won": 1,
+     "drawn": 1,
+     "lost": 4,
+     "gf": 4,
+     "ga": 8,
+     "pts": 4
+    },
+    {
+     "pos": 16,
+     "team_id": "sam",
+     "played": 6,
+     "won": 1,
+     "drawn": 1,
+     "lost": 4,
+     "gf": 6,
+     "ga": 12,
+     "pts": 4
+    },
+    {
+     "pos": 17,
+     "team_id": "goz",
+     "played": 6,
+     "won": 0,
+     "drawn": 3,
+     "lost": 3,
+     "gf": 11,
+     "ga": 15,
+     "pts": 3
+    },
+    {
+     "pos": 18,
+     "team_id": "eyu",
+     "played": 6,
+     "won": 1,
+     "drawn": 0,
+     "lost": 5,
+     "gf": 2,
+     "ga": 16,
+     "pts": 3
+    }
+   ],
+   "results_weeks_1_6": [
+    {
+     "week": 1,
+     "home": "gs",
+     "home_goals": 2,
+     "away_goals": 2,
+     "away": "cor"
+    },
+    {
+     "week": 1,
+     "home": "kon",
+     "home_goals": 0,
+     "away_goals": 1,
+     "away": "riz"
+    },
+    {
+     "week": 1,
+     "home": "gfk",
+     "home_goals": 1,
+     "away_goals": 1,
+     "away": "ala"
+    },
+    {
+     "week": 1,
+     "home": "gen",
+     "home_goals": 2,
+     "away_goals": 1,
+     "away": "fb"
+    },
+    {
+     "week": 1,
+     "home": "kas",
+     "home_goals": 1,
+     "away_goals": 1,
+     "away": "ts"
+    },
+    {
+     "week": 1,
+     "home": "bjk",
+     "home_goals": 1,
+     "away_goals": 0,
+     "away": "eyu"
+    },
+    {
+     "week": 1,
+     "home": "amd",
+     "home_goals": 3,
+     "away_goals": 0,
+     "away": "erz"
+    },
+    {
+     "week": 1,
+     "home": "ibfk",
+     "home_goals": 2,
+     "away_goals": 0,
+     "away": "koc"
+    },
+    {
+     "week": 1,
+     "home": "sam",
+     "home_goals": 3,
+     "away_goals": 3,
+     "away": "goz"
+    },
+    {
+     "week": 2,
+     "home": "erz",
+     "home_goals": 0,
+     "away_goals": 4,
+     "away": "gs"
+    },
+    {
+     "week": 2,
+     "home": "riz",
+     "home_goals": 0,
+     "away_goals": 2,
+     "away": "sam"
+    },
+    {
+     "week": 2,
+     "home": "fb",
+     "home_goals": 4,
+     "away_goals": 2,
+     "away": "kon"
+    },
+    {
+     "week": 2,
+     "home": "cor",
+     "home_goals": 0,
+     "away_goals": 1,
+     "away": "kas"
+    },
+    {
+     "week": 2,
+     "home": "eyu",
+     "home_goals": 0,
+     "away_goals": 1,
+     "away": "gfk"
+    },
+    {
+     "week": 2,
+     "home": "ts",
+     "home_goals": 2,
+     "away_goals": 1,
+     "away": "ibfk"
+    },
+    {
+     "week": 2,
+     "home": "ala",
+     "home_goals": 1,
+     "away_goals": 0,
+     "away": "bjk"
+    },
+    {
+     "week": 2,
+     "home": "goz",
+     "home_goals": 0,
+     "away_goals": 1,
+     "away": "gen"
+    },
+    {
+     "week": 2,
+     "home": "koc",
+     "home_goals": 2,
+     "away_goals": 0,
+     "away": "amd"
+    },
+    {
+     "week": 3,
+     "home": "gen",
+     "home_goals": 1,
+     "away_goals": 1,
+     "away": "erz"
+    },
+    {
+     "week": 3,
+     "home": "gfk",
+     "home_goals": 1,
+     "away_goals": 2,
+     "away": "riz"
+    },
+    {
+     "week": 3,
+     "home": "gs",
+     "home_goals": 3,
+     "away_goals": 2,
+     "away": "goz"
+    },
+    {
+     "week": 3,
+     "home": "kon",
+     "home_goals": 1,
+     "away_goals": 2,
+     "away": "koc"
+    },
+    {
+     "week": 3,
+     "home": "eyu",
+     "home_goals": 2,
+     "away_goals": 1,
+     "away": "ala"
+    },
+    {
+     "week": 3,
+     "home": "ibfk",
+     "home_goals": 1,
+     "away_goals": 1,
+     "away": "kas"
+    },
+    {
+     "week": 3,
+     "home": "sam",
+     "home_goals": 0,
+     "away_goals": 2,
+     "away": "fb"
+    },
+    {
+     "week": 3,
+     "home": "amd",
+     "home_goals": 2,
+     "away_goals": 1,
+     "away": "ts"
+    },
+    {
+     "week": 3,
+     "home": "bjk",
+     "home_goals": 6,
+     "away_goals": 2,
+     "away": "cor"
+    },
+    {
+     "week": 4,
+     "home": "ibfk",
+     "home_goals": 2,
+     "away_goals": 3,
+     "away": "gs"
+    },
+    {
+     "week": 4,
+     "home": "erz",
+     "home_goals": 1,
+     "away_goals": 0,
+     "away": "kon"
+    },
+    {
+     "week": 4,
+     "home": "fb",
+     "home_goals": 1,
+     "away_goals": 2,
+     "away": "bjk"
+    },
+    {
+     "week": 4,
+     "home": "koc",
+     "home_goals": 1,
+     "away_goals": 0,
+     "away": "sam"
+    },
+    {
+     "week": 4,
+     "home": "cor",
+     "home_goals": 3,
+     "away_goals": 0,
+     "away": "eyu"
+    },
+    {
+     "week": 4,
+     "home": "ts",
+     "home_goals": 5,
+     "away_goals": 0,
+     "away": "gen"
+    },
+    {
+     "week": 4,
+     "home": "kas",
+     "home_goals": 2,
+     "away_goals": 2,
+     "away": "amd"
+    },
+    {
+     "week": 4,
+     "home": "goz",
+     "home_goals": 2,
+     "away_goals": 4,
+     "away": "gfk"
+    },
+    {
+     "week": 4,
+     "home": "riz",
+     "home_goals": 0,
+     "away_goals": 1,
+     "away": "ala"
+    },
+    {
+     "week": 5,
+     "home": "bjk",
+     "home_goals": 3,
+     "away_goals": 0,
+     "away": "erz"
+    },
+    {
+     "week": 5,
+     "home": "sam",
+     "home_goals": 1,
+     "away_goals": 5,
+     "away": "cor"
+    },
+    {
+     "week": 5,
+     "home": "eyu",
+     "home_goals": 0,
+     "away_goals": 2,
+     "away": "riz"
+    },
+    {
+     "week": 5,
+     "home": "ala",
+     "home_goals": 2,
+     "away_goals": 2,
+     "away": "goz"
+    },
+    {
+     "week": 5,
+     "home": "kon",
+     "home_goals": 1,
+     "away_goals": 0,
+     "away": "ts"
+    },
+    {
+     "week": 5,
+     "home": "gen",
+     "home_goals": 1,
+     "away_goals": 2,
+     "away": "kas"
+    },
+    {
+     "week": 5,
+     "home": "amd",
+     "home_goals": 5,
+     "away_goals": 0,
+     "away": "ibfk"
+    },
+    {
+     "week": 5,
+     "home": "gs",
+     "home_goals": 1,
+     "away_goals": 0,
+     "away": "koc"
+    },
+    {
+     "week": 5,
+     "home": "gfk",
+     "home_goals": 0,
+     "away_goals": 0,
+     "away": "fb"
+    },
+    {
+     "week": 6,
+     "home": "kas",
+     "home_goals": 0,
+     "away_goals": 0,
+     "away": "kon"
+    },
+    {
+     "week": 6,
+     "home": "ts",
+     "home_goals": 4,
+     "away_goals": 0,
+     "away": "gs"
+    },
+    {
+     "week": 6,
+     "home": "ibfk",
+     "home_goals": 4,
+     "away_goals": 0,
+     "away": "gen"
+    },
+    {
+     "week": 6,
+     "home": "koc",
+     "home_goals": 2,
+     "away_goals": 0,
+     "away": "gfk"
+    },
+    {
+     "week": 6,
+     "home": "cor",
+     "home_goals": 1,
+     "away_goals": 2,
+     "away": "ala"
+    },
+    {
+     "week": 6,
+     "home": "goz",
+     "home_goals": 2,
+     "away_goals": 2,
+     "away": "riz"
+    },
+    {
+     "week": 6,
+     "home": "fb",
+     "home_goals": 8,
+     "away_goals": 0,
+     "away": "eyu"
+    },
+    {
+     "week": 6,
+     "home": "amd",
+     "home_goals": 3,
+     "away_goals": 2,
+     "away": "bjk"
+    },
+    {
+     "week": 6,
+     "home": "erz",
+     "home_goals": 1,
+     "away_goals": 0,
+     "away": "sam"
+    }
+   ],
+   "fixtures_weeks_7_12": [
+    {
+     "week": 7,
+     "home": "gs",
+     "away": "kas",
+     "date": "2026-10-09",
+     "time": "20:00",
+     "tz": "Europe/Istanbul"
+    },
+    {
+     "week": 7,
+     "home": "gen",
+     "away": "amd",
+     "date": "2026-10-10",
+     "time": "13:30",
+     "tz": "Europe/Istanbul"
+    },
+    {
+     "week": 7,
+     "home": "ala",
+     "away": "erz",
+     "date": "2026-10-10",
+     "time": "16:00",
+     "tz": "Europe/Istanbul"
+    },
+    {
+     "week": 7,
+     "home": "sam",
+     "away": "ts",
+     "date": "2026-10-10",
+     "time": "16:00",
+     "tz": "Europe/Istanbul"
+    },
+    {
+     "week": 7,
+     "home": "riz",
+     "away": "fb",
+     "date": "2026-10-10",
+     "time": "19:00",
+     "tz": "Europe/Istanbul"
+    },
+    {
+     "week": 7,
+     "home": "kon",
+     "away": "ibfk",
+     "date": "2026-10-11",
+     "time": "13:30",
+     "tz": "Europe/Istanbul"
+    },
+    {
+     "week": 7,
+     "home": "gfk",
+     "away": "cor",
+     "date": "2026-10-11",
+     "time": "16:00",
+     "tz": "Europe/Istanbul"
+    },
+    {
+     "week": 7,
+     "home": "bjk",
+     "away": "koc",
+     "date": "2026-10-11",
+     "time": "19:00",
+     "tz": "Europe/Istanbul"
+    },
+    {
+     "week": 7,
+     "home": "eyu",
+     "away": "goz",
+     "date": "2026-10-12",
+     "time": "20:00",
+     "tz": "Europe/Istanbul"
+    },
+    {
+     "week": 8,
+     "home": "cor",
+     "away": "riz",
+     "date_window": "2026-10-16/2026-10-19"
+    },
+    {
+     "week": 8,
+     "home": "fb",
+     "away": "ala",
+     "date_window": "2026-10-16/2026-10-19"
+    },
+    {
+     "week": 8,
+     "home": "erz",
+     "away": "eyu",
+     "date_window": "2026-10-16/2026-10-19"
+    },
+    {
+     "week": 8,
+     "home": "gen",
+     "away": "gs",
+     "date_window": "2026-10-16/2026-10-19"
+    },
+    {
+     "week": 8,
+     "home": "amd",
+     "away": "kon",
+     "date_window": "2026-10-16/2026-10-19"
+    },
+    {
+     "week": 8,
+     "home": "kas",
+     "away": "sam",
+     "date_window": "2026-10-16/2026-10-19"
+    },
+    {
+     "week": 8,
+     "home": "koc",
+     "away": "goz",
+     "date_window": "2026-10-16/2026-10-19"
+    },
+    {
+     "week": 8,
+     "home": "ibfk",
+     "away": "gfk",
+     "date_window": "2026-10-16/2026-10-19"
+    },
+    {
+     "week": 8,
+     "home": "ts",
+     "away": "bjk",
+     "date_window": "2026-10-16/2026-10-19"
+    },
+    {
+     "week": 9,
+     "home": "ala",
+     "away": "koc"
+    },
+    {
+     "week": 9,
+     "home": "sam",
+     "away": "amd"
+    },
+    {
+     "week": 9,
+     "home": "eyu",
+     "away": "kas"
+    },
+    {
+     "week": 9,
+     "home": "gfk",
+     "away": "erz"
+    },
+    {
+     "week": 9,
+     "home": "goz",
+     "away": "cor"
+    },
+    {
+     "week": 9,
+     "home": "kon",
+     "away": "gen"
+    },
+    {
+     "week": 9,
+     "home": "gs",
+     "away": "fb"
+    },
+    {
+     "week": 9,
+     "home": "riz",
+     "away": "ts"
+    },
+    {
+     "week": 9,
+     "home": "bjk",
+     "away": "ibfk"
+    },
+    {
+     "week": 10,
+     "home": "kon",
+     "away": "gs"
+    },
+    {
+     "week": 10,
+     "home": "koc",
+     "away": "riz"
+    },
+    {
+     "week": 10,
+     "home": "erz",
+     "away": "cor"
+    },
+    {
+     "week": 10,
+     "home": "fb",
+     "away": "goz"
+    },
+    {
+     "week": 10,
+     "home": "ts",
+     "away": "gfk"
+    },
+    {
+     "week": 10,
+     "home": "amd",
+     "away": "eyu"
+    },
+    {
+     "week": 10,
+     "home": "ibfk",
+     "away": "sam"
+    },
+    {
+     "week": 10,
+     "home": "kas",
+     "away": "bjk"
+    },
+    {
+     "week": 10,
+     "home": "gen",
+     "away": "ala"
+    },
+    {
+     "week": 11,
+     "home": "gfk",
+     "away": "kas"
+    },
+    {
+     "week": 11,
+     "home": "gs",
+     "away": "amd"
+    },
+    {
+     "week": 11,
+     "home": "goz",
+     "away": "ibfk"
+    },
+    {
+     "week": 11,
+     "home": "sam",
+     "away": "kon"
+    },
+    {
+     "week": 11,
+     "home": "eyu",
+     "away": "koc"
+    },
+    {
+     "week": 11,
+     "home": "bjk",
+     "away": "gen"
+    },
+    {
+     "week": 11,
+     "home": "cor",
+     "away": "fb"
+    },
+    {
+     "week": 11,
+     "home": "ala",
+     "away": "ts"
+    },
+    {
+     "week": 11,
+     "home": "riz",
+     "away": "erz"
+    },
+    {
+     "week": 12,
+     "home": "amd",
+     "away": "riz"
+    },
+    {
+     "week": 12,
+     "home": "gen",
+     "away": "gfk"
+    },
+    {
+     "week": 12,
+     "home": "gs",
+     "away": "sam"
+    },
+    {
+     "week": 12,
+     "home": "koc",
+     "away": "fb"
+    },
+    {
+     "week": 12,
+     "home": "kon",
+     "away": "bjk"
+    },
+    {
+     "week": 12,
+     "home": "ts",
+     "away": "eyu"
+    },
+    {
+     "week": 12,
+     "home": "erz",
+     "away": "goz"
+    },
+    {
+     "week": 12,
+     "home": "kas",
+     "away": "ala"
+    },
+    {
+     "week": 12,
+     "home": "ibfk",
+     "away": "cor"
+    }
+   ]
+  }
+ },
+ "benchmarks": {
+  "premier_league_2025_26": {
+   "set_piece_goals": 269,
+   "matches": 380,
+   "set_piece_goals_per_match": 0.708
+  },
+  "super_lig_2025_26": {
+   "set_piece_goals": 166,
+   "goals": 812,
+   "matches": 306,
+   "set_piece_goals_per_match": 0.542,
+   "set_piece_goal_share": 0.2044
+  }
+ }
+}

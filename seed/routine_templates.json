@@ -1,0 +1,1024 @@
+{
+ "meta": {
+  "coordinate_system": "105x68 m; hücum edilen kale x=105; y=0 hücum eden takımın sağ taç çizgisi (SPEC §4). Şablonlar şematik yerleşimlerdir; kulüp kendi oyuncularına göre uyarlar.",
+  "curve": "Kavis katsayısı: kontrol noktası, çizgi uzunluğunun bu oranı kadar dik yönde kaydırılır (ikinci dereceden Bézier)."
+ },
+ "templates": [
+  {
+   "id": "tpl-yakin",
+   "name": "Yakın direkte sıçratma",
+   "sp_type": "corner",
+   "side": "right",
+   "is_defensive": false,
+   "when_to_use": "Rakip yakın direği alanla savunuyorsa.",
+   "notes": "Yakın direkteki oyuncu topu kafayla arka direğe sıçratır; arka direğe geç koşan oyuncu bitirir. Bir oyuncu yakın direk savunmacısını perdeler.",
+   "players": [
+    {
+     "team": "opponent",
+     "role": "gk",
+     "x": 103.5,
+     "y": 34.0
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 101.7,
+     "y": 29.2
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 99.5,
+     "y": 33.1
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 98.4,
+     "y": 36.9
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 87.4,
+     "y": 24.8
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 89.2,
+     "y": 29.8
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 88.0,
+     "y": 42.2
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 82.8,
+     "y": 32.0
+    },
+    {
+     "team": "own",
+     "number": 1,
+     "role": "taker",
+     "x": 102.4,
+     "y": 3.7
+    },
+    {
+     "team": "own",
+     "number": 2,
+     "role": "near_post_runner",
+     "x": 85.8,
+     "y": 26.7
+    },
+    {
+     "team": "own",
+     "number": 3,
+     "role": "blocker",
+     "x": 87.0,
+     "y": 31.3
+    },
+    {
+     "team": "own",
+     "number": 4,
+     "role": "far_post_runner",
+     "x": 86.1,
+     "y": 44.1
+    },
+    {
+     "team": "own",
+     "number": 5,
+     "role": "second_ball",
+     "x": 80.6,
+     "y": 34.0
+    }
+   ],
+   "lines": [
+    {
+     "kind": "ball_path",
+     "from": [
+      104.3,
+      1.6
+     ],
+     "to": [
+      100.6,
+      27.4
+     ],
+     "curve": 0.22
+    },
+    {
+     "kind": "ball_path",
+     "from": [
+      100.6,
+      27.4
+     ],
+     "to": [
+      101.3,
+      39.7
+     ],
+     "curve": 0.22
+    },
+    {
+     "kind": "run",
+     "from": [
+      87.0,
+      26.5
+     ],
+     "to": [
+      98.4,
+      27.0
+     ],
+     "curve": 0.1
+    },
+    {
+     "kind": "run",
+     "from": [
+      88.3,
+      31.3
+     ],
+     "to": [
+      92.9,
+      31.3
+     ],
+     "curve": 0.1
+    },
+    {
+     "kind": "run",
+     "from": [
+      87.3,
+      44.6
+     ],
+     "to": [
+      99.5,
+      40.2
+     ],
+     "curve": 0.1
+    }
+   ]
+  },
+  {
+   "id": "tpl-arka",
+   "name": "Arka direğe geç koşu",
+   "sp_type": "corner",
+   "side": "right",
+   "is_defensive": false,
+   "when_to_use": "Rakip hava topunda zayıfsa ya da adam adama savunuyorsa.",
+   "notes": "İki oyuncu ön direğe koşup savunmayı çeker, bir oyuncu perdeler; asıl hedef oyuncu geç çıkıp arka direğe gelir. Top arka direğe, içe dönük gönderilir.",
+   "players": [
+    {
+     "team": "opponent",
+     "role": "gk",
+     "x": 103.5,
+     "y": 34.0
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 101.3,
+     "y": 29.4
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 100.0,
+     "y": 34.0
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 100.2,
+     "y": 38.1
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 92.9,
+     "y": 33.3
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 91.8,
+     "y": 30.5
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 91.8,
+     "y": 37.5
+    },
+    {
+     "team": "own",
+     "number": 1,
+     "role": "taker",
+     "x": 102.4,
+     "y": 3.7
+    },
+    {
+     "team": "own",
+     "number": 2,
+     "role": "decoy",
+     "x": 90.7,
+     "y": 34.0
+    },
+    {
+     "team": "own",
+     "number": 3,
+     "role": "decoy",
+     "x": 89.8,
+     "y": 31.1
+    },
+    {
+     "team": "own",
+     "number": 4,
+     "role": "target",
+     "x": 89.8,
+     "y": 36.9
+    },
+    {
+     "team": "own",
+     "number": 5,
+     "role": "blocker",
+     "x": 88.5,
+     "y": 28.3
+    },
+    {
+     "team": "own",
+     "number": 6,
+     "role": "second_ball",
+     "x": 81.2,
+     "y": 34.0
+    }
+   ],
+   "lines": [
+    {
+     "kind": "ball_path",
+     "from": [
+      104.3,
+      1.6
+     ],
+     "to": [
+      100.6,
+      41.0
+     ],
+     "curve": 0.22
+    },
+    {
+     "kind": "run",
+     "from": [
+      90.7,
+      34.0
+     ],
+     "to": [
+      99.3,
+      28.9
+     ],
+     "curve": 0.1
+    },
+    {
+     "kind": "run",
+     "from": [
+      89.8,
+      31.1
+     ],
+     "to": [
+      98.2,
+      33.5
+     ],
+     "curve": 0.1
+    },
+    {
+     "kind": "run",
+     "from": [
+      89.8,
+      36.9
+     ],
+     "to": [
+      99.5,
+      41.0
+     ],
+     "curve": 0.1
+    },
+    {
+     "kind": "run",
+     "from": [
+      88.5,
+      28.3
+     ],
+     "to": [
+      92.9,
+      34.7
+     ],
+     "curve": 0.1
+    }
+   ]
+  },
+  {
+   "id": "tpl-kisa",
+   "name": "Kısa korner ve içeri kesme",
+   "sp_type": "corner",
+   "side": "right",
+   "is_defensive": false,
+   "when_to_use": "Rakip hava topunda güçlüyse ya da kornerde bölgesel savunuyorsa.",
+   "notes": "Kısa paslaşmayla açı değiştirilir; ceza sahası köşesine giren oyuncu penaltı noktasına içe dönük orta açar. İçerideki üç oyuncu geç koşar.",
+   "players": [
+    {
+     "team": "opponent",
+     "role": "gk",
+     "x": 103.5,
+     "y": 34.0
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 101.2,
+     "y": 29.4
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 99.5,
+     "y": 34.0
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 94.0,
+     "y": 31.3
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 93.5,
+     "y": 35.8
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 97.9,
+     "y": 14.3
+    },
+    {
+     "team": "own",
+     "number": 1,
+     "role": "taker",
+     "x": 103.0,
+     "y": 3.7
+    },
+    {
+     "team": "own",
+     "number": 2,
+     "role": "short_receiver",
+     "x": 98.4,
+     "y": 9.8
+    },
+    {
+     "team": "own",
+     "number": 3,
+     "role": "near_post_runner",
+     "x": 94.7,
+     "y": 28.5
+    },
+    {
+     "team": "own",
+     "number": 4,
+     "role": "target",
+     "x": 92.4,
+     "y": 34.0
+    },
+    {
+     "team": "own",
+     "number": 5,
+     "role": "far_post_runner",
+     "x": 93.5,
+     "y": 38.8
+    },
+    {
+     "team": "own",
+     "number": 6,
+     "role": "second_ball",
+     "x": 84.7,
+     "y": 26.7
+    }
+   ],
+   "lines": [
+    {
+     "kind": "ball_path",
+     "from": [
+      104.3,
+      1.6
+     ],
+     "to": [
+      99.0,
+      9.4
+     ],
+     "curve": 0.22
+    },
+    {
+     "kind": "run",
+     "from": [
+      98.4,
+      9.8
+     ],
+     "to": [
+      93.5,
+      15.5
+     ],
+     "curve": 0.1
+    },
+    {
+     "kind": "ball_path",
+     "from": [
+      92.9,
+      15.7
+     ],
+     "to": [
+      96.9,
+      34.0
+     ],
+     "curve": 0.22
+    },
+    {
+     "kind": "run",
+     "from": [
+      94.7,
+      28.5
+     ],
+     "to": [
+      99.3,
+      29.8
+     ],
+     "curve": 0.1
+    },
+    {
+     "kind": "run",
+     "from": [
+      92.4,
+      34.0
+     ],
+     "to": [
+      96.9,
+      34.2
+     ],
+     "curve": 0.1
+    },
+    {
+     "kind": "run",
+     "from": [
+      93.5,
+      38.8
+     ],
+     "to": [
+      98.4,
+      39.5
+     ],
+     "curve": 0.1
+    }
+   ]
+  },
+  {
+   "id": "tpl-yay",
+   "name": "Ceza yayına geri çekme ve şut",
+   "sp_type": "corner",
+   "side": "right",
+   "is_defensive": false,
+   "when_to_use": "Rakip çok uzaklaştırma yapıyor ve ceza sahasını kalabalık savunuyorsa.",
+   "notes": "Korner yerden ceza yayına çekilir; koşarak gelen şutçu ilk vuruşta bitirir. İçerideki iki oyuncu kaleciyi ve savunmayı perdeler.",
+   "players": [
+    {
+     "team": "opponent",
+     "role": "gk",
+     "x": 103.5,
+     "y": 34.0
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 101.3,
+     "y": 29.4
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 99.7,
+     "y": 34.0
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 100.0,
+     "y": 38.1
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 95.8,
+     "y": 31.3
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 94.9,
+     "y": 35.8
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 86.2,
+     "y": 38.6
+    },
+    {
+     "team": "own",
+     "number": 1,
+     "role": "taker",
+     "x": 102.4,
+     "y": 3.7
+    },
+    {
+     "team": "own",
+     "number": 2,
+     "role": "blocker",
+     "x": 97.5,
+     "y": 31.3
+    },
+    {
+     "team": "own",
+     "number": 3,
+     "role": "blocker",
+     "x": 96.9,
+     "y": 35.6
+    },
+    {
+     "team": "own",
+     "number": 4,
+     "role": "blocker",
+     "x": 93.5,
+     "y": 28.0
+    },
+    {
+     "team": "own",
+     "number": 5,
+     "role": "shooter",
+     "x": 78.4,
+     "y": 28.3
+    }
+   ],
+   "lines": [
+    {
+     "kind": "ball_path",
+     "from": [
+      104.3,
+      1.6
+     ],
+     "to": [
+      86.7,
+      33.6
+     ],
+     "curve": 0.22
+    },
+    {
+     "kind": "run",
+     "from": [
+      78.4,
+      28.3
+     ],
+     "to": [
+      85.4,
+      33.1
+     ],
+     "curve": 0.1
+    },
+    {
+     "kind": "run",
+     "from": [
+      97.5,
+      31.3
+     ],
+     "to": [
+      101.2,
+      32.9
+     ],
+     "curve": 0.1
+    },
+    {
+     "kind": "run",
+     "from": [
+      93.5,
+      28.0
+     ],
+     "to": [
+      97.5,
+      30.2
+     ],
+     "curve": 0.1
+    }
+   ]
+  },
+  {
+   "id": "tpl-sv",
+   "name": "Serbest vuruş: ikinci direğe orta",
+   "sp_type": "free_kick",
+   "side": null,
+   "is_defensive": false,
+   "when_to_use": "Rakip çok faul yapıyor ve savunma çizgisini ceza sahası önünde tutuyorsa.",
+   "notes": "Kanattan serbest vuruşta dört oyuncu ofsayt çizgisinden farklı zamanlarda koşar; top ikinci direğe, kaleciyle savunma arasına gönderilir.",
+   "players": [
+    {
+     "team": "opponent",
+     "role": "gk",
+     "x": 103.5,
+     "y": 34.0
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 89.2,
+     "y": 43.2
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 89.2,
+     "y": 38.6
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 89.2,
+     "y": 34.0
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 89.2,
+     "y": 29.4
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 89.2,
+     "y": 24.8
+    },
+    {
+     "team": "own",
+     "number": 1,
+     "role": "taker",
+     "x": 84.7,
+     "y": 17.3
+    },
+    {
+     "team": "own",
+     "number": 2,
+     "role": "far_post_runner",
+     "x": 87.0,
+     "y": 43.2
+    },
+    {
+     "team": "own",
+     "number": 3,
+     "role": "target",
+     "x": 87.0,
+     "y": 38.4
+    },
+    {
+     "team": "own",
+     "number": 4,
+     "role": "target",
+     "x": 87.0,
+     "y": 33.6
+    },
+    {
+     "team": "own",
+     "number": 5,
+     "role": "near_post_runner",
+     "x": 87.0,
+     "y": 28.9
+    }
+   ],
+   "lines": [
+    {
+     "kind": "ball_path",
+     "from": [
+      85.6,
+      18.4
+     ],
+     "to": [
+      99.0,
+      38.8
+     ],
+     "curve": 0.22
+    },
+    {
+     "kind": "run",
+     "from": [
+      87.0,
+      43.2
+     ],
+     "to": [
+      98.2,
+      40.2
+     ],
+     "curve": 0.1
+    },
+    {
+     "kind": "run",
+     "from": [
+      87.0,
+      38.4
+     ],
+     "to": [
+      97.7,
+      35.6
+     ],
+     "curve": 0.1
+    },
+    {
+     "kind": "run",
+     "from": [
+      87.0,
+      33.6
+     ],
+     "to": [
+      98.4,
+      31.3
+     ],
+     "curve": 0.1
+    },
+    {
+     "kind": "run",
+     "from": [
+      87.0,
+      28.9
+     ],
+     "to": [
+      96.4,
+      27.4
+     ],
+     "curve": 0.1
+    }
+   ]
+  },
+  {
+   "id": "tpl-tac",
+   "name": "Uzun taç: ön direğe sıçratma",
+   "sp_type": "throw_in",
+   "side": "right",
+   "is_defensive": false,
+   "when_to_use": "Kafa gücünüz yüksekse ya da rakip hava topunda zayıfsa.",
+   "notes": "Taç ceza sahası hizasından ön direğe atılır; ön direkteki oyuncu topu arka direğe sıçratır, iki oyuncu arka direğe koşar.",
+   "players": [
+    {
+     "team": "opponent",
+     "role": "gk",
+     "x": 103.5,
+     "y": 34.0
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 99.5,
+     "y": 25.4
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 99.9,
+     "y": 31.3
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 98.6,
+     "y": 36.7
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 92.9,
+     "y": 34.0
+    },
+    {
+     "team": "opponent",
+     "role": "defender",
+     "x": 93.1,
+     "y": 26.7
+    },
+    {
+     "team": "own",
+     "number": 1,
+     "role": "thrower",
+     "x": 93.3,
+     "y": 2.0
+    },
+    {
+     "team": "own",
+     "number": 2,
+     "role": "near_post_flick",
+     "x": 92.0,
+     "y": 20.4
+    },
+    {
+     "team": "own",
+     "number": 3,
+     "role": "far_post_runner",
+     "x": 94.9,
+     "y": 34.0
+    },
+    {
+     "team": "own",
+     "number": 4,
+     "role": "far_post_runner",
+     "x": 92.9,
+     "y": 38.6
+    },
+    {
+     "team": "own",
+     "number": 5,
+     "role": "second_ball",
+     "x": 85.8,
+     "y": 28.5
+    }
+   ],
+   "lines": [
+    {
+     "kind": "ball_path",
+     "from": [
+      93.5,
+      3.3
+     ],
+     "to": [
+      99.7,
+      24.3
+     ],
+     "curve": 0.22
+    },
+    {
+     "kind": "ball_path",
+     "from": [
+      99.7,
+      24.3
+     ],
+     "to": [
+      100.6,
+      36.4
+     ],
+     "curve": 0.22
+    },
+    {
+     "kind": "run",
+     "from": [
+      92.0,
+      20.4
+     ],
+     "to": [
+      98.6,
+      23.7
+     ],
+     "curve": 0.1
+    },
+    {
+     "kind": "run",
+     "from": [
+      94.9,
+      34.0
+     ],
+     "to": [
+      99.7,
+      35.6
+     ],
+     "curve": 0.1
+    },
+    {
+     "kind": "run",
+     "from": [
+      92.9,
+      38.6
+     ],
+     "to": [
+      99.0,
+      40.2
+     ],
+     "curve": 0.1
+    }
+   ]
+  },
+  {
+   "id": "tpl-karma",
+   "name": "Korner savunması: karma",
+   "sp_type": "corner",
+   "side": "right",
+   "is_defensive": true,
+   "when_to_use": "Rakip kafa golünde ve hava topunda güçlüyse.",
+   "notes": "Bu şablonda halkalar sizin oyuncularınız, dolu daireler rakip. Altı pas çizgisinde üç alan oyuncusu ve yakın direkte bir oyuncu; en uzun üç oyuncunuz rakibin hedef oyuncularında adam adama; bir oyuncu ceza yayında ikinci topta.",
+   "players": [
+    {
+     "team": "own",
+     "role": "gk",
+     "x": 103.5,
+     "y": 34.0
+    },
+    {
+     "team": "own",
+     "role": "zonal_or_marker",
+     "x": 99.3,
+     "y": 38.1
+    },
+    {
+     "team": "own",
+     "role": "zonal_or_marker",
+     "x": 99.3,
+     "y": 34.0
+    },
+    {
+     "team": "own",
+     "role": "zonal_or_marker",
+     "x": 99.3,
+     "y": 29.9
+    },
+    {
+     "team": "own",
+     "role": "zonal_or_marker",
+     "x": 102.8,
+     "y": 29.6
+    },
+    {
+     "team": "own",
+     "role": "zonal_or_marker",
+     "x": 93.6,
+     "y": 36.9
+    },
+    {
+     "team": "own",
+     "role": "zonal_or_marker",
+     "x": 94.2,
+     "y": 31.6
+    },
+    {
+     "team": "own",
+     "role": "zonal_or_marker",
+     "x": 93.1,
+     "y": 26.1
+    },
+    {
+     "team": "own",
+     "role": "zonal_or_marker",
+     "x": 85.6,
+     "y": 34.0
+    },
+    {
+     "team": "opponent",
+     "number": 1,
+     "role": "opp_taker",
+     "x": 102.4,
+     "y": 3.7
+    },
+    {
+     "team": "opponent",
+     "number": 2,
+     "role": "opp_target",
+     "x": 91.6,
+     "y": 36.6
+    },
+    {
+     "team": "opponent",
+     "number": 3,
+     "role": "opp_target",
+     "x": 92.2,
+     "y": 31.3
+    },
+    {
+     "team": "opponent",
+     "number": 4,
+     "role": "opp_target",
+     "x": 90.9,
+     "y": 25.6
+    },
+    {
+     "team": "opponent",
+     "number": 5,
+     "role": "opp_second_ball",
+     "x": 82.8,
+     "y": 34.0
+    }
+   ],
+   "lines": [
+    {
+     "kind": "ball_path",
+     "from": [
+      104.3,
+      1.6
+     ],
+     "to": [
+      99.0,
+      34.0
+     ],
+     "curve": 0.22
+    }
+   ]
+  }
+ ]
+}
