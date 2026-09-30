@@ -24,6 +24,13 @@ v1 tek kulüp için dağıtılır, ancak şema en fazla 20 kiracıyı destekleme
 - İlk girişte kullanıcı kaydı `kurgu_resolve_user(iss, sub, email, name)` SECURITY DEFINER fonksiyonuyla açılır. `users` tablosu bu yüzden FORCE değil yalnızca ENABLE RLS kullanır; uygulama rolü tablo sahibi olmadığı için yine RLS'ye tabidir.
 - Kiracı, `X-Kurgu-Tenant` başlığıyla seçilir; tek üyelik varsa otomatik seçilir. Üyelik olmayan kiracı 403 döner.
 
+## Uygulama notu (Faz 1)
+- Paylaşılan lig tabloları (`competitions`, `seasons`, `teams`, `players`, `matches`, `standings_snapshots`, `team_season_stats`, `events`, `provider_id_map`) ENABLE RLS kullanır. Tablo sahibi göç rolü tohum yüklerken politikaları atlar; `kurgu_app` ve `kurgu_worker` tabidir.
+- Okuma lisansla açılır. Yarışmaya bağlı tablolar `kurgu_licensed*` SECURITY DEFINER fonksiyonlarıyla yalnızca lisanslı yarışmayı gösterir. Birden çok yarışmada yer alan varlıklar (`teams`, `players`, `provider_id_map`) geçerli en az bir lisansı olan kiracıya görünür. Süresi dolan lisans veriyi gizler.
+- Paylaşılan tablolara yazma yalnızca `kurgu_worker` rolüne açıktır. `data_licenses` uygulama rolü için salt okunurdur; lisansı yönetim akışı açar.
+- `ingestion_runs`, `raw_payloads` ve `set_pieces` karma tablolardır: `tenant_id` null ise paylaşılan (sağlayıcı), dolu ise kiracıya aittir. `set_pieces` için `source='provider'` ⇔ `tenant_id is null` kısıtı vardır; paylaşılan diziler lisanslı maçlarda okunur ama uygulama rolü tarafından değiştirilemez.
+- `audit_log` için uygulama rollerine yalnızca `select, insert` verilir.
+
 ## Doğrulama
 - Kiracılar arası erişim testi: A kiracısıyla oluşturulan satır B kiracısıyla okunduğunda boş liste, doğrudan kimlikle istendiğinde 404/403 döner (Faz 1 kabul kriteri).
 - Her yeni tablo için bir "RLS açık mı" meta testi: `pg_class.relrowsecurity` ve `relforcerowsecurity` kiracı tablolarında true olmalı.
