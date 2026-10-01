@@ -7,8 +7,8 @@ const TONE: Record<ImportStatusValue, string> = {
   uploaded: "border-accent bg-accent/15 text-ink",
   validated: "border-pos/50 bg-pos/10 text-ink",
   quarantined: "border-neg/60 bg-neg/10 text-ink",
-  committed: "border-pri bg-pri text-brand-ink",
-  failed: "border-neg bg-neg text-brand-ink",
+  committed: "border-pri bg-pri text-pri-ink",
+  failed: "border-neg bg-neg text-pri-ink",
 };
 
 /** Durum rozeti: renk tek başına anlam taşımaz, durum adı her zaman yazılır. */

@@ -252,7 +252,7 @@ export function LiveTagger({ fixtureId, home, away, ownSide, routines }: Props) 
         <span
           className={cn(
             "inline-flex items-center gap-2 rounded-full px-3 py-1 font-medium",
-            online ? "bg-pos text-brand-ink" : "bg-neg text-brand-ink",
+            online ? "bg-pos text-pri-ink" : "bg-neg text-pri-ink",
           )}
           data-online={online}
         >
@@ -298,7 +298,7 @@ export function LiveTagger({ fixtureId, home, away, ownSide, routines }: Props) 
               <button
                 type="button"
                 onClick={() => updateClock(toggleClock(clock, Date.now()))}
-                className="min-h-14 rounded-md bg-pri px-4 font-medium text-brand-ink"
+                className="min-h-14 rounded-md bg-pri px-4 font-medium text-pri-ink"
               >
                 {clock.startedAt === null ? t("clockStart") : t("clockPause")}
               </button>
@@ -312,7 +312,7 @@ export function LiveTagger({ fixtureId, home, away, ownSide, routines }: Props) 
                     className={cn(
                       "min-h-14 min-w-14 rounded-md border px-2 text-sm",
                       clock.period === p
-                        ? "border-pri bg-pri text-brand-ink"
+                        ? "border-pri bg-pri text-pri-ink"
                         : "border-line bg-surface",
                     )}
                   >
@@ -366,7 +366,7 @@ export function LiveTagger({ fixtureId, home, away, ownSide, routines }: Props) 
                   }}
                   className={cn(
                     "flex min-h-14 items-center justify-center gap-2 rounded-md border px-2 font-medium",
-                    spType === type ? "border-pri bg-pri text-brand-ink" : "border-line bg-surface",
+                    spType === type ? "border-pri bg-pri text-pri-ink" : "border-line bg-surface",
                   )}
                 >
                   {tA(`spType.${type}`)}
@@ -390,7 +390,7 @@ export function LiveTagger({ fixtureId, home, away, ownSide, routines }: Props) 
                   }}
                   className={cn(
                     "flex min-h-14 items-center justify-center gap-2 rounded-md border px-2 font-medium",
-                    team === side ? "border-pri bg-pri text-brand-ink" : "border-line bg-surface",
+                    team === side ? "border-pri bg-pri text-pri-ink" : "border-line bg-surface",
                   )}
                 >
                   <TeamBadge code={teams[side].code} name={teams[side].name} />
@@ -446,7 +446,7 @@ export function LiveTagger({ fixtureId, home, away, ownSide, routines }: Props) 
                     className={cn(
                       "min-h-14 rounded-md border px-1 text-sm",
                       contact === value
-                        ? "border-pri bg-pri text-brand-ink"
+                        ? "border-pri bg-pri text-pri-ink"
                         : "border-line bg-surface",
                     )}
                   >
@@ -470,7 +470,7 @@ export function LiveTagger({ fixtureId, home, away, ownSide, routines }: Props) 
                   className={cn(
                     "flex min-h-16 flex-col items-center justify-center rounded-md border-2 px-2 text-center font-medium",
                     outcome === "goal"
-                      ? "border-pos bg-pos text-brand-ink"
+                      ? "border-pos bg-pos text-pri-ink"
                       : outcome === "counter_conceded"
                         ? "border-neg bg-surface text-ink"
                         : "border-line bg-surface",
@@ -538,7 +538,7 @@ export function LiveTagger({ fixtureId, home, away, ownSide, routines }: Props) 
                     className={cn(
                       "ml-auto rounded px-2 py-0.5 text-xs",
                       tag.error
-                        ? "bg-neg text-brand-ink"
+                        ? "bg-neg text-pri-ink"
                         : tag.pending
                           ? "bg-accent text-accent-ink"
                           : "bg-bg text-ink-2",

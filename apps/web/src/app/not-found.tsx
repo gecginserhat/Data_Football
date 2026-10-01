@@ -12,7 +12,7 @@ export default async function NotFound() {
         action={
           <Link
             href="/"
-            className="inline-flex min-h-11 items-center rounded-md bg-pri px-4 text-sm text-brand-ink"
+            className="inline-flex min-h-11 items-center rounded-md bg-pri px-4 text-sm text-pri-ink"
           >
             {t("backHome")}
           </Link>

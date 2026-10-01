@@ -397,7 +397,7 @@ export default async function ImportDetailPage({
             <button
               type="submit"
               disabled={data.status !== "validated"}
-              className="min-h-11 rounded-md bg-pri px-5 text-sm font-semibold text-brand-ink focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:opacity-50"
+              className="min-h-11 rounded-md bg-pri px-5 text-sm font-semibold text-pri-ink focus-visible:outline-2 focus-visible:outline-focus disabled:cursor-not-allowed disabled:opacity-50"
             >
               {t("commit.submit")}
             </button>

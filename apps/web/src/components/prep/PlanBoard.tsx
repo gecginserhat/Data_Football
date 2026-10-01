@@ -83,7 +83,7 @@ function Item({
               aria-pressed={done}
               className={cn(
                 "flex size-11 shrink-0 items-center justify-center rounded-md border text-lg",
-                done ? "border-pos bg-pos text-brand-ink" : "border-line bg-surface",
+                done ? "border-pos bg-pos text-pri-ink" : "border-line bg-surface",
               )}
             >
               {done ? "✓" : ""}

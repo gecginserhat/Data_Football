@@ -296,7 +296,7 @@ export function VideoWorkspace({
               <button
                 type="submit"
                 disabled={saving}
-                className="min-h-11 rounded-md bg-pri px-4 font-medium text-brand-ink disabled:opacity-50"
+                className="min-h-11 rounded-md bg-pri px-4 font-medium text-pri-ink disabled:opacity-50"
               >
                 {t("saveClip")}
               </button>
@@ -335,7 +335,7 @@ export function VideoWorkspace({
                     <button
                       type="button"
                       onClick={() => seek(clip.start_s, clip.end_s)}
-                      className="min-h-11 rounded-md bg-pri px-3 font-medium text-brand-ink"
+                      className="min-h-11 rounded-md bg-pri px-3 font-medium text-pri-ink"
                     >
                       {t("play")}
                     </button>

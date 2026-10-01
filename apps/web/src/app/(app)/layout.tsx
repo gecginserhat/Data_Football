@@ -24,7 +24,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
           <form action={stepUpAction} className="mt-6">
             <button
               type="submit"
-              className="min-h-11 w-full rounded-md bg-pri px-4 font-medium text-brand-ink hover:opacity-90"
+              className="min-h-11 w-full rounded-md bg-pri px-4 font-medium text-pri-ink hover:opacity-90"
             >
               {t("auth.mfaContinue")}
             </button>
@@ -49,10 +49,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
         />
         {result.status === "unauthenticated" ? (
           <form action={signOutAction} className="mt-4">
-            <button
-              type="submit"
-              className="min-h-11 rounded-md bg-pri px-4 text-sm text-brand-ink"
-            >
+            <button type="submit" className="min-h-11 rounded-md bg-pri px-4 text-sm text-pri-ink">
               {t("app.signOut")}
             </button>
           </form>
