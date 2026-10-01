@@ -248,8 +248,12 @@ async def test_non_club_fixture_is_422(
     fixture = await superuser.fetchval(
         """
         select m.id from matches m
+        join seasons s on s.id = m.season_id
+        join competitions c on c.id = s.competition_id
         join teams h on h.id = m.home_team_id join teams a on a.id = m.away_team_id
-        where h.code <> 'TS' and a.code <> 'TS' limit 1
+        where c.code = 'TR-SL' and m.tenant_id is null
+          and h.code <> 'TS' and a.code <> 'TS'
+        order by m.id limit 1
         """
     )
     response = await client.get(f"/api/v1/fixtures/{fixture}/prep", headers=coach)
