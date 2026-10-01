@@ -4,6 +4,27 @@
  */
 
 export interface paths {
+    "/api/v1/admin/llm-settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Llm Settings */
+        get: operations["getLlmSettings"];
+        /**
+         * Update Llm Settings
+         * @description Özelliği açar/kapatır ve aylık sınırları değiştirir (A-76).
+         */
+        put: operations["updateLlmSettings"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/clips": {
         parameters: {
             query?: never;
@@ -78,6 +99,31 @@ export interface paths {
         get: operations["getFixture"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fixtures/{fixture_id}/briefing": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Briefing
+         * @description Son doğrulanmış brifing; yoksa `status = none`.
+         */
+        get: operations["getBriefing"];
+        put?: never;
+        /**
+         * Generate Briefing
+         * @description Brifing üretir (A-75). Sayılar girdiyle eşleşmezse bir kez yeniden dener; yine eşleşmezse
+         *     metin döndürülmez (`status = failed`).
+         */
+        post: operations["generateBriefing"];
         delete?: never;
         options?: never;
         head?: never;
@@ -344,6 +390,47 @@ export interface paths {
          * @description Kabul, gerekçeli red ya da geri alma (A-50). Kabul plana madde ekler (A-52).
          */
         post: operations["decideRecommendation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Reports */
+        get: operations["listReports"];
+        put?: never;
+        /**
+         * Create Report
+         * @description Rapor üretimini başlatır (A-68). Fikstür kulübün maçı olmalıdır.
+         */
+        post: operations["createReport"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/reports/{report_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Report
+         * @description Durum ve ilerleme; hazırsa 10 dakika geçerli indirme adresi (A-70).
+         */
+        get: operations["getReport"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -954,6 +1041,37 @@ export interface components {
              */
             season_id: string;
         };
+        /** BriefingOut */
+        BriefingOut: {
+            /**
+             * Attempts
+             * @default 0
+             */
+            attempts: number;
+            /** Created At */
+            created_at?: string | null;
+            /**
+             * Fixture Id
+             * Format: uuid
+             */
+            fixture_id: string;
+            /** Model */
+            model?: string | null;
+            /**
+             * Numbers
+             * @default 0
+             */
+            numbers: number;
+            /** Reason */
+            reason?: ("unverified" | "error") | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "verified" | "failed" | "none";
+            /** Text */
+            text?: string | null;
+        };
         /** Change */
         Change: {
             /**
@@ -1502,6 +1620,43 @@ export interface components {
             /** Status */
             status: string;
         };
+        /** LlmSettings */
+        LlmSettings: {
+            /**
+             * Enabled
+             * @default true
+             */
+            enabled: boolean;
+            /**
+             * Monthly Requests
+             * @default 200
+             */
+            monthly_requests: number;
+            /**
+             * Monthly Tokens
+             * @default 2000000
+             */
+            monthly_tokens: number;
+        };
+        /** LlmSettingsOut */
+        LlmSettingsOut: {
+            /** Configured */
+            configured: boolean;
+            settings: components["schemas"]["LlmSettings"];
+            usage: components["schemas"]["LlmUsage"];
+        };
+        /** LlmUsage */
+        LlmUsage: {
+            /**
+             * Period Start
+             * Format: date
+             */
+            period_start: string;
+            /** Requests */
+            requests: number;
+            /** Tokens */
+            tokens: number;
+        };
         /** MappingUpdate */
         MappingUpdate: {
             /**
@@ -1867,6 +2022,78 @@ export interface components {
             id: string;
             /** Reason */
             reason: string;
+        };
+        /** ReportCreate */
+        ReportCreate: {
+            /**
+             * Fixture Id
+             * Format: uuid
+             */
+            fixture_id: string;
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "opponent" | "match_plan";
+        };
+        /** ReportFixture */
+        ReportFixture: {
+            /** Away Code */
+            away_code: string;
+            /** Home Code */
+            home_code: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Kickoff At */
+            kickoff_at: string | null;
+            /** Week */
+            week: number | null;
+        };
+        /** ReportOut */
+        ReportOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            created_by: components["schemas"]["UserRef"] | null;
+            /** Data As Of */
+            data_as_of: {
+                [key: string]: unknown;
+            } | null;
+            /** Download Url */
+            download_url?: string | null;
+            /** Duration Ms */
+            duration_ms: number | null;
+            /** Error */
+            error: string | null;
+            /** Finished At */
+            finished_at: string | null;
+            fixture: components["schemas"]["ReportFixture"];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Pages */
+            pages: number | null;
+            /** Progress */
+            progress: number;
+            /** Size Bytes */
+            size_bytes: number | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "queued" | "running" | "ready" | "failed";
+            /**
+             * Type
+             * @enum {string}
+             */
+            type: "opponent" | "match_plan";
         };
         /**
          * Role
@@ -2568,6 +2795,72 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    getLlmSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LlmSettingsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    updateLlmSettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LlmSettings"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LlmSettingsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     listClips: {
         parameters: {
             query?: {
@@ -2765,6 +3058,72 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FixtureOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getBriefing: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                fixture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BriefingOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    generateBriefing: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                fixture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BriefingOut"];
                 };
             };
             /** @description Validation Error */
@@ -3345,6 +3704,108 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["RecommendationOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listReports: {
+        parameters: {
+            query?: {
+                fixture_id?: string | null;
+                limit?: number;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    createReport: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ReportCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getReport: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                report_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReportOut"];
                 };
             };
             /** @description Validation Error */

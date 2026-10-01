@@ -109,6 +109,8 @@ jobs:
         run: |
           cp .env.example .env
           sed -i "s|^AUTH_SECRET=.*|AUTH_SECRET=$(openssl rand -base64 32)|" .env
+          # Brifing E2E testi gerçek modeli çağırmaz (ADR-0013).
+          sed -i "s|^KURGU_LLM_BACKEND=.*|KURGU_LLM_BACKEND=fake|" .env
       - name: Start stack
         run: |
           docker compose --env-file .env -f infra/docker-compose.yml -f infra/docker-compose.ci.yml up --build -d
