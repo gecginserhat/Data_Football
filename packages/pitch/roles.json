@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "note": "Rutin rolleri (SPEC §3.4) ve şablonlardaki ek roller. Web editörü ve PDF dışa aktarımı bu dosyayı okur.",
+  "own": [
+    { "id": "taker", "phase": "attack", "tr": "Kullanan", "en": "Taker" },
+    { "id": "thrower", "phase": "attack", "tr": "Taç atan", "en": "Thrower" },
+    {
+      "id": "near_post_runner",
+      "phase": "attack",
+      "tr": "Yakın direk koşucusu",
+      "en": "Near-post runner"
+    },
+    {
+      "id": "far_post_runner",
+      "phase": "attack",
+      "tr": "Arka direk koşucusu",
+      "en": "Far-post runner"
+    },
+    {
+      "id": "near_post_flick",
+      "phase": "attack",
+      "tr": "Yakın direk sıçratıcı",
+      "en": "Near-post flick"
+    },
+    { "id": "target", "phase": "attack", "tr": "Hedef", "en": "Target" },
+    { "id": "blocker", "phase": "attack", "tr": "Perdeleyici", "en": "Blocker" },
+    { "id": "decoy", "phase": "attack", "tr": "Aldatıcı koşu", "en": "Decoy" },
+    { "id": "short_receiver", "phase": "attack", "tr": "Kısa pas alan", "en": "Short receiver" },
+    { "id": "shooter", "phase": "attack", "tr": "Şutör", "en": "Shooter" },
+    { "id": "second_ball", "phase": "attack", "tr": "İkinci top", "en": "Second ball" },
+    { "id": "rest_defense", "phase": "attack", "tr": "Geride kalan", "en": "Rest defence" },
+    { "id": "gk", "phase": "defence", "tr": "Kaleci", "en": "Goalkeeper" },
+    { "id": "zonal", "phase": "defence", "tr": "Alan savunması", "en": "Zonal" },
+    { "id": "man_marker", "phase": "defence", "tr": "Adam adama", "en": "Man marker" },
+    {
+      "id": "zonal_or_marker",
+      "phase": "defence",
+      "tr": "Alan ya da adam",
+      "en": "Zonal or marker"
+    },
+    {
+      "id": "near_post_guard",
+      "phase": "defence",
+      "tr": "Yakın direk bekçisi",
+      "en": "Near-post guard"
+    },
+    { "id": "edge_guard", "phase": "defence", "tr": "Ceza yayı bekçisi", "en": "Edge guard" },
+    { "id": "counter_outlet", "phase": "defence", "tr": "Kontra çıkışı", "en": "Counter outlet" }
+  ],
+  "opponent": [
+    { "id": "gk", "phase": "defence", "tr": "Kaleci", "en": "Goalkeeper" },
+    { "id": "defender", "phase": "defence", "tr": "Savunmacı", "en": "Defender" },
+    { "id": "opp_taker", "phase": "attack", "tr": "Kullanan", "en": "Taker" },
+    { "id": "opp_target", "phase": "attack", "tr": "Hedef", "en": "Target" },
+    { "id": "opp_runner", "phase": "attack", "tr": "Koşucu", "en": "Runner" },
+    { "id": "opp_second_ball", "phase": "attack", "tr": "İkinci top", "en": "Second ball" }
+  ]
+}

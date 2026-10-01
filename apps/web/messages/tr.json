@@ -51,7 +51,7 @@
     "routines": {
       "title": "Rutinler",
       "emptyTitle": "Kütüphanede rutin yok",
-      "emptyDescription": "Şablonlardan ilk rutininizi oluşturabileceksiniz. Rutin editörü Faz 3'te gelir."
+      "emptyDescription": "Şablonlardan ilk rutininizi oluşturun."
     },
     "live": {
       "title": "Canlı kayıt",
@@ -530,6 +530,226 @@
       "recommendations": "Sezon önerileri",
       "recommendationsTitle": "Öneriler maç hazırlığıyla gelecek",
       "recommendationsLater": "Kural tabanlı öneriler ve tehdit etiketleri öneri motoruyla (Faz 4) eklenecek. Şimdilik yaklaşan rakiplerin duran top sıraları yukarıda."
+    }
+  },
+  "routines": {
+    "title": "Rutinler",
+    "subtitle": "Kulübünüzün duran top rutinleri, sürümleri ve kullanım sonuçları.",
+    "back": "Rutinler",
+    "tabs": {
+      "label": "Rutin sekmeleri",
+      "library": "Kütüphane",
+      "templates": "Şablonlar"
+    },
+    "filters": {
+      "type": "Duran top türü",
+      "all": "Tümü",
+      "archived": "Arşiv"
+    },
+    "create": {
+      "title": "Yeni boş rutin",
+      "submit": "Oluştur"
+    },
+    "empty": {
+      "title": "Kütüphanede rutin yok",
+      "edit": "Şablonlar sekmesinden bir şablon ekleyin ya da boş bir rutin oluşturun.",
+      "read": "Kulübünüzün analistleri rutin eklediğinde burada görünür.",
+      "archivedTitle": "Arşivde rutin yok",
+      "archived": "Arşivlenen rutinler burada listelenir; sürümleri korunur."
+    },
+    "templates": {
+      "intro": "Kurgu ile gelen hazır rutinler. Kütüphaneye eklediğinizde kulübünüze ait bir kopya açılır ve dilediğiniz gibi düzenleyebilirsiniz.",
+      "add": "Kütüphaneye ekle",
+      "emptyTitle": "Şablon yüklenmemiş",
+      "empty": "Şablonları yüklemek için make seed ya da kurgu-seed --templates çalıştırılmalı."
+    },
+    "errors": {
+      "generic": "İşlem tamamlanamadı ({code})."
+    },
+    "notices": {
+      "created": "Şablon kütüphanenize eklendi. Düzenleyip kaydettiğinizde yeni sürüm açılır.",
+      "restored": "Eski sürüm geri yüklendi; sürüm {version} olarak kaydedildi.",
+      "archived": "Bu rutin arşivde. Düzenlemek için arşivden çıkarın.",
+      "oldVersion": "Sürüm {version} görüntüleniyor (güncel sürüm {current})."
+    },
+    "thumb": "{name} çizimi",
+    "versionShort": "s{version}",
+    "defensive": "Savunma",
+    "fromTemplate": "Şablondan",
+    "archivedBadge": "Arşivde",
+    "gkShort": "K",
+    "side": {
+      "left": "Sol",
+      "right": "Sağ",
+      "none": "Belirtilmemiş"
+    },
+    "team": {
+      "own": "Bizim oyuncu",
+      "opponent": "Rakip oyuncu"
+    },
+    "lineKind": {
+      "run": "Koşu",
+      "ball_path": "Top yolu",
+      "screen": "Perde"
+    },
+    "tool": {
+      "select": "Seç",
+      "player": "Oyuncu",
+      "run": "Koşu",
+      "ball_path": "Top yolu",
+      "screen": "Perde",
+      "zone": "Bölge"
+    },
+    "toolbar": {
+      "label": "Editör araçları",
+      "tools": "Çizim aracı",
+      "newPlayer": "Yeni oyuncu",
+      "ball": "Top",
+      "layout": "Düzen",
+      "grid": "Izgara",
+      "mirror": "Aynala",
+      "history": "Geçmiş",
+      "undo": "Geri al",
+      "redo": "Yinele",
+      "delete": "Sil"
+    },
+    "board": {
+      "label": "Rutin tahtası",
+      "help": "Araç seçip sahaya tıklayın ya da sürükleyin. Seçili öğe ok tuşlarıyla 0,5 m, Shift ile 2 m kayar. Delete siler, Ctrl+Z geri alır, Ctrl+S kaydeder. Kısayollar: V P R B S Z, G ızgara, M aynala.",
+      "helpReadOnly": "Salt okunur görünüm. Kareleri oynatabilir ve kartı indirebilirsiniz."
+    },
+    "a11y": {
+      "player": "{team} {number} {role}, x {x} m, y {y} m",
+      "line": "{kind} {id}",
+      "zone": "Bölge {label}",
+      "ball": "Top, x {x} m, y {y} m"
+    },
+    "frames": {
+      "title": "Kareler",
+      "start": "Başlangıç",
+      "frame": "Kare {n}",
+      "add": "Kare ekle",
+      "remove": "Kareyi sil",
+      "duration": "Süre (ms)",
+      "play": "Oynat",
+      "stop": "Durdur",
+      "help": "Kare ekleyip oyuncuları sürükleyerek hareketi adım adım kurun.",
+      "helpFrame": "Bu karede yalnızca konumlar değişir; çizgi ve bölge eklemek için başlangıç karesine dönün.",
+      "helpReadOnly": "Oynat ile hareketi izleyin."
+    },
+    "save": {
+      "title": "Kayıt",
+      "saving": "Kaydediliyor…",
+      "dirty": "Kaydedilmemiş değişiklik var (sürüm {version} üzerine).",
+      "clean": "Sürüm {version} kayıtlı.",
+      "message": "Değişiklik notu",
+      "messagePlaceholder": "Örn. arka direk koşusu geç başlasın",
+      "button": "Kaydet (yeni sürüm)",
+      "saved": "Sürüm {version} kaydedildi.",
+      "error": "Kaydedilemedi ({code}).",
+      "conflict": "Bu rutin başka biri tarafından değiştirildi (güncel sürüm {version}).",
+      "reload": "Güncel sürümü aç",
+      "overwrite": "Yine de benimkini kaydet"
+    },
+    "export": {
+      "title": "Rutin kartı",
+      "help": "Bank ve soyunma odası için tek sayfalık kart.",
+      "saveFirst": "İndirmeden önce değişiklikleri kaydedin."
+    },
+    "properties": {
+      "title": "Seçili öğe",
+      "empty": "Düzenlemek için tahtada bir öğe seçin.",
+      "ball": "Top: başlangıç ya da bu karedeki konumu. Sürükleyerek taşıyın."
+    },
+    "details": {
+      "title": "Rutin bilgileri"
+    },
+    "fields": {
+      "name": "Ad",
+      "type": "Tür",
+      "side": "Taraf",
+      "defensive": "Savunma rutini",
+      "notes": "Notlar",
+      "whenToUse": "Ne zaman kullanılır",
+      "team": "Takım",
+      "role": "Rol",
+      "number": "Numara",
+      "label": "Etiket",
+      "labelPlaceholder": "Örn. oyuncu adı",
+      "lineKind": "Çizgi türü",
+      "owner": "Bağlı oyuncu",
+      "noOwner": "Bağlı değil",
+      "curve": "Eğim {value}",
+      "zoneLabel": "Bölge kodu",
+      "noLabel": "Etiket yok"
+    },
+    "zones": {
+      "NP": "Yakın direk",
+      "C6": "Altı pas merkezi",
+      "FP": "Arka direk",
+      "PS": "Penaltı noktası",
+      "ED": "Ceza sahası önü",
+      "SH": "Kısa",
+      "OT": "Diğer"
+    },
+    "versions": {
+      "title": "Sürümler",
+      "first": "İlk sürüm",
+      "noMessage": "Not yok",
+      "unknownUser": "Bilinmeyen kullanıcı",
+      "backToCurrent": "Güncel sürüme dön",
+      "restore": "Sürüm {version}'i geri yükle",
+      "restoreMessage": "Sürüm {version} geri yüklendi"
+    },
+    "compare": {
+      "title": "Sürüm karşılaştırma",
+      "subtitle": "s{a} ile s{b} arasındaki farklar",
+      "from": "Önceki",
+      "to": "Sonraki",
+      "submit": "Karşılaştır",
+      "needTwo": "Karşılaştırma için en az iki sürüm gerekir.",
+      "changes": "Değişiklikler",
+      "none": "İki sürümün çizimi ve bilgileri aynı.",
+      "meta": {
+        "name": "Ad değişti: {from} → {to}",
+        "side": "Taraf değişti",
+        "notes": "Notlar değişti",
+        "whenToUse": "Kullanım notu değişti",
+        "frames": "Kare sayısı: {from} → {to}"
+      },
+      "diff": {
+        "playersAdded": "{n} oyuncu eklendi",
+        "playersRemoved": "{n} oyuncu çıkarıldı",
+        "playersMoved": "{n} oyuncunun yeri değişti",
+        "playersChanged": "{n} oyuncunun rolü ya da numarası değişti",
+        "linesAdded": "{n} çizgi eklendi",
+        "linesRemoved": "{n} çizgi çıkarıldı",
+        "linesChanged": "{n} çizgi değişti",
+        "zonesAdded": "{n} bölge eklendi",
+        "zonesRemoved": "{n} bölge çıkarıldı",
+        "zonesChanged": "{n} bölge değişti"
+      }
+    },
+    "archive": {
+      "archive": "Arşivle",
+      "unarchive": "Arşivden çıkar",
+      "help": "Arşivlenen rutin kütüphanede gizlenir; sürümleri ve geçmiş kullanımları korunur.",
+      "restoreHelp": "Arşivden çıkarınca rutin kütüphanede yeniden görünür ve düzenlenebilir."
+    },
+    "stats": {
+      "title": "Kullanım",
+      "unused": "Henüz maçta kullanılmadı",
+      "unusedLong": "Bu rutin henüz bir duran top kaydına bağlanmadı. Maç içi kayıtta rutin seçildiğinde sonuçlar burada görünür.",
+      "uses": "{n} kullanım · {matches} maç",
+      "goals": "{n} gol",
+      "usesLabel": "Kullanım",
+      "matchesLabel": "Maç",
+      "goalsLabel": "Gol",
+      "xgLabel": "xG",
+      "xgPerUse": "Kullanım başına xG",
+      "firstContact": "İlk temas kazanma",
+      "shot": "Şutla biten",
+      "shrunkNote": "Oranlar kulübünüzün tüm rutinlerine doğru büzülmüştür (beta-binom)."
     }
   }
 }

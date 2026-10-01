@@ -28,6 +28,7 @@ from kurgu_analytics.ingestion.imports import (
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from kurgu_api.core.audit import write_audit
 from kurgu_api.ingestion.setpieces import insert_set_pieces
 
 Status = Literal["uploaded", "validated", "quarantined", "committed", "failed"]
@@ -361,16 +362,12 @@ async def audit(
     entity_id: uuid.UUID,
     after: dict[str, Any],
 ) -> None:
-    await session.execute(
-        text(
-            "insert into audit_log (tenant_id, actor_id, action, entity, entity_id, after)"
-            " values (:tenant, :actor, :action, 'imports', :entity_id, cast(:after as jsonb))"
-        ),
-        {
-            "tenant": tenant_id,
-            "actor": actor_id,
-            "action": action,
-            "entity_id": str(entity_id),
-            "after": json.dumps(after),
-        },
+    await write_audit(
+        session,
+        tenant_id=tenant_id,
+        actor_id=actor_id,
+        action=action,
+        entity="imports",
+        entity_id=entity_id,
+        after=after,
     )

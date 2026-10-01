@@ -14,7 +14,7 @@ SPEC §10 üç materialized view öngörüyor: `mv_team_setpiece_season`, `mv_le
 - **Erişim:** Uygulama rolleri materialized view'leri doğrudan okuyamaz. Lisans süzgeçli `security_barrier` görünümler (`v_team_setpiece_season`, `v_league_benchmarks`, `kurgu_licensed_season`) üzerinden okunur.
 - **Yenileme:** `kurgu_refresh_metric_views()` (security definer, `CONCURRENTLY`, benzersiz dizinlerle). Tohum yüklemesinin ve en az bir maç yükleyen sağlayıcı işinin sonunda çağrılır; worker'da `refresh_metric_views_job` da var. Kiracı içe aktarımları görünümleri etkilemez, yenileme gerektirmez.
 - **Lig kıyasları** (metrik başına en düşük, en yüksek, ortalama) istek anında `team_metrics` çıktısından hesaplanır: 18 takım × ~20 metrik milisaniyeler sürer ve kiracının kendi kaydını içeren birleşik tabloyla tutarlı kalır (A-36).
-- **`mv_routine_stats`** rutin kütüphanesiyle (Faz 3) eklenecek.
+- **`mv_routine_stats`** yerine Faz 3'te `security_invoker` görünüm `v_routine_stats` geldi: rutin kayıtları kiracıya ait (A-44, ADR-0008).
 
 ## Sonuçlar
 - **Artı:** Formüller tek yerde, test edilebilir; SQL ile Python arasında çift tanım yok.

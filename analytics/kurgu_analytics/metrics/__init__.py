@@ -11,6 +11,11 @@ from kurgu_analytics.metrics.ranking import (
     league_rank,
     low_sample,
 )
+from kurgu_analytics.metrics.routine import (
+    ROUTINE_INPUT_COLUMNS,
+    ROUTINE_OUTPUT_COLUMNS,
+    routine_metrics,
+)
 from kurgu_analytics.metrics.shrinkage import (
     BetaPrior,
     GammaPrior,
@@ -35,6 +40,8 @@ __all__ = [
     "METRICS",
     "MIN_MATCHES",
     "MIN_TRIALS",
+    "ROUTINE_INPUT_COLUMNS",
+    "ROUTINE_OUTPUT_COLUMNS",
     "TEAM_METRIC_COLUMNS",
     "BetaPrior",
     "GammaPrior",
@@ -49,5 +56,6 @@ __all__ = [
     "league_totals",
     "low_sample",
     "phase_xg_shares",
+    "routine_metrics",
     "team_metrics",
 ]

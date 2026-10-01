@@ -12,9 +12,12 @@ RUN uv sync --frozen --no-dev --all-packages --no-install-workspace
 
 COPY apps/api apps/api
 COPY analytics analytics
-# Saha bölgeleri tek dosyadır; TS paketiyle ortak (SPEC §3.3).
-COPY packages/pitch/zones.json packages/pitch/zones.json
-ENV KURGU_ZONES_PATH=/app/packages/pitch/zones.json
+# Saha bölgeleri ve rutin rolleri tek dosyadır; TS paketiyle ortak (SPEC §3.3, ADR-0008).
+COPY packages/pitch/zones.json packages/pitch/roles.json packages/pitch/
+# Rutin şablonları ürün içeriğidir; üretimde `kurgu-seed --templates` bunu yükler (A-40).
+COPY seed/routine_templates.json seed/
+ENV KURGU_ZONES_PATH=/app/packages/pitch/zones.json \
+    KURGU_ROLES_PATH=/app/packages/pitch/roles.json
 
 FROM base AS dev
 # Geliştirmede kaynaklar volume ile bağlanır; paketler düzenlenebilir kurulur.

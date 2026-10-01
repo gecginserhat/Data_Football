@@ -35,6 +35,7 @@ from sqlalchemy.ext.asyncio import AsyncConnection, create_async_engine
 from kurgu_api.config import get_settings
 from kurgu_api.dev_identities import DEMO_TENANT_ID, SECOND_TENANT_ID, seed_dev_identities
 from kurgu_api.league.views import refresh_metric_views
+from kurgu_api.routines.templates import load_templates, read_templates
 
 PROVIDER = "seed"
 SUPER_LIG = ("TR-SL", "Süper Lig", "TR")
@@ -53,6 +54,7 @@ class SeedResult:
     report: IntegrityReport
     teams: dict[str, uuid.UUID] = field(default_factory=dict)
     seasons: dict[str, uuid.UUID] = field(default_factory=dict)
+    templates: int = 0
 
 
 async def _map_id(conn: AsyncConnection, entity: str, provider_id: str) -> uuid.UUID | None:
@@ -343,7 +345,7 @@ async def link_tenants(conn: AsyncConnection, teams: dict[str, uuid.UUID]) -> No
 
 def validate_files(seed_dir: Path) -> tuple[SuperLigSeed, IntegrityReport]:
     seed = load_super_lig(seed_dir / "super_lig.json")
-    # Faz 3 ve 4'te yüklenecek; şimdilik yalnızca şema doğrulaması.
+    # Öneri kuralları Faz 4'te yüklenecek; şimdilik yalnızca şema doğrulaması.
     load_routine_templates(seed_dir / "routine_templates.json")
     load_recommendation_rules(seed_dir / "recommendation_rules.json")
     report = check_integrity(seed)
@@ -357,13 +359,16 @@ async def run_seed(database_url: str | None = None, seed_dir: Path | None = None
     settings = get_settings()
     if settings.kurgu_env not in {"development", "test"}:
         raise SystemExit("seed data is only for development and test environments")
-    seed, report = validate_files(seed_dir or Path(settings.kurgu_seed_dir))
+    seed_dir = seed_dir or Path(settings.kurgu_seed_dir)
+    seed, report = validate_files(seed_dir)
+    templates = read_templates(seed_dir / "routine_templates.json")
     await seed_dev_identities(database_url)
     engine = create_async_engine(database_url or settings.migrations_database_url)
     try:
         async with engine.begin() as conn:
             result = await load_league(conn, seed)
             await link_tenants(conn, result.teams)
+            result.templates = await load_templates(conn, templates)
             await refresh_metric_views(conn)
     finally:
         await engine.dispose()
@@ -371,9 +376,26 @@ async def run_seed(database_url: str | None = None, seed_dir: Path | None = None
     return result
 
 
-def main() -> None:
-    """`kurgu-seed`: yükler; `kurgu-seed --report DOSYA`: yalnızca bütünlük raporunu yazar."""
+async def run_templates(database_url: str | None = None, seed_dir: Path | None = None) -> int:
+    """Yalnızca rutin şablonları; her ortamda çalışır (ürün içeriği, A-40)."""
     settings = get_settings()
+    templates = read_templates(
+        (seed_dir or Path(settings.kurgu_seed_dir)) / "routine_templates.json"
+    )
+    engine = create_async_engine(database_url or settings.migrations_database_url)
+    try:
+        async with engine.begin() as conn:
+            return await load_templates(conn, templates)
+    finally:
+        await engine.dispose()
+
+
+def main() -> None:
+    """`kurgu-seed`: yükler; `--report DOSYA`: bütünlük raporu; `--templates`: yalnız şablonlar."""
+    settings = get_settings()
+    if sys.argv[1:] == ["--templates"]:
+        print(f"routine templates loaded: {asyncio.run(run_templates())}")
+        return
     if len(sys.argv) == 3 and sys.argv[1] == "--report":
         seed = load_super_lig(Path(settings.kurgu_seed_dir) / "super_lig.json")
         Path(sys.argv[2]).write_text(render_report(check_integrity(seed), seed), encoding="utf-8")
@@ -384,6 +406,7 @@ def main() -> None:
         print(f"warning [{warning.check}] {warning.message}")
     print(
         f"seed loaded: {len(result.teams)} teams, {len(result.seasons)} seasons,"
+        f" {result.templates} routine templates,"
         f" {len(result.report.warnings)} integrity warnings (see docs/validation/seed_integrity.md)"
     )
 

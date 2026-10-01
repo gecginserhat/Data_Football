@@ -51,7 +51,7 @@
     "routines": {
       "title": "Routines",
       "emptyTitle": "No routines in the library",
-      "emptyDescription": "You will be able to create your first routine from templates. The routine editor arrives in phase 3."
+      "emptyDescription": "Create your first routine from the templates."
     },
     "live": {
       "title": "Live tagging",
@@ -530,6 +530,226 @@
       "recommendations": "Season recommendations",
       "recommendationsTitle": "Recommendations arrive with match prep",
       "recommendationsLater": "Rule-based recommendations and threat tags come with the recommendation engine (phase 4). For now, upcoming opponents' set-piece ranks are shown above."
+    }
+  },
+  "routines": {
+    "title": "Routines",
+    "subtitle": "Your club's set-piece routines, their versions and outcomes.",
+    "back": "Routines",
+    "tabs": {
+      "label": "Routine tabs",
+      "library": "Library",
+      "templates": "Templates"
+    },
+    "filters": {
+      "type": "Set-piece type",
+      "all": "All",
+      "archived": "Archive"
+    },
+    "create": {
+      "title": "New blank routine",
+      "submit": "Create"
+    },
+    "empty": {
+      "title": "No routines in the library",
+      "edit": "Add a template from the Templates tab or create a blank routine.",
+      "read": "Routines appear here once your club's analysts add them.",
+      "archivedTitle": "No archived routines",
+      "archived": "Archived routines are listed here; their versions are kept."
+    },
+    "templates": {
+      "intro": "Ready-made routines that ship with Kurgu. Adding one creates your club's own copy, which you can edit freely.",
+      "add": "Add to library",
+      "emptyTitle": "No templates loaded",
+      "empty": "Run make seed or kurgu-seed --templates to load the templates."
+    },
+    "errors": {
+      "generic": "The action could not be completed ({code})."
+    },
+    "notices": {
+      "created": "The template was added to your library. Saving an edit creates a new version.",
+      "restored": "The old version was restored and saved as version {version}.",
+      "archived": "This routine is archived. Unarchive it to edit.",
+      "oldVersion": "Viewing version {version} (current version is {current})."
+    },
+    "thumb": "Diagram of {name}",
+    "versionShort": "v{version}",
+    "defensive": "Defensive",
+    "fromTemplate": "From template",
+    "archivedBadge": "Archived",
+    "gkShort": "GK",
+    "side": {
+      "left": "Left",
+      "right": "Right",
+      "none": "Not set"
+    },
+    "team": {
+      "own": "Our player",
+      "opponent": "Opponent"
+    },
+    "lineKind": {
+      "run": "Run",
+      "ball_path": "Ball path",
+      "screen": "Screen"
+    },
+    "tool": {
+      "select": "Select",
+      "player": "Player",
+      "run": "Run",
+      "ball_path": "Ball path",
+      "screen": "Screen",
+      "zone": "Zone"
+    },
+    "toolbar": {
+      "label": "Editor tools",
+      "tools": "Drawing tool",
+      "newPlayer": "New player",
+      "ball": "Ball",
+      "layout": "Layout",
+      "grid": "Grid",
+      "mirror": "Mirror",
+      "history": "History",
+      "undo": "Undo",
+      "redo": "Redo",
+      "delete": "Delete"
+    },
+    "board": {
+      "label": "Routine board",
+      "help": "Pick a tool and click or drag on the pitch. Arrow keys move the selection 0.5 m, 2 m with Shift. Delete removes, Ctrl+Z undoes, Ctrl+S saves. Shortcuts: V P R B S Z, G grid, M mirror.",
+      "helpReadOnly": "Read-only view. You can play the frames and download the sheet."
+    },
+    "a11y": {
+      "player": "{team} {number} {role}, x {x} m, y {y} m",
+      "line": "{kind} {id}",
+      "zone": "Zone {label}",
+      "ball": "Ball, x {x} m, y {y} m"
+    },
+    "frames": {
+      "title": "Frames",
+      "start": "Start",
+      "frame": "Frame {n}",
+      "add": "Add frame",
+      "remove": "Delete frame",
+      "duration": "Duration (ms)",
+      "play": "Play",
+      "stop": "Stop",
+      "help": "Add frames and drag players to build the movement step by step.",
+      "helpFrame": "Only positions change in this frame; return to the start frame to add lines or zones.",
+      "helpReadOnly": "Press Play to watch the movement."
+    },
+    "save": {
+      "title": "Save",
+      "saving": "Saving…",
+      "dirty": "Unsaved changes (on top of version {version}).",
+      "clean": "Version {version} saved.",
+      "message": "Change note",
+      "messagePlaceholder": "E.g. delay the far-post run",
+      "button": "Save (new version)",
+      "saved": "Version {version} saved.",
+      "error": "Could not save ({code}).",
+      "conflict": "Someone else changed this routine (current version {version}).",
+      "reload": "Open current version",
+      "overwrite": "Save mine anyway"
+    },
+    "export": {
+      "title": "Routine sheet",
+      "help": "One-page sheet for the bench and the dressing room.",
+      "saveFirst": "Save your changes before downloading."
+    },
+    "properties": {
+      "title": "Selection",
+      "empty": "Select an item on the board to edit it.",
+      "ball": "Ball: its start position or its position in this frame. Drag to move."
+    },
+    "details": {
+      "title": "Routine details"
+    },
+    "fields": {
+      "name": "Name",
+      "type": "Type",
+      "side": "Side",
+      "defensive": "Defensive routine",
+      "notes": "Notes",
+      "whenToUse": "When to use",
+      "team": "Team",
+      "role": "Role",
+      "number": "Number",
+      "label": "Label",
+      "labelPlaceholder": "E.g. player name",
+      "lineKind": "Line type",
+      "owner": "Attached player",
+      "noOwner": "Not attached",
+      "curve": "Curve {value}",
+      "zoneLabel": "Zone code",
+      "noLabel": "No label"
+    },
+    "zones": {
+      "NP": "Near post",
+      "C6": "Six-yard centre",
+      "FP": "Far post",
+      "PS": "Penalty spot",
+      "ED": "Edge of box",
+      "SH": "Short",
+      "OT": "Other"
+    },
+    "versions": {
+      "title": "Versions",
+      "first": "First version",
+      "noMessage": "No note",
+      "unknownUser": "Unknown user",
+      "backToCurrent": "Back to current version",
+      "restore": "Restore version {version}",
+      "restoreMessage": "Restored version {version}"
+    },
+    "compare": {
+      "title": "Compare versions",
+      "subtitle": "Differences between v{a} and v{b}",
+      "from": "Earlier",
+      "to": "Later",
+      "submit": "Compare",
+      "needTwo": "Comparison needs at least two versions.",
+      "changes": "Changes",
+      "none": "Both versions have the same diagram and details.",
+      "meta": {
+        "name": "Name changed: {from} → {to}",
+        "side": "Side changed",
+        "notes": "Notes changed",
+        "whenToUse": "Usage note changed",
+        "frames": "Frames: {from} → {to}"
+      },
+      "diff": {
+        "playersAdded": "{n} player(s) added",
+        "playersRemoved": "{n} player(s) removed",
+        "playersMoved": "{n} player(s) moved",
+        "playersChanged": "{n} player(s) changed role or number",
+        "linesAdded": "{n} line(s) added",
+        "linesRemoved": "{n} line(s) removed",
+        "linesChanged": "{n} line(s) changed",
+        "zonesAdded": "{n} zone(s) added",
+        "zonesRemoved": "{n} zone(s) removed",
+        "zonesChanged": "{n} zone(s) changed"
+      }
+    },
+    "archive": {
+      "archive": "Archive",
+      "unarchive": "Unarchive",
+      "help": "Archived routines are hidden from the library; their versions and past use are kept.",
+      "restoreHelp": "Unarchiving shows the routine in the library again and makes it editable."
+    },
+    "stats": {
+      "title": "Usage",
+      "unused": "Not used in a match yet",
+      "unusedLong": "This routine is not linked to any set-piece record yet. Results appear here once it is picked during live logging.",
+      "uses": "{n} uses · {matches} matches",
+      "goals": "{n} goals",
+      "usesLabel": "Uses",
+      "matchesLabel": "Matches",
+      "goalsLabel": "Goals",
+      "xgLabel": "xG",
+      "xgPerUse": "xG per use",
+      "firstContact": "First contact won",
+      "shot": "Ended in a shot",
+      "shrunkNote": "Rates are shrunk toward all of your club's routines (beta-binomial)."
     }
   }
 }
