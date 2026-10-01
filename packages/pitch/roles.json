@@ -4,9 +4,24 @@
   "own": [
     { "id": "taker", "phase": "attack", "tr": "Kullanan", "en": "Taker" },
     { "id": "thrower", "phase": "attack", "tr": "Taç atan", "en": "Thrower" },
-    { "id": "near_post_runner", "phase": "attack", "tr": "Yakın direk koşucusu", "en": "Near-post runner" },
-    { "id": "far_post_runner", "phase": "attack", "tr": "Arka direk koşucusu", "en": "Far-post runner" },
-    { "id": "near_post_flick", "phase": "attack", "tr": "Yakın direk sıçratıcı", "en": "Near-post flick" },
+    {
+      "id": "near_post_runner",
+      "phase": "attack",
+      "tr": "Yakın direk koşucusu",
+      "en": "Near-post runner"
+    },
+    {
+      "id": "far_post_runner",
+      "phase": "attack",
+      "tr": "Arka direk koşucusu",
+      "en": "Far-post runner"
+    },
+    {
+      "id": "near_post_flick",
+      "phase": "attack",
+      "tr": "Yakın direk sıçratıcı",
+      "en": "Near-post flick"
+    },
     { "id": "target", "phase": "attack", "tr": "Hedef", "en": "Target" },
     { "id": "blocker", "phase": "attack", "tr": "Perdeleyici", "en": "Blocker" },
     { "id": "decoy", "phase": "attack", "tr": "Aldatıcı koşu", "en": "Decoy" },
@@ -17,8 +32,18 @@
     { "id": "gk", "phase": "defence", "tr": "Kaleci", "en": "Goalkeeper" },
     { "id": "zonal", "phase": "defence", "tr": "Alan savunması", "en": "Zonal" },
     { "id": "man_marker", "phase": "defence", "tr": "Adam adama", "en": "Man marker" },
-    { "id": "zonal_or_marker", "phase": "defence", "tr": "Alan ya da adam", "en": "Zonal or marker" },
-    { "id": "near_post_guard", "phase": "defence", "tr": "Yakın direk bekçisi", "en": "Near-post guard" },
+    {
+      "id": "zonal_or_marker",
+      "phase": "defence",
+      "tr": "Alan ya da adam",
+      "en": "Zonal or marker"
+    },
+    {
+      "id": "near_post_guard",
+      "phase": "defence",
+      "tr": "Yakın direk bekçisi",
+      "en": "Near-post guard"
+    },
     { "id": "edge_guard", "phase": "defence", "tr": "Ceza yayı bekçisi", "en": "Edge guard" },
     { "id": "counter_outlet", "phase": "defence", "tr": "Kontra çıkışı", "en": "Counter outlet" }
   ],

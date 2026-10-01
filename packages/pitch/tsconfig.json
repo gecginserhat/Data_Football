@@ -3,11 +3,5 @@
   "compilerOptions": {
     "noEmit": true
   },
-  "include": [
-    "src",
-    "zones.json",
-    "zones.vectors.json",
-    "roles.json",
-    "diagram.vectors.json"
-  ]
+  "include": ["src", "zones.json", "zones.vectors.json", "roles.json", "diagram.vectors.json"]
 }

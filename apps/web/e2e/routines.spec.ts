@@ -16,7 +16,9 @@ const shot = async (page: Page, name: string) => {
 };
 
 const label = (page: Page, element: string) =>
-  page.locator(`[data-testid="routine-board"] [data-element="${element}"]`).getAttribute("aria-label");
+  page
+    .locator(`[data-testid="routine-board"] [data-element="${element}"]`)
+    .getAttribute("aria-label");
 
 test("templates load and become an editable, versioned routine", async ({ page }) => {
   await signIn(page, "analyst");
@@ -113,7 +115,10 @@ test("library lists routines with usage and the new-routine form", async ({ page
 
   // Boş tahtaya oyuncu ekle: araç P, sahaya tıkla.
   const board = page.getByTestId("routine-board");
-  await page.getByRole("button", { name: /Oyuncu/ }).first().click();
+  await page
+    .getByRole("button", { name: /Oyuncu/ })
+    .first()
+    .click();
   const box = (await board.boundingBox())!;
   await board.click({ position: { x: box.width * 0.5, y: box.height * 0.3 } });
   await expect(board.locator('[data-element="p1"]')).toHaveCount(1);
@@ -121,7 +126,10 @@ test("library lists routines with usage and the new-routine form", async ({ page
   await expect(page.getByText("Sürüm 2 kaydedildi.")).toBeVisible();
 
   await page.goto("/routines");
-  const card = page.getByTestId("routine-list").getByRole("listitem").filter({ hasText: routineName });
+  const card = page
+    .getByTestId("routine-list")
+    .getByRole("listitem")
+    .filter({ hasText: routineName });
   await expect(card).toContainText("Henüz maçta kullanılmadı");
   await expectNoSeriousA11yViolations(page);
   await shot(page, "library");
