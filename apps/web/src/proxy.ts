@@ -1,4 +1,4 @@
-export { auth as middleware } from "@/auth";
+export { auth as proxy } from "@/auth";
 
 export const config = {
   // Statik dosyalar ve Auth.js uçları hariç tüm sayfalar oturum ister.

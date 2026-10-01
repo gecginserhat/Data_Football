@@ -5,7 +5,7 @@ Kurgu, profesyonel futbol kulüpleri için bir duran top analiz ve hazırlık pl
 **Ana şartname:** `docs/SPEC.md`. Karar vermeden önce ilgili bölümü oku. Şartnameyle çelişen bir şey yapman gerekirse önce sor, sonra ADR yaz.
 
 ## Yığın
-- **Web:** Next.js 15 (App Router), React 19, TypeScript strict, Tailwind CSS 4, shadcn/ui, TanStack Query/Table, Zustand + zundo, next-intl (tr varsayılan), Serwist (PWA), Dexie.
+- **Web:** Next.js 16 (App Router; ADR-0006), React 19, TypeScript strict, Tailwind CSS 4, shadcn/ui, TanStack Query/Table, Zustand + zundo, next-intl (tr varsayılan), Serwist (PWA), Dexie.
 - **API:** Python 3.12, FastAPI, Pydantic v2, SQLAlchemy 2 (async), Alembic. **Worker:** Arq + Redis.
 - **Analitik:** pandas/polars, socceraction, kloppy, scikit-learn, LightGBM, scipy, mplsoccer, pandera.
 - **Altyapı:** PostgreSQL 16 (RLS), Redis, S3 (yerelde MinIO), OIDC (yerelde Keycloak), Playwright ile PDF, ffmpeg ile HLS.

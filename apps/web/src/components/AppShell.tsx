@@ -4,7 +4,7 @@ import { cn } from "@kurgu/ui";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useEffect, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
 import { ROUTES, isActive, type RouteKey } from "@/lib/routes";
 import { NavIcon } from "./NavIcon";
 
@@ -20,11 +20,11 @@ export interface AppShellProps {
 export function AppShell({ visible, clubName, userName, footer, children }: AppShellProps) {
   const t = useTranslations();
   const pathname = usePathname();
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  // Çekmece açıldığı yolu saklar; yol değişince kendiliğinden kapanır (efekt gerekmez).
+  const [drawerPath, setDrawerPath] = useState<string | null>(null);
+  const drawerOpen = drawerPath === pathname;
   const routes = ROUTES.filter((r) => visible.includes(r.key));
   const tabs = routes.filter((r) => r.tab).slice(0, 4);
-
-  useEffect(() => setDrawerOpen(false), [pathname]);
 
   const navList = (
     <ul className="flex flex-col gap-1">
@@ -89,7 +89,7 @@ export function AppShell({ visible, clubName, userName, footer, children }: AppS
         <p className="font-condensed text-xl font-bold">{t("app.name")}</p>
         <button
           type="button"
-          onClick={() => setDrawerOpen(true)}
+          onClick={() => setDrawerPath(pathname)}
           aria-expanded={drawerOpen}
           aria-controls="drawer"
           className="min-h-11 min-w-11 rounded-md px-3 text-sm"
@@ -110,12 +110,12 @@ export function AppShell({ visible, clubName, userName, footer, children }: AppS
             type="button"
             aria-label={t("app.closeMenu")}
             className="absolute inset-0 bg-black/40"
-            onClick={() => setDrawerOpen(false)}
+            onClick={() => setDrawerPath(null)}
           />
           <div className="absolute inset-y-0 left-0 flex w-72 flex-col gap-6 overflow-y-auto bg-brand p-4 text-brand-ink">
             <button
               type="button"
-              onClick={() => setDrawerOpen(false)}
+              onClick={() => setDrawerPath(null)}
               className="min-h-11 self-end rounded-md px-3 text-sm"
             >
               {t("app.closeMenu")}

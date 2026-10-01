@@ -313,7 +313,7 @@ Haftada iki maç oynanan dönemler için sıkıştırılmış bir şablon da bul
 | Katman | Seçim | Gerekçe |
 |---|---|---|
 | Monorepo | pnpm workspaces + Turborepo; Python için `uv` | Tek repo, paylaşılan tipler |
-| Web | Next.js 15 (App Router), React 19, TypeScript (strict), Tailwind CSS 4, shadcn/ui (Radix), TanStack Query ve Table, Zustand + zundo (geri al), next-intl, Serwist (PWA), Dexie (IndexedDB) | Olgun ekosistem, erişilebilir bileşenler, çevrimdışı destek |
+| Web | Next.js 16 (App Router; ADR-0006), React 19, TypeScript (strict), Tailwind CSS 4, shadcn/ui (Radix), TanStack Query ve Table, Zustand + zundo (geri al), next-intl, Serwist (PWA), Dexie (IndexedDB) | Olgun ekosistem, erişilebilir bileşenler, çevrimdışı destek |
 | Grafik | Özel SVG saha bileşenleri + visx / d3-scale | Saha çizimleri PDF ile uyumlu olsun diye SVG |
 | API | Python 3.12, FastAPI, Pydantic v2, SQLAlchemy 2 (async), Alembic | Analitik kod ile aynı dil; tip güvenliği |
 | Analitik | pandas / polars, socceraction, kloppy, scikit-learn, LightGBM, scipy, mplsoccer (rapor görselleri), pandera | Futbol veri ekosisteminin standartları |

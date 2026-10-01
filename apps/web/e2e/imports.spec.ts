@@ -20,6 +20,7 @@ const shot = async (page: import("@playwright/test").Page, name: string) => {
 test("admin uploads a CSV, sees the errors, fixes the mapping and commits", async ({ page }) => {
   await signIn(page, "admin");
   await page.goto("/admin");
+  // Üst → alt istemci gezintisi ve eylem yönlendirmeleri (loading.tsx ile; ADR-0006).
   await page.getByRole("link", { name: /CSV\/Excel içe aktarım/ }).click();
   await expect(page.getByRole("heading", { level: 1, name: "İçe aktarım" })).toBeVisible();
   await settled(page);
