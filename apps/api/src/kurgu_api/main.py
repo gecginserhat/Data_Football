@@ -10,6 +10,8 @@ from kurgu_api.config import get_settings
 from kurgu_api.core.crypto import get_keyring
 from kurgu_api.core.db import dispose_engine
 from kurgu_api.core.logging import configure_logging
+from kurgu_api.core.metrics import MetricsMiddleware
+from kurgu_api.core.observability import setup_sentry, setup_tracing
 from kurgu_api.core.problems import install_problem_handlers
 from kurgu_api.core.security import SecurityHeadersMiddleware
 from kurgu_api.health.router import router as health_router
@@ -42,6 +44,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 def create_app() -> FastAPI:
     settings = get_settings()
     configure_logging(settings.kurgu_log_level)
+    setup_sentry(settings, "api")
     # Şifreleme anahtarı yoksa (üretim) uygulama başlamaz (ADR-0014).
     get_keyring()
     app = FastAPI(
@@ -60,6 +63,7 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
         expose_headers=["ETag", "X-Request-ID", "Retry-After"],
     )
+    app.add_middleware(MetricsMiddleware, paths=lambda: list(app.openapi()["paths"]))
     # En dışta: CORS ve hata yanıtları dahil her yanıta başlık ekler.
     app.add_middleware(
         SecurityHeadersMiddleware, hsts=settings.hardened, docs_path=f"{API_PREFIX}/docs"
@@ -79,6 +83,7 @@ def create_app() -> FastAPI:
     app.include_router(local_storage_router, prefix=API_PREFIX)
     app.include_router(ingestion_router, prefix=API_PREFIX)
     app.include_router(imports_router, prefix=API_PREFIX)
+    setup_tracing("kurgu-api", app)
     return app
 
 

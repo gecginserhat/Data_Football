@@ -6,10 +6,10 @@ from typing import Any
 
 import asyncpg
 import pytest
-from redis.asyncio import Redis
-
 from kurgu_api.config import get_settings
 from kurgu_api.core.ratelimit import REPORTS, Limit, hit
+from redis.asyncio import Redis
+
 from .conftest import Seeded, TokenFactory, add_member
 
 
@@ -32,7 +32,6 @@ async def test_docs_page_gets_its_own_policy(client: Any) -> None:
 
 async def test_hsts_is_sent_in_hardened_environments(monkeypatch: Any, signing_key: Any) -> None:
     import httpx
-
     from kurgu_api.main import create_app
 
     monkeypatch.setattr(get_settings(), "kurgu_env", "staging")

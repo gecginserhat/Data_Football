@@ -6,6 +6,7 @@ import sys
 from datetime import UTC, datetime
 from typing import Any
 
+from kurgu_api.core.observability import current_trace_id
 from kurgu_api.core.security import request_id_var
 
 _RESERVED = set(logging.LogRecord("", 0, "", 0, "", (), None).__dict__) | {"message"}
@@ -22,6 +23,9 @@ class JsonFormatter(logging.Formatter):
         request_id = request_id_var.get()
         if request_id:
             payload["request_id"] = request_id
+        trace_id = current_trace_id()
+        if trace_id:
+            payload["trace_id"] = trace_id
         for key, value in record.__dict__.items():
             if key not in _RESERVED:
                 payload[key] = value
