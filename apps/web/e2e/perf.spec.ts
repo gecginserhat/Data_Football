@@ -9,6 +9,10 @@ import { signIn } from "./helpers";
  * zorunludur; LCP paylaşılan çalıştırıcıda gürültülü olduğu için yalnız not edilir (A-93).
  */
 
+// Hizmet çalışanı önbellekten verdiği yanıtları sıkıştırılmamış boyutla raporlar ve çevrimdışı
+// kullanım için başka sayfaların parçalarını da çeker; ölçüm ilk ziyaret gibi ağdan yapılır.
+test.use({ serviceWorkers: "block" });
+
 const JS_BUDGET = 200 * 1024;
 const LCP_BUDGET = 2_500;
 
