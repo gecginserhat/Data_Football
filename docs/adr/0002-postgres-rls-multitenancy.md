@@ -18,6 +18,12 @@ v1 tek kulüp için dağıtılır, ancak şema en fazla 20 kiracıyı destekleme
 - Hassas alanlar (Hooper, sağlık notları) `pgcrypto` değil **uygulama düzeyinde zarf şifrelemeyle** saklanır (anahtar KMS / yerelde anahtar dosyası); veritabanı düz metni hiç görmez.
 - `audit_log` yalnızca ekleme: `kurgu_app` rolüne `update`/`delete` yetkisi verilmez.
 
+## Uygulama notu (Faz 0)
+- Kiracı bağlamının yanında `app.user_id` de yazılır. `/me` gibi uçlar, kullanıcı henüz kiracı seçmeden kendi üyeliklerini listelemelidir; `memberships` politikası `tenant_id = kurgu_current_tenant() or user_id = kurgu_current_user()` biçimindedir.
+- `kurgu_current_tenant()` ve `kurgu_current_user()` boş ayarı NULL'a çevirir (`nullif(..., '')::uuid`); boş dize uuid'e çevrilemediği için bu şarttır.
+- İlk girişte kullanıcı kaydı `kurgu_resolve_user(iss, sub, email, name)` SECURITY DEFINER fonksiyonuyla açılır. `users` tablosu bu yüzden FORCE değil yalnızca ENABLE RLS kullanır; uygulama rolü tablo sahibi olmadığı için yine RLS'ye tabidir.
+- Kiracı, `X-Kurgu-Tenant` başlığıyla seçilir; tek üyelik varsa otomatik seçilir. Üyelik olmayan kiracı 403 döner.
+
 ## Doğrulama
 - Kiracılar arası erişim testi: A kiracısıyla oluşturulan satır B kiracısıyla okunduğunda boş liste, doğrudan kimlikle istendiğinde 404/403 döner (Faz 1 kabul kriteri).
 - Her yeni tablo için bir "RLS açık mı" meta testi: `pg_class.relrowsecurity` ve `relforcerowsecurity` kiracı tablolarında true olmalı.

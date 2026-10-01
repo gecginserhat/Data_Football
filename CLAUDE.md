@@ -26,9 +26,14 @@ Kurgu, profesyonel futbol kulüpleri için bir duran top analiz ve hazırlık pl
 - Uygulama Windows tarayıcısından `localhost` ile açılır. Portlar: web 3000, api 8000, postgres 5432, redis 6379, minio 9000/9001, keycloak 8080, mailpit 8025. Çakışma olursa `.env` üzerinden değiştirilebilir olsun.
 
 ## Komutlar (bu listeyi güncel tut)
-- `make dev`: tüm servisleri ayağa kaldırır. `make seed`: tohum verisini yükler.
-- `make test` · `make lint` · `make typecheck` · `make e2e`
-- `make migrate`: Alembic upgrade. `make openapi`: TS istemcisini yeniden üretir.
+- `make dev`: tüm servisleri ayağa kaldırır (göç ve geliştirme kimlikleri dahil). `make down`, `make logs`, `make ps`.
+- `make doctor`: araçları, satır sonu ayarını ve portları kontrol eder.
+- `make seed`: tohum verisini yükler (Faz 1'e kadar yalnız geliştirme kimlikleri).
+- `make test` (`test-py`, `test-js`) · `make lint` · `make typecheck` · `make e2e`
+- `make migrate`: Alembic upgrade. `make migrate-cycle`: upgrade → downgrade → upgrade.
+- `make openapi`: OpenAPI şemasını ve TS istemcisini yeniden üretir.
+- Python bağımlılıkları: `uv sync --all-packages` (workspace üyeleri için `--all-packages` şart).
+- Test kullanıcıları ve adresler: `docs/runbooks/local-dev.md`.
 
 ## Çalışma biçimi
 1. Önce planla, sonra küçük adımlarla ilerle. Her adımda kodu ve testini yaz, lint/typecheck/test çalıştır, sonra commit at (Conventional Commits, İngilizce).

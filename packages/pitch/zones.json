@@ -1,0 +1,66 @@
+{
+  "$comment": "Kanonik saha geometrisi ve teslim hedef bölgeleri (SPEC §3.3, §4). Python (kurgu_analytics.setpieces.zones) ve TS (@kurgu/pitch) bu dosyayı okur. Bölge sınırları Faz 1'de test vektörleriyle doğrulanır.",
+  "version": 1,
+  "pitch": {
+    "length": 105,
+    "width": 68,
+    "goal_center": [105, 34],
+    "posts_y": [30.34, 37.66],
+    "six_yard_box": { "x_min": 99.5, "y_min": 24.84, "y_max": 43.16 },
+    "penalty_box": { "x_min": 88.5, "y_min": 13.84, "y_max": 54.16 },
+    "penalty_spot": [94, 34],
+    "arc_radius": 9.15
+  },
+  "zones": [
+    {
+      "code": "NP",
+      "name_tr": "Yakın direk",
+      "x_min": 97,
+      "y_min": 20,
+      "y_max": 31.5,
+      "y_max_inclusive": false
+    },
+    {
+      "code": "C6",
+      "name_tr": "Altı pas merkezi",
+      "x_min": 99.5,
+      "y_min": 31.5,
+      "y_max": 36.5,
+      "y_max_inclusive": true
+    },
+    {
+      "code": "FP",
+      "name_tr": "Arka direk",
+      "x_min": 97,
+      "y_min": 36.5,
+      "y_min_inclusive": false,
+      "y_max": 48,
+      "y_max_inclusive": true
+    },
+    {
+      "code": "PS",
+      "name_tr": "Penaltı noktası bölgesi",
+      "x_min": 91,
+      "x_max": 97,
+      "y_min": 26,
+      "y_max": 42,
+      "y_max_inclusive": true
+    },
+    {
+      "code": "ED",
+      "name_tr": "Ceza sahası önü / yay",
+      "x_min": 80,
+      "x_max": 91,
+      "y_min": 24,
+      "y_max": 44,
+      "y_max_inclusive": true
+    },
+    {
+      "code": "SH",
+      "name_tr": "Kısa",
+      "rule": "outside_penalty_box_within_corner_distance",
+      "corner_distance_max": 25
+    },
+    { "code": "OT", "name_tr": "Diğer", "rule": "fallback" }
+  ]
+}

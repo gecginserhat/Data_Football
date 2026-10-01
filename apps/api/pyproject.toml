@@ -1,0 +1,30 @@
+[project]
+name = "kurgu-api"
+version = "0.0.0"
+description = "Kurgu REST API and background worker (modular monolith, ADR-0001)"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "kurgu-analytics",
+  "fastapi>=0.115",
+  "uvicorn[standard]>=0.32",
+  "pydantic>=2.9",
+  "pydantic-settings>=2.6",
+  "sqlalchemy[asyncio]>=2.0.36",
+  "asyncpg>=0.30",
+  "alembic>=1.14",
+  "pyjwt[crypto]>=2.10",
+  "httpx>=0.27",
+  "arq>=0.26",
+  "redis>=5.2",
+]
+
+[project.scripts]
+kurgu-openapi = "kurgu_api.openapi:main"
+kurgu-dev-identities = "kurgu_api.dev_identities:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kurgu_api"]
