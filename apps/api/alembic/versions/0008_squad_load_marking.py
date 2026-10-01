@@ -102,6 +102,7 @@ create table training_sessions (
   md_code varchar(8),
   fixture_id uuid constraint fk_training_sessions_fixture_id_matches references matches(id),
   title varchar(120) not null,
+  is_demo boolean not null default false,
   created_by uuid constraint fk_training_sessions_created_by_users references users(id),
   created_at timestamptz not null default now(),
   constraint uq_training_sessions_id_tenant unique (id, tenant_id),
@@ -187,7 +188,8 @@ create table routine_assignments (
     references routines (id, tenant_id) on delete cascade,
   constraint fk_routine_assignments_player foreign key (squad_player_id, tenant_id)
     references squad_players (id, tenant_id) on delete cascade,
-  constraint uq_routine_assignments_slot unique (tenant_id, fixture_id, routine_id, diagram_player_id)
+  constraint uq_routine_assignments_slot
+    unique (tenant_id, fixture_id, routine_id, diagram_player_id)
 )
 """,
     """

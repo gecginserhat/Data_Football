@@ -12,7 +12,8 @@ export type Permission =
   | "medical_notes"
   | "rule_settings"
   | "user_admin_audit"
-  | "player_cards";
+  | "player_cards"
+  | "edit_squad";
 
 export type RouteKey =
   | "overview"

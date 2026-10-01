@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 
 from kurgu_api.config import get_settings
 from kurgu_api.identity.roles import Role
+from kurgu_api.squad.demo import seed_demo_squad
 
 DEMO_TENANT_ID = uuid.UUID("00000000-0000-4000-9000-000000000001")
 DEMO_TENANT_NAME = "Trabzonspor (demo)"
@@ -67,8 +68,11 @@ async def seed_dev_identities(database_url: str | None = None) -> None:
                 ),
                 {"uid": user_id, "tid": DEMO_TENANT_ID, "role": role.value},
             )
+        squad = await seed_demo_squad(conn, DEMO_TENANT_ID)
     await engine.dispose()
     print(f"dev identities ready: {len(DEV_USERS)} users in '{DEMO_TENANT_NAME}'")
+    if squad:
+        print("demo squad, sessions and wellness added (is_demo)")
 
 
 def main() -> None:
