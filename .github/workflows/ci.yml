@@ -39,6 +39,8 @@ jobs:
           enable-cache: true
       - run: uv python install 3.12
       - run: uv sync --all-packages --frozen
+      - name: age for encrypted backups (ADR-0018)
+        run: sudo apt-get update -q && sudo apt-get install -y -q age
       - name: Chromium for PDF reports (ADR-0012)
         run: uv run playwright install --with-deps chromium
       - name: Ruff

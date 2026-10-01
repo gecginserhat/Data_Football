@@ -33,3 +33,8 @@ data/
 .vscode/*
 !.vscode/extensions.json
 dump.rdb
+
+# yedekler ve kulübe özel anahtarlar (ADR-0018)
+/backups/
+infra/backup/recipients.txt
+infra/backup/*.key

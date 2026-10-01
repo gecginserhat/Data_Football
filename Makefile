@@ -6,7 +6,7 @@ UV := uv run
 -include .env
 export
 
-.PHONY: help doctor env install dev down logs ps migrate migrate-cycle seed seed-report statsbomb-fetch statsbomb-load validate spadl-compare openapi \
+.PHONY: help doctor env install dev down logs ps migrate migrate-cycle backup restore-drill seed seed-report statsbomb-fetch statsbomb-load validate spadl-compare openapi \
         lint typecheck test test-py test-js e2e format
 
 help: ## Komutları listeler
@@ -41,6 +41,12 @@ migrate: ## Alembic upgrade head (compose içindeki veritabanına)
 
 migrate-cycle: ## upgrade → downgrade → upgrade döngüsü (CI ile aynı)
 	cd apps/api && $(UV) alembic upgrade head && $(UV) alembic downgrade base && $(UV) alembic upgrade head
+
+backup: ## Şifreli veritabanı yedeği alır (ADR-0018; .env: BACKUP_DATABASE_URL, KURGU_BACKUP_*)
+	set -a && . ./.env && set +a && infra/backup/backup.sh
+
+restore-drill: ## Son yedeği geçici veritabanına açar, doğrular, docs/runbooks/drills/ altına yazar
+	set -a && . ./.env && set +a && infra/backup/restore-drill.sh
 
 seed: ## Tohum verisini yükler (geliştirme kimlikleri, lig verisi, lisanslar; idempotent)
 	$(COMPOSE) run --rm migrate kurgu-seed

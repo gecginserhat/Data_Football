@@ -37,6 +37,7 @@ kurgu-openapi = "kurgu_api.openapi:main"
 kurgu-dev-identities = "kurgu_api.dev_identities:main"
 kurgu-seed = "kurgu_api.league.seed:main"
 kurgu-ingest = "kurgu_api.ingestion.jobs:main"
+kurgu-backup = "kurgu_api.ops.backup:main"
 
 [build-system]
 requires = ["hatchling"]
