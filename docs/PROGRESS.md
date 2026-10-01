@@ -406,6 +406,40 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 - [x] `docs/demo/faz6/` ekran görüntüleri; CLAUDE.md komutları güncel.
 - [x] Kabul kriterleri işaretlendi, kısa rapor verildi.
 
+## Faz 7: Spor bilimi ve markaj optimizasyonu
+
+### Kabul kriterleri (SPEC §19)
+- [ ] sRPE, Hooper ve EWMA hesaplamaları testli.
+- [ ] Sıçrama ve kafa yükü uyarıları çalışır.
+- [ ] Rol izinleri doğrulanır.
+- [ ] Macar algoritması önerisi elle düzeltilebilir ve kaydedilir.
+
+### Görevler
+
+**7.1 Kadro ve rakip hedefleri (A-79, A-80)**
+- [ ] Göç `0008_squad_load_marking`: `squad_players`, `opponent_targets`, `training_sessions`, `session_loads`, `wellness_entries`, `marking_plans`, `routine_assignments`. RLS, göç döngüsü.
+- [ ] Kadro ve rakip hedef uçları; `/admin/squad`; geliştirme kimliklerinde örnek kadro (`is_demo`).
+
+**7.2 Yük ve iyi oluş (SPEC §8.2, A-83 … A-85)**
+- [ ] Saf metrikler (`metrics/load.py`): sRPE, Hooper, EWMA (akut ve kronik), ACWR, z-skorları, haftalık sıçrama ve kafa uyarısı. Birim ve özellik tabanlı testler.
+- [ ] `POST /sessions`, `GET /sessions`, `POST /wellness`, `GET /players/{id}/load`, `GET /load/overview` (uyarılar).
+
+**7.3 Gizlilik ve izinler (SPEC §8.3, ADR-0014, A-86)**
+- [ ] Zarf şifreleme (`core/crypto.py`), Hooper alanları şifreli, her erişim denetim kaydında.
+- [ ] Kapsamlar: performans ve sağlık tam, yönetici özet, oyuncu yalnız kendi verisi; diğer roller 403. Testli.
+
+**7.4 Markaj (SPEC §7.3, ADR-0015, A-81, A-82)**
+- [ ] Hava skoru ve atama (saf, testli); `GET /fixtures/{id}/marking`, `PUT /fixtures/{id}/marking` (sürümlü, denetimli).
+- [ ] Hazırlık sayfasında markaj bölümü: rakip hedefleri, öneri, elle düzeltme ve kaydetme.
+
+**7.5 Rol atamaları ve görev kartı (A-87)**
+- [ ] Fikstür rutinlerinde rol → oyuncu ataması; `/me` görev kartları.
+
+**7.6 Arayüz, doğrulama ve kapanış**
+- [ ] `/performance` (seans ve iyi oluş girişi, takım yük tablosu, uyarılar), `/performance/players/[id]` (yük, EWMA ve Hooper grafiği).
+- [ ] E2E (seans → uyarı, iyi oluş, rol izinleri, markaj düzeltme), axe; `docs/demo/faz7/` ekran görüntüleri; CLAUDE.md komutları.
+- [ ] Kabul kriterleri işaretlendi, kısa rapor verildi.
+
 ---
 
 ## Kullanıcının çalıştıracağı `sudo` komutları (Ubuntu terminali)
