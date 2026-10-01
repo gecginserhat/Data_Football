@@ -15,6 +15,7 @@ from kurgu_api.identity.router import router as identity_router
 from kurgu_api.imports.router import router as imports_router
 from kurgu_api.ingestion.router import router as ingestion_router
 from kurgu_api.league.router import router as league_router
+from kurgu_api.live.router import router as live_router
 from kurgu_api.prep.router import router as prep_router
 from kurgu_api.routines.router import router as routines_router
 
@@ -54,6 +55,7 @@ def create_app() -> FastAPI:
     app.include_router(league_router, prefix=API_PREFIX)
     app.include_router(routines_router, prefix=API_PREFIX)
     app.include_router(prep_router, prefix=API_PREFIX)
+    app.include_router(live_router, prefix=API_PREFIX)
     app.include_router(ingestion_router, prefix=API_PREFIX)
     app.include_router(imports_router, prefix=API_PREFIX)
     return app
