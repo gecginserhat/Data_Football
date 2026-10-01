@@ -16,6 +16,8 @@ import {
 } from "@/lib/analysis";
 import { getMe } from "@/lib/api";
 import { formatMetric } from "@/lib/metric-display";
+import { getOverview } from "@/lib/prep";
+import { ConfidenceChip } from "@/components/prep/RecommendationCard";
 
 const KPIS = [
   "set_piece_goals",
@@ -75,11 +77,15 @@ export default async function OverviewPage() {
   }
 
   const last = previousSeason(seasons.data, season);
-  const [profile, upcoming, lastMetrics] = await Promise.all([
+  const [profile, upcoming, lastMetrics, recs] = await Promise.all([
     getProfile(clubId, season.id),
     getFixtures(clubId, season.id, "scheduled", 5),
     last ? getTeamMetrics(last.id) : Promise.resolve(null),
+    getOverview(5),
   ]);
+  const threats = new Map(
+    recs.status === "ok" ? recs.data.upcoming.map((u) => [u.fixture.id, u.threats]) : [],
+  );
   const byTeam = new Map<string, TeamMetrics>(metrics.data.items.map((i) => [i.team.id, i]));
   const club = byTeam.get(clubId);
   const p = profile.status === "ok" ? profile.data : null;
@@ -165,7 +171,7 @@ export default async function OverviewPage() {
               const goals = opp?.values.set_piece_goals;
               const xg = opp?.values.set_piece_xg;
               return (
-                <li key={f.id}>
+                <li key={f.id} className="flex flex-col gap-1">
                   <Link
                     href={`/opponents/${opponent.id}?season=${season.id}`}
                     className="flex flex-wrap items-center gap-x-4 gap-y-1 rounded-lg border border-line bg-surface p-3 hover:border-pri"
@@ -207,6 +213,7 @@ export default async function OverviewPage() {
                       </span>
                     ) : null}
                   </Link>
+                  <ThreatLine fixtureId={f.id} threats={threats.get(f.id) ?? []} />
                 </li>
               );
             })}
@@ -216,11 +223,59 @@ export default async function OverviewPage() {
       </Section>
 
       <Section id="recommendations" title={t("overview.recommendations")}>
-        <EmptyState
-          title={t("overview.recommendationsTitle")}
-          description={t("overview.recommendationsLater")}
-        />
+        {recs.status !== "ok" ? (
+          <NotLoaded result={recs} />
+        ) : recs.data.recommendations.length === 0 ? (
+          <EmptyState
+            title={t("overview.recommendationsTitle")}
+            description={t("overview.recommendationsNone")}
+          />
+        ) : (
+          <ul className="grid gap-3 lg:grid-cols-2" data-testid="season-recommendations">
+            {recs.data.recommendations.map((r) => (
+              <li
+                key={r.id}
+                className="flex flex-col gap-1 rounded-lg border border-line bg-surface p-4"
+              >
+                <span className="flex items-center gap-2">
+                  <ConfidenceChip level={r.confidence} />
+                </span>
+                <span className="font-condensed text-lg leading-tight font-semibold">
+                  {r.title}
+                </span>
+                <span className="text-sm text-ink-2">{r.why}</span>
+                <span className="text-sm">{r.action}</span>
+              </li>
+            ))}
+          </ul>
+        )}
       </Section>
     </>
+  );
+}
+
+async function ThreatLine({
+  fixtureId,
+  threats,
+}: {
+  fixtureId: string;
+  threats: { rule_id: string; title: string; confidence: string }[];
+}) {
+  const t = await getTranslations("analysis.overview");
+  return (
+    <p className="flex flex-wrap items-center gap-x-3 gap-y-1 px-3 text-xs" data-testid="threats">
+      {threats.map((th) => (
+        <span key={th.rule_id} className="inline-flex items-center gap-1">
+          <span aria-hidden className="text-def">
+            ▲
+          </span>
+          <span className="sr-only">{t("threat")}: </span>
+          {th.title}
+        </span>
+      ))}
+      <Link href={`/prep/${fixtureId}`} className="text-pri underline-offset-2 hover:underline">
+        {t("prepLink")}
+      </Link>
+    </p>
   );
 }

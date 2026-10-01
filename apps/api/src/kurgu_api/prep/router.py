@@ -539,7 +539,9 @@ async def prep_overview(
             for r in ev.shown
             if r.rule.area == "defense"
         ][:2]
-        upcoming.append(UpcomingThreats(fixture_id=fixture_id, threats=threats))
+        upcoming.append(
+            UpcomingThreats(fixture=fixture.out, threats=threats, recommendations=len(ev.shown))
+        )
         if index == 0:
             season = fixture.out.season
             season_ev = await evaluate_fixture(session, fixture, rule_set, scope="season")

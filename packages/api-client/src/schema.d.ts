@@ -1953,11 +1953,9 @@ export interface components {
         };
         /** UpcomingThreats */
         UpcomingThreats: {
-            /**
-             * Fixture Id
-             * Format: uuid
-             */
-            fixture_id: string;
+            fixture: components["schemas"]["PrepFixtureOut"];
+            /** Recommendations */
+            recommendations: number;
             /** Threats */
             threats: components["schemas"]["ThreatOut"][];
         };

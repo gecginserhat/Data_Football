@@ -317,6 +317,10 @@ async def test_overview_has_threats_and_season_recs(client: Any, coach: dict[str
     body = response.json()
     assert body["upcoming"]
     assert all(len(u["threats"]) <= 2 for u in body["upcoming"])
+    first = body["upcoming"][0]
+    assert first["fixture"]["opponent"]["code"] == "SAM"
+    assert CORNERS in [t["title"] for t in first["threats"]]
+    assert first["recommendations"] >= 2
     assert all(r["area"] == "season" for r in body["recommendations"])
 
 

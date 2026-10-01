@@ -135,10 +135,12 @@ Kaynak dosyalar: kök `CLAUDE.md`, `SPEC.md`, `BASLANGIC.md` (WSL sürümü) esa
 - **Standart hafta:** SPEC §8.1'deki gibi MD+1, MD-4, MD-3, MD-2, MD-1, MD.
 - **Sıkışık hafta:** iki maçlı hafta için MD+1, MD-2, MD-1, MD. Savunma organizasyonu MD-2'ye, rutin teyidi MD-1'e toplanır.
 
-Plan, fikstür için ilk kez açıldığında seçilen şablondan oluşturulur. Gün tarihleri başlama saatinden Europe/Istanbul gününe göre hesaplanır; MD+1 önceki maçın ertesi günüdür ve bu plana dahil değildir, yalnızca bilgi olarak gösterilir.
+Plan, fikstür için ilk kez açıldığında seçilen şablondan oluşturulur. Gün tarihleri başlama saatinden Europe/Istanbul gününe göre hesaplanır. MD+1 bu maçın ertesi günüdür; planda maçın video üzerinden duran top incelemesi için yer alır (saha çalışması yok).
 
 Kabul edilen öneri plana madde ekler: hücum ve denge önerileri MD-3'e (sıkışık haftada MD-1'e), savunma önerileri MD-4'e (sıkışık haftada MD-2'ye) gider. Karar geri alınırsa madde, henüz tamamlanmadıysa silinir. Sorumlu, kulüpte plan maddesi işaretleme izni olan üyelerden seçilir.
 
 **A-53 · VARSAYIM · Oyuncu atamaları Faz 7'ye.** A-43 bunları Faz 4'e almıştı, ancak tohumda kadro (oyuncu listesi) yok ve atama ekranı markaj optimizasyonuyla (Faz 7, SPEC §7.3) aynı oyuncu verisine dayanıyor. Faz 4'te plan maddeleri bir rutine bağlanabilir ("Rutin provası"); oyuncu-rol ataması Faz 7'de oyuncu verisiyle gelir.
 
 **A-54 · VARSAYIM · Öneri geri beslemesi Faz 5'te.** SPEC §7.1'deki "maçtan sonra öneriyle ilişkili duran top sonuçları", maç içi kayda (Faz 5) bağlı. Faz 4'te karar geçmişi tutulur; sonuç paneli, "ilişki, neden değil" uyarısıyla birlikte Faz 5'te eklenir.
+
+**A-55 · VARSAYIM · Genel bakış önerileri tek uçtan.** SPEC §11'deki `GET /recommendations/season` yerine `GET /prep/overview` kullanılır. Tek çağrı hem sezon önerilerini hem yaklaşan maçların tehdit etiketlerini (en çok iki savunma önerisi) ve fikstür bilgisini döner; `/prep` listesi de aynı ucu okur. Sezon önerileri karar almaz, yalnızca gösterilir.

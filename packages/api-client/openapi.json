@@ -4024,10 +4024,12 @@
       },
       "UpcomingThreats": {
         "properties": {
-          "fixture_id": {
-            "format": "uuid",
-            "title": "Fixture Id",
-            "type": "string"
+          "fixture": {
+            "$ref": "#/components/schemas/PrepFixtureOut"
+          },
+          "recommendations": {
+            "title": "Recommendations",
+            "type": "integer"
           },
           "threats": {
             "items": {
@@ -4038,8 +4040,9 @@
           }
         },
         "required": [
-          "fixture_id",
-          "threats"
+          "fixture",
+          "threats",
+          "recommendations"
         ],
         "title": "UpcomingThreats",
         "type": "object"

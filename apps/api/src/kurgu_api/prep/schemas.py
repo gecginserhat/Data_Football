@@ -190,8 +190,11 @@ class ThreatOut(BaseModel):
 
 
 class UpcomingThreats(BaseModel):
-    fixture_id: uuid.UUID
+    fixture: PrepFixtureOut
     threats: list[ThreatOut]
+    """En çok iki savunma önerisi (tehdit etiketi)."""
+    recommendations: int
+    """Maçta gösterilen öneri sayısı."""
 
 
 class OverviewRecsOut(BaseModel):

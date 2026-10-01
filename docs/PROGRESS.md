@@ -1,7 +1,7 @@
 # İlerleme
 
 **Durum:** Faz 0-2 tamam ve `main`'e birleşti (PR #1-#3, 01.10.2026). Faz 3 (rutin kütüphanesi) tamam; `faz-3-rutinler` dalında, birleştirme onayı bekliyor.
-**Sonraki adım:** Faz 4 görevleri (aşağıda) `faz-4-hazirlik` dalında; Faz 3 PR #4 birleştirme onayı bekliyor.
+**Sonraki adım:** Faz 5 (maç içi kayıt ve video). Faz 3 (PR #4) ve Faz 4 PR'ı birleştirme onayı bekliyor.
 
 Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce). Her commit öncesi `make lint typecheck test` temiz olmalı. Bir görev SPEC §19 DoD'yi karşılamadan işaretlenmez. Faz sonunda kabul kriterleri işaretlenir ve kısa rapor verilir.
 
@@ -284,42 +284,47 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 ## Faz 4: Maç hazırlığı ve öneri motoru
 
 ### Kabul kriterleri (SPEC §19)
-- [ ] Kural değerlendirici güvenli (eval yok) ve testli.
-- [ ] `seed/recommendation_rules.json` yüklenir; deneme modu çalışır.
-- [ ] Öneriler kanıt ve güvenle gösterilir; kabul/red gerekçesi kaydedilir.
-- [ ] MD planı şablonları, sorumlu atama ve ilerleme çalışır.
-- [ ] Kabul testi: Trabzonspor seçiliyken 7. hafta Samsunspor deplasmanında en az şu iki öneri görünür: "Ceza sahası çevresinde faul kazanın" (rakip faul yapmada 4.) ve "Korner savunması haftanın öncelikli çalışması" (rakip korner/maç'ta 2.).
+- [x] Kural değerlendirici güvenli (eval yok) ve testli.
+- [x] `seed/recommendation_rules.json` yüklenir; deneme modu çalışır.
+- [x] Öneriler kanıt ve güvenle gösterilir; kabul/red gerekçesi kaydedilir.
+- [x] MD planı şablonları, sorumlu atama ve ilerleme çalışır.
+- [x] Kabul testi: Trabzonspor seçiliyken 7. hafta Samsunspor deplasmanında en az şu iki öneri görünür: "Ceza sahası çevresinde faul kazanın" (rakip faul yapmada 4.) ve "Korner savunması haftanın öncelikli çalışması" (rakip korner/maç'ta 2.).
+
+### Rapor
+- **Yapıldı:** Güvenli kural değerlendirici (`kurgu_analytics.recs`, üç değerli mantık, güven, Türkçe biçimlendirici), göç `0005_prep`, varsayılan kural seti yükleme, hazırlık/karar/plan/kural seti/deneme uçları, `/prep`, `/prep/[fixtureId]`, genel bakışta sezon önerileri ve tehdit etiketleri, `/admin/rules`. Kabul testi API'de ve E2E'de geçiyor: SAM–TS 7. haftada "Korner savunması haftanın öncelikli çalışması" (yüksek güven, rakip 2.) ve "Ceza sahası çevresinde faul kazanın" (orta güven, rakip 4.) görünür. Python 389, web 31, pitch 61 test; E2E 28 geçti, 2 atlandı (karar ve kural yazan iki senaryo yalnız masaüstünde çalışır).
+- **Sapmalar:** Öneriler saklanmaz, her istekte hesaplanır; yalnızca karar verilenler anlık görüntüyle yazılır (A-50). Oyuncu atamaları Faz 7'ye (A-53), öneri geri bildirimi Faz 5'e (A-54). Genel bakış ucu `/prep/overview` (A-55).
+- **Riskler:** Rakip sıraları önceki sezondan geldiği için yeni sezonun ilk haftalarında güncel form yansımaz; güncel sezon değerleri eşleşme tablosunda ayrıca gösteriliyor. Demo kiracısında E2E her çalıştırmada iki kural seti sürümü yayımlar; geliştirme veritabanında geçmiş uzar.
 
 ### Görevler
 
 **4.1 Değerlendirici (ADR-0009, A-47 … A-49)**
-- [ ] `kurgu_analytics.recs`: kural şeması (Pydantic), operatörler, `all`/`any`/`not`, `min_sample`, güven, şablon metinleri ve biçimlendiriciler (tr yerel ayar). `eval` yok; bilinmeyen yer tutucu kuralı geçersiz kılar.
-- [ ] Rutin kuralları rutin başına değerlendirilir; aynı şablona işaret eden önerilerde tekilleştirme; öncelik ve güvene göre sıralama.
-- [ ] Testler: tohum değerleriyle 25 kuralın tümü ayrıştırılır; kabul örneği (SAM: faul 4., korner/maç 2.) tetiklenir; eksik veri ve az veri yolları.
+- [x] `kurgu_analytics.recs`: kural şeması (Pydantic), operatörler, `all`/`any`/`not`, `min_sample`, güven, şablon metinleri ve biçimlendiriciler (tr yerel ayar). `eval` yok; bilinmeyen yer tutucu kuralı geçersiz kılar.
+- [x] Rutin kuralları rutin başına değerlendirilir; aynı şablona işaret eden önerilerde tekilleştirme; öncelik ve güvene göre sıralama.
+- [x] Testler: tohum değerleriyle 25 kuralın tümü ayrıştırılır; kabul örneği (SAM: faul 4., korner/maç 2.) tetiklenir; eksik veri ve az veri yolları.
 
 **4.2 Şema**
-- [ ] Göç `0005_prep`: `rule_sets` (kiracısız varsayılan + kulüp sürümleri), `recommendations`, `fixture_plans`, `plan_items`. RLS, izinler, göç döngüsü.
-- [ ] Varsayılan kural seti `make seed` ve `kurgu-seed --rules` ile yüklenir (idempotent).
+- [x] Göç `0005_prep`: `rule_sets` (kiracısız varsayılan + kulüp sürümleri), `recommendations`, `fixture_plans`, `plan_items`. RLS, izinler, göç döngüsü.
+- [x] Varsayılan kural seti `make seed` ve `kurgu-seed --rules` ile yüklenir (idempotent).
 
 **4.3 API (SPEC §11)**
-- [ ] Olgu derleme (A-46): önceki ve güncel sezon metrikleri, lig toplamları, rutin istatistikleri, savunma özeti.
-- [ ] `GET /fixtures/{id}/prep` (fikstür, öneriler, eşleşme notları, plan, sorumlu adayları), `POST /recommendations/{id}/decision` (kabul, red ve gerekçe, geri alma).
-- [ ] `POST /fixtures/{id}/plan` (şablondan), `POST /fixtures/{id}/plan/items`, `PATCH /plan-items/{id}`, `DELETE /plan-items/{id}`.
-- [ ] `GET/PUT /rule-sets/current`, `GET /rule-sets/versions`, `POST /rule-sets/dry-run`.
-- [ ] `GET /recommendations/season` (genel bakış) ve yaklaşan maçlar için tehdit etiketleri (A-38).
-- [ ] Testler: izinler, kiracı izolasyonu, karar anlık görüntüsü, çakışma, kabul örneği.
+- [x] Olgu derleme (A-46): önceki ve güncel sezon metrikleri, lig toplamları, rutin istatistikleri, savunma özeti.
+- [x] `GET /fixtures/{id}/prep` (fikstür, öneriler, eşleşme notları, plan, sorumlu adayları), `POST /recommendations/{id}/decision` (kabul, red ve gerekçe, geri alma).
+- [x] `POST /fixtures/{id}/plan` (şablondan), `POST /fixtures/{id}/plan/items`, `PATCH /plan-items/{id}`, `DELETE /plan-items/{id}`.
+- [x] `GET/PUT /rule-sets/current`, `GET /rule-sets/versions`, `POST /rule-sets/dry-run`.
+- [x] `GET /prep/overview` (genel bakış; SPEC'teki `/recommendations/season` yerine, A-55) ve yaklaşan maçlar için tehdit etiketleri (A-38).
+- [x] Testler: izinler, kiracı izolasyonu, karar anlık görüntüsü, çakışma, kabul örneği.
 
 **4.4 Arayüz**
-- [ ] `/prep`: kulübün yaklaşan maçları.
-- [ ] `/prep/[fixtureId]`: hücum, savunma ve denge öneri kartları (alan, öncelik, güven, neden, ne yapın, şablon bağlantısı, kanıt), kabul ve gerekçeli red, eşleşme notları, MD planı (şablon seçimi, sorumlu, durum, ilerleme çubuğu, madde ekleme).
-- [ ] Genel bakış: sezon önerileri ve yaklaşan rakiplerde tehdit etiketleri.
-- [ ] `/admin/rules`: kural listesi, eşik/öncelik/açma-kapama düzenleme, sürüm geçmişi, fikstür için deneme modu.
-- [ ] Yükleniyor, boş, hata ve az veri durumları; `tr` ve `en` metinleri.
+- [x] `/prep`: kulübün yaklaşan maçları.
+- [x] `/prep/[fixtureId]`: hücum, savunma ve denge öneri kartları (alan, öncelik, güven, neden, ne yapın, şablon bağlantısı, kanıt), kabul ve gerekçeli red, eşleşme notları, MD planı (şablon seçimi, sorumlu, durum, ilerleme çubuğu, madde ekleme).
+- [x] Genel bakış: sezon önerileri ve yaklaşan rakiplerde tehdit etiketleri.
+- [x] `/admin/rules`: kural listesi, eşik/öncelik/açma-kapama düzenleme, sürüm geçmişi, fikstür için deneme modu.
+- [x] Yükleniyor, boş, hata ve az veri durumları; `tr` ve `en` metinleri.
 
 **4.5 Doğrulama ve kapanış**
-- [ ] E2E: SAM–TS 7. hafta hazırlığında iki kabul önerisi → kabul (plana madde eklenir) → gerekçeli red → plan şablonu, sorumlu ve tamamlama → ilerleme; kural eşiği değiştir → deneme modu; axe.
-- [ ] `docs/demo/faz4/` ekran görüntüleri; CLAUDE.md komutları güncel.
-- [ ] Kabul kriterleri işaretlendi, kısa rapor verildi.
+- [x] E2E: SAM–TS 7. hafta hazırlığında iki kabul önerisi → kabul (plana madde eklenir) → gerekçeli red → plan şablonu, sorumlu ve tamamlama → ilerleme; kural eşiği değiştir → deneme modu; axe.
+- [x] `docs/demo/faz4/` ekran görüntüleri; CLAUDE.md komutları güncel.
+- [x] Kabul kriterleri işaretlendi, kısa rapor verildi.
 
 ---
 
