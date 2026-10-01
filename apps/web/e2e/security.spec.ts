@@ -36,3 +36,12 @@ test("pages are served with a nonce-based content security policy", async ({ pag
   // Sayfa CSP ihlali olmadan çalışır: giriş düğmesi etkileşimli.
   await expect(page.getByRole("button", { name: "Giriş yap" })).toBeEnabled();
 });
+
+test("signing out also ends the identity provider session", async ({ page }) => {
+  await signIn(page, "sp-coach");
+  await page.getByRole("button", { name: "Çıkış yap" }).first().click();
+  await expect(page).toHaveURL(/\/signin/);
+  // Keycloak oturumu kapandığı için giriş yeniden parola ister.
+  await page.getByRole("button", { name: "Giriş yap" }).click();
+  await expect(page.locator("#password")).toBeVisible();
+});

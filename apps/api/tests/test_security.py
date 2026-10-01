@@ -20,6 +20,7 @@ async def test_api_responses_carry_security_headers(client: Any) -> None:
         assert response.headers["x-frame-options"] == "DENY"
         assert response.headers["referrer-policy"] == "no-referrer"
         assert response.headers["content-security-policy"].startswith("default-src 'none'")
+        assert response.headers["cache-control"] == "no-store"
         # Yerel ve test ortamında HTTPS yok; HSTS yalnız staging ve production'da.
         assert "strict-transport-security" not in response.headers
 
@@ -45,7 +46,13 @@ async def test_hsts_is_sent_in_hardened_environments(monkeypatch: Any, signing_k
             transport=httpx.ASGITransport(app=app), base_url="http://test"
         ) as http:
             response = await http.get("/healthz")
+            docs = await http.get("/api/v1/docs")
+            schema = await http.get("/api/v1/openapi.json")
         assert response.headers["strict-transport-security"].startswith("max-age=31536000")
+        # Etkileşimli belge ve şema staging/üretimde yayımlanmaz; şema yine üretilebilir.
+        assert docs.status_code == 404
+        assert schema.status_code == 404
+        assert "/api/v1/me" in app.openapi()["paths"]
     finally:
         get_keyring.cache_clear()
 

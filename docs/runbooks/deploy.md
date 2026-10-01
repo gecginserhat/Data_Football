@@ -37,3 +37,5 @@ v1 tek kulüp için tek sunucuda (ya da küçük bir VM'de) docker compose ile �
 
 ## Keycloak
 Realm `infra/keycloak/kurgu-realm.json` dosyasından yalnız ilk açılışta içe aktarılır. Realm dosyasındaki değişiklikler (akış, parola politikası) var olan kurulumda yönetim konsolundan uygulanır ya da Keycloak konteyneri `--force-recreate` ile yeniden oluşturulur (yalnız yerelde; üretimde kullanıcılar silinir). Kaba kuvvet koruması: 5 hatalı denemede 60 sn'den başlayıp 15 dk'ya kadar kilit.
+
+**Üretimde parola politikası (ASVS V2.1):** geliştirme realm'inde kısa geliştirme parolaları yüzünden politika yoktur. Canlıya çıkmadan önce yönetim konsolunda `kurgu` realm → Authentication → Policies → Password policy: `length(12) and notUsername and notEmail and passwordHistory(3)`.

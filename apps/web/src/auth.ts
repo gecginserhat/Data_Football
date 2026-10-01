@@ -19,6 +19,27 @@ interface TokenResponse {
   refresh_token?: string;
 }
 
+/**
+ * Çıkışta Keycloak oturumunu da kapatır (ASVS V3.3.1). Yalnız yerel çerez silinirse bir sonraki
+ * "Giriş yap" parolasız geri döner. Başarısızlık çıkışı engellemez.
+ */
+async function endIdpSession(token: JWT | null | undefined): Promise<void> {
+  if (!token?.refreshToken) return;
+  try {
+    await fetch(`${issuer}/protocol/openid-connect/logout`, {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        client_id: clientId,
+        client_secret: clientSecret,
+        refresh_token: token.refreshToken,
+      }),
+    });
+  } catch {
+    // Keycloak'a ulaşılamazsa yerel oturum yine de kapanır.
+  }
+}
+
 async function refreshAccessToken(token: JWT): Promise<JWT> {
   try {
     const response = await fetch(`${issuer}/protocol/openid-connect/token`, {
@@ -57,6 +78,11 @@ export const authConfig = {
   session: { strategy: "jwt" },
   pages: { signIn: "/signin" },
   trustHost: true,
+  events: {
+    async signOut(message) {
+      await endIdpSession("token" in message ? message.token : null);
+    },
+  },
   callbacks: {
     authorized({ auth, request }) {
       const { pathname } = request.nextUrl;

@@ -54,6 +54,8 @@ class SecurityHeadersMiddleware:
                 for key, value in BASE_HEADERS.items():
                     headers.setdefault(key, value)
                 headers.setdefault("Content-Security-Policy", csp)
+                # Kişisel veri taşıyabilir: kendi önbellek kuralı olmayan yanıt saklanmaz.
+                headers.setdefault("Cache-Control", "no-store")
                 if self.hsts:
                     headers.setdefault("Strict-Transport-Security", HSTS)
                 headers["X-Request-ID"] = request_id

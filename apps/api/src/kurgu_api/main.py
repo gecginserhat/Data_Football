@@ -51,8 +51,9 @@ def create_app() -> FastAPI:
     app = FastAPI(
         title="Kurgu API",
         version="0.1.0",
-        openapi_url=f"{API_PREFIX}/openapi.json",
-        docs_url=f"{API_PREFIX}/docs",
+        # Staging ve üretimde etkileşimli belge kapalıdır; şema `kurgu-openapi` ile üretilir.
+        openapi_url=None if settings.hardened else f"{API_PREFIX}/openapi.json",
+        docs_url=None if settings.hardened else f"{API_PREFIX}/docs",
         redoc_url=None,
         lifespan=lifespan,
     )
