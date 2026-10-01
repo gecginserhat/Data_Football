@@ -447,6 +447,48 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 
 ---
 
+## Faz 8: Sertleştirme
+
+### Kabul kriterleri (SPEC §19)
+- [ ] Güvenlik gözden geçirmesi (OWASP ASVS L2 kontrol listesi) tamam.
+- [ ] Performans bütçeleri k6 ve Lighthouse ile doğrulandı.
+- [ ] axe taramasında 0 ciddi ihlal.
+- [ ] Türkçe kullanıcı kılavuzu yazıldı.
+- [ ] Runbook'lar ve geri yükleme tatbikatı tamam.
+
+### Görevler
+
+**8.1 Güvenlik (SPEC §12.2, ADR-0016, A-88 … A-90)**
+- [ ] API güvenlik başlıkları; web'de nonce'lu CSP; HSTS yalnız staging ve production'da.
+- [ ] Redis tabanlı hız sınırı (yükleme, içe aktarma, video, rapor, brifing) ve 429 problem+json; Keycloak kaba kuvvet koruması.
+- [ ] MFA: Keycloak'ta iki düzeyli (parola, TOTP) koşullu akış; web'de `mfa-required` yanıtında adım yükseltme; production'da denetim zorunlu. E2E: MFA'lı kullanıcı TOTP ile girer.
+- [ ] Yükleme denetimi gözden geçirmesi (tür, boyut, imzalı adres).
+
+**8.2 Gözlem (SPEC §17, ADR-0017, A-91)**
+- [ ] OpenTelemetry (isteğe bağlı), Sentry (isteğe bağlı, kişisel veri yok), `X-Request-ID`, `/metrics` (istek ve kuyruk metrikleri, token korumalı).
+
+**8.3 KVKK (SPEC §12.3, ADR-0019, A-92)**
+- [ ] Göç `0009_privacy`: `health_consents`, `privacy_requests`, RLS, göç döngüsü.
+- [ ] Rıza (oyuncunun kendisi ya da kâğıt rıza), rızasız iyi oluş kaydının reddi.
+- [ ] Kişisel veri envanteri (kodda tek kayıt, test), saklama süreleri ve gecelik silme görevi.
+- [ ] Veri sahibi talepleri: dışa aktarma, silme talebi ve yönetici onayı; `/admin/privacy`; `docs/compliance.md`.
+
+**8.4 Erişilebilirlik ve performans (SPEC §13.4, A-93, A-94)**
+- [ ] axe taraması tüm rotalarda, açık ve koyu tema, masaüstü ve tablet; 0 ciddi ihlal.
+- [ ] Rota başına ilk JS yükü ≤ 200 KB (gzip) denetimi CI'da.
+- [ ] k6 ile özet uçlarında p95 ≤ 300 ms; Lighthouse ile kritik sayfalarda LCP ≤ 2,5 sn; canlı kayıtta dokunuştan yerel kayda ≤ 50 ms. Sonuçlar `docs/validation/performance.md`.
+
+**8.5 Yedekleme ve runbook'lar (SPEC §17, ADR-0018, A-95)**
+- [ ] Şifreli yedek ve geri yükleme tatbikatı betikleri; tatbikat kaydı.
+- [ ] Runbook'lar: yedekleme ve geri yükleme, anahtar yönetimi ve döndürme, dağıtım, olay müdahalesi, kullanıcı ve MFA yönetimi.
+
+**8.6 Belgeler ve kapanış (A-96, A-97)**
+- [ ] Türkçe kullanıcı kılavuzu (`docs/kilavuz/`).
+- [ ] ASVS L2 kontrol listesi (`docs/security/asvs-l2.md`).
+- [ ] Kabul kriterleri işaretlendi, kısa rapor verildi.
+
+---
+
 ## Kullanıcının çalıştıracağı `sudo` komutları (Ubuntu terminali)
 
 Faz 0-1 için yalnızca biri gerekiyor. Faz 0.9'dan önce çalıştırılmalı:
