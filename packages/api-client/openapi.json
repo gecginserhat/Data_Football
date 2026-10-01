@@ -1024,6 +1024,178 @@
         "title": "ConditionOut",
         "type": "object"
       },
+      "ConsentIn": {
+        "properties": {
+          "method": {
+            "enum": [
+              "self",
+              "paper"
+            ],
+            "title": "Method",
+            "type": "string"
+          },
+          "reference": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference"
+          },
+          "text_version": {
+            "maxLength": 32,
+            "minLength": 1,
+            "title": "Text Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "method",
+          "text_version"
+        ],
+        "title": "ConsentIn",
+        "type": "object"
+      },
+      "ConsentOut": {
+        "properties": {
+          "given_at": {
+            "format": "date-time",
+            "title": "Given At",
+            "type": "string"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_demo": {
+            "title": "Is Demo",
+            "type": "boolean"
+          },
+          "method": {
+            "enum": [
+              "self",
+              "paper"
+            ],
+            "title": "Method",
+            "type": "string"
+          },
+          "reference": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reference"
+          },
+          "text_version": {
+            "title": "Text Version",
+            "type": "string"
+          },
+          "withdrawn_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Withdrawn At"
+          }
+        },
+        "required": [
+          "id",
+          "text_version",
+          "method",
+          "reference",
+          "given_at",
+          "withdrawn_at",
+          "is_demo"
+        ],
+        "title": "ConsentOut",
+        "type": "object"
+      },
+      "ConsentStatusOut": {
+        "properties": {
+          "active": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ConsentOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "can_give_self": {
+            "title": "Can Give Self",
+            "type": "boolean"
+          },
+          "can_record_paper": {
+            "title": "Can Record Paper",
+            "type": "boolean"
+          },
+          "current_version": {
+            "title": "Current Version",
+            "type": "string"
+          },
+          "history": {
+            "items": {
+              "$ref": "#/components/schemas/ConsentOut"
+            },
+            "title": "History",
+            "type": "array"
+          },
+          "player_name": {
+            "title": "Player Name",
+            "type": "string"
+          },
+          "squad_player_id": {
+            "format": "uuid",
+            "title": "Squad Player Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "squad_player_id",
+          "player_name",
+          "active",
+          "history",
+          "current_version",
+          "can_record_paper",
+          "can_give_self"
+        ],
+        "title": "ConsentStatusOut",
+        "type": "object"
+      },
+      "ConsentTextOut": {
+        "properties": {
+          "text": {
+            "title": "Text",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "string"
+          }
+        },
+        "required": [
+          "version",
+          "text"
+        ],
+        "title": "ConsentTextOut",
+        "type": "object"
+      },
       "DayPoint": {
         "properties": {
           "acute": {
@@ -1075,42 +1247,6 @@
           "z"
         ],
         "title": "DayPoint",
-        "type": "object"
-      },
-      "DecisionIn": {
-        "properties": {
-          "decision": {
-            "enum": [
-              "suggested",
-              "accepted",
-              "rejected"
-            ],
-            "title": "Decision",
-            "type": "string"
-          },
-          "fixture_id": {
-            "format": "uuid",
-            "title": "Fixture Id",
-            "type": "string"
-          },
-          "reason": {
-            "anyOf": [
-              {
-                "maxLength": 1000,
-                "type": "string"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "title": "Reason"
-          }
-        },
-        "required": [
-          "fixture_id",
-          "decision"
-        ],
-        "title": "DecisionIn",
         "type": "object"
       },
       "Diagram": {
@@ -1596,6 +1732,34 @@
           "conditions"
         ],
         "title": "DryRunRule",
+        "type": "object"
+      },
+      "ErasureResult": {
+        "properties": {
+          "assignments": {
+            "title": "Assignments",
+            "type": "integer"
+          },
+          "consents": {
+            "title": "Consents",
+            "type": "integer"
+          },
+          "loads": {
+            "title": "Loads",
+            "type": "integer"
+          },
+          "wellness": {
+            "title": "Wellness",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "wellness",
+          "loads",
+          "assignments",
+          "consents"
+        ],
+        "title": "ErasureResult",
         "type": "object"
       },
       "EvidenceOut": {
@@ -2280,6 +2444,82 @@
           "error"
         ],
         "title": "IngestionRunOut",
+        "type": "object"
+      },
+      "InventoryItemOut": {
+        "properties": {
+          "encrypted": {
+            "title": "Encrypted",
+            "type": "boolean"
+          },
+          "fields": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Fields",
+            "type": "array"
+          },
+          "key": {
+            "title": "Key",
+            "type": "string"
+          },
+          "legal_basis": {
+            "title": "Legal Basis",
+            "type": "string"
+          },
+          "purpose": {
+            "title": "Purpose",
+            "type": "string"
+          },
+          "retention": {
+            "title": "Retention",
+            "type": "string"
+          },
+          "retention_days": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retention Days"
+          },
+          "special_category": {
+            "title": "Special Category",
+            "type": "boolean"
+          },
+          "subjects": {
+            "title": "Subjects",
+            "type": "string"
+          },
+          "tables": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Tables",
+            "type": "array"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "key",
+          "title",
+          "tables",
+          "fields",
+          "subjects",
+          "purpose",
+          "legal_basis",
+          "special_category",
+          "encrypted",
+          "retention",
+          "retention_days"
+        ],
+        "title": "InventoryItemOut",
         "type": "object"
       },
       "LlmSettings": {
@@ -3562,6 +3802,70 @@
         "title": "PlayerAccountOut",
         "type": "object"
       },
+      "PlayerExport": {
+        "description": "Veri sahibinin verisinin kopyası (KVKK m.11).",
+        "properties": {
+          "assignments": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Assignments",
+            "type": "array"
+          },
+          "consents": {
+            "items": {
+              "$ref": "#/components/schemas/ConsentOut"
+            },
+            "title": "Consents",
+            "type": "array"
+          },
+          "generated_at": {
+            "format": "date-time",
+            "title": "Generated At",
+            "type": "string"
+          },
+          "loads": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Loads",
+            "type": "array"
+          },
+          "player": {
+            "additionalProperties": true,
+            "title": "Player",
+            "type": "object"
+          },
+          "requests": {
+            "items": {
+              "$ref": "#/components/schemas/RequestOut"
+            },
+            "title": "Requests",
+            "type": "array"
+          },
+          "wellness": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Wellness",
+            "type": "array"
+          }
+        },
+        "required": [
+          "generated_at",
+          "player",
+          "consents",
+          "wellness",
+          "loads",
+          "assignments",
+          "requests"
+        ],
+        "title": "PlayerExport",
+        "type": "object"
+      },
       "PlayerLoadOut": {
         "properties": {
           "alerts": {
@@ -3984,6 +4288,31 @@
           "routines"
         ],
         "title": "PrepOut",
+        "type": "object"
+      },
+      "PrivacySettingsOut": {
+        "properties": {
+          "data_region": {
+            "title": "Data Region",
+            "type": "string"
+          },
+          "inventory": {
+            "items": {
+              "$ref": "#/components/schemas/InventoryItemOut"
+            },
+            "title": "Inventory",
+            "type": "array"
+          },
+          "retention": {
+            "$ref": "#/components/schemas/Retention"
+          }
+        },
+        "required": [
+          "retention",
+          "data_region",
+          "inventory"
+        ],
+        "title": "PrivacySettingsOut",
         "type": "object"
       },
       "RateOut": {
@@ -4460,6 +4789,172 @@
           "created_by"
         ],
         "title": "ReportOut",
+        "type": "object"
+      },
+      "RequestDecisionOut": {
+        "properties": {
+          "erased": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ErasureResult"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "request": {
+            "$ref": "#/components/schemas/RequestOut"
+          }
+        },
+        "required": [
+          "request",
+          "erased"
+        ],
+        "title": "RequestDecisionOut",
+        "type": "object"
+      },
+      "RequestIn": {
+        "properties": {
+          "kind": {
+            "const": "erasure",
+            "default": "erasure",
+            "title": "Kind",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "squad_player_id": {
+            "format": "uuid",
+            "title": "Squad Player Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "squad_player_id"
+        ],
+        "title": "RequestIn",
+        "type": "object"
+      },
+      "RequestOut": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "decided_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided At"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "kind": {
+            "const": "erasure",
+            "title": "Kind",
+            "type": "string"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "player_name": {
+            "title": "Player Name",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "squad_player_id": {
+            "format": "uuid",
+            "title": "Squad Player Id",
+            "type": "string"
+          },
+          "status": {
+            "enum": [
+              "open",
+              "completed",
+              "rejected"
+            ],
+            "title": "Status",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "squad_player_id",
+          "player_name",
+          "kind",
+          "status",
+          "reason",
+          "created_at",
+          "decided_at",
+          "note"
+        ],
+        "title": "RequestOut",
+        "type": "object"
+      },
+      "Retention": {
+        "properties": {
+          "audit_days": {
+            "default": 730,
+            "maximum": 3650.0,
+            "minimum": 365.0,
+            "title": "Audit Days",
+            "type": "integer"
+          },
+          "loads_days": {
+            "default": 1095,
+            "maximum": 3650.0,
+            "minimum": 30.0,
+            "title": "Loads Days",
+            "type": "integer"
+          },
+          "wellness_days": {
+            "default": 730,
+            "maximum": 3650.0,
+            "minimum": 30.0,
+            "title": "Wellness Days",
+            "type": "integer"
+          }
+        },
+        "title": "Retention",
         "type": "object"
       },
       "Role": {
@@ -7271,6 +7766,67 @@
         ],
         "title": "WellnessOut",
         "type": "object"
+      },
+      "kurgu_api__prep__schemas__DecisionIn": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "suggested",
+              "accepted",
+              "rejected"
+            ],
+            "title": "Decision",
+            "type": "string"
+          },
+          "fixture_id": {
+            "format": "uuid",
+            "title": "Fixture Id",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "required": [
+          "fixture_id",
+          "decision"
+        ],
+        "title": "DecisionIn",
+        "type": "object"
+      },
+      "kurgu_api__privacy__schemas__DecisionIn": {
+        "properties": {
+          "approve": {
+            "title": "Approve",
+            "type": "boolean"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 500,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          }
+        },
+        "required": [
+          "approve"
+        ],
+        "title": "DecisionIn",
+        "type": "object"
       }
     },
     "securitySchemes": {
@@ -9582,6 +10138,372 @@
         ]
       }
     },
+    "/api/v1/privacy/consent-text": {
+      "get": {
+        "operationId": "getConsentText",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsentTextOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Consent Text",
+        "tags": [
+          "privacy"
+        ]
+      }
+    },
+    "/api/v1/privacy/requests": {
+      "get": {
+        "operationId": "listPrivacyRequests",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RequestOut"
+                  },
+                  "title": "Response Listprivacyrequests",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Requests",
+        "tags": [
+          "privacy"
+        ]
+      },
+      "post": {
+        "operationId": "createPrivacyRequest",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Request",
+        "tags": [
+          "privacy"
+        ]
+      }
+    },
+    "/api/v1/privacy/requests/{request_id}/decision": {
+      "post": {
+        "operationId": "decidePrivacyRequest",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "request_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Request Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/kurgu_api__privacy__schemas__DecisionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RequestDecisionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Decide Request",
+        "tags": [
+          "privacy"
+        ]
+      }
+    },
+    "/api/v1/privacy/retention": {
+      "put": {
+        "operationId": "updateRetention",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Retention"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Retention"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Retention",
+        "tags": [
+          "privacy"
+        ]
+      }
+    },
+    "/api/v1/privacy/settings": {
+      "get": {
+        "operationId": "getPrivacySettings",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrivacySettingsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Privacy Settings",
+        "tags": [
+          "privacy"
+        ]
+      }
+    },
     "/api/v1/recommendations/{recommendation_id}/decision": {
       "post": {
         "description": "Kabul, gerekçeli red ya da geri alma (A-50). Kabul plana madde ekler (A-52).",
@@ -9618,7 +10540,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/DecisionIn"
+                "$ref": "#/components/schemas/kurgu_api__prep__schemas__DecisionIn"
               }
             }
           },
@@ -11760,6 +12682,269 @@
         "summary": "Get Cards",
         "tags": [
           "squad"
+        ]
+      }
+    },
+    "/api/v1/squad/{player_id}/consent": {
+      "delete": {
+        "operationId": "withdrawConsent",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "player_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Player Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsentStatusOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Withdraw Consent",
+        "tags": [
+          "privacy"
+        ]
+      },
+      "get": {
+        "operationId": "getConsent",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "player_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Player Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsentStatusOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Consent",
+        "tags": [
+          "privacy"
+        ]
+      },
+      "post": {
+        "operationId": "giveConsent",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "player_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Player Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ConsentIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConsentStatusOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Give Consent",
+        "tags": [
+          "privacy"
+        ]
+      }
+    },
+    "/api/v1/squad/{player_id}/export": {
+      "get": {
+        "description": "Veri sahibinin verisinin kopyası (KVKK m.11); dosya olarak indirilir.",
+        "operationId": "exportPlayerData",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "player_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Player Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerExport"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Export Data",
+        "tags": [
+          "privacy"
         ]
       }
     },

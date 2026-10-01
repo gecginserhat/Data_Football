@@ -45,6 +45,13 @@ async def _player(
         name,
         position,
     )
+    # İyi oluş kaydı etkin açık rıza ister (A-92).
+    await superuser.execute(
+        "insert into health_consents (tenant_id, squad_player_id, text_version, method, reference)"
+        " values ($1, $2, '2026-10-v1', 'paper', 'test')",
+        tenant,
+        pid,
+    )
     return pid
 
 

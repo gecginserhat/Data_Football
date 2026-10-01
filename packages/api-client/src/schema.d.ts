@@ -467,6 +467,92 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/privacy/consent-text": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Consent Text */
+        get: operations["getConsentText"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/privacy/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Requests */
+        get: operations["listPrivacyRequests"];
+        put?: never;
+        /** Create Request */
+        post: operations["createPrivacyRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/privacy/requests/{request_id}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Decide Request */
+        post: operations["decidePrivacyRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/privacy/retention": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Retention */
+        put: operations["updateRetention"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/privacy/settings": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Privacy Settings */
+        get: operations["getPrivacySettings"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/recommendations/{recommendation_id}/decision": {
         parameters: {
             query?: never;
@@ -907,6 +993,45 @@ export interface paths {
          * @description Oyuncunun yaklaşan maçlardaki görev kartları: rutin rolü ve markaj görevi (A-87).
          */
         get: operations["getPlayerCards"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/squad/{player_id}/consent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Consent */
+        get: operations["getConsent"];
+        put?: never;
+        /** Give Consent */
+        post: operations["giveConsent"];
+        /** Withdraw Consent */
+        delete: operations["withdrawConsent"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/squad/{player_id}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Export Data
+         * @description Veri sahibinin verisinin kopyası (KVKK m.11); dosya olarak indirilir.
+         */
+        get: operations["exportPlayerData"];
         put?: never;
         post?: never;
         delete?: never;
@@ -1578,6 +1703,70 @@ export interface components {
             /** Value */
             value: number | null;
         };
+        /** ConsentIn */
+        ConsentIn: {
+            /**
+             * Method
+             * @enum {string}
+             */
+            method: "self" | "paper";
+            /** Reference */
+            reference?: string | null;
+            /** Text Version */
+            text_version: string;
+        };
+        /** ConsentOut */
+        ConsentOut: {
+            /**
+             * Given At
+             * Format: date-time
+             */
+            given_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Demo */
+            is_demo: boolean;
+            /**
+             * Method
+             * @enum {string}
+             */
+            method: "self" | "paper";
+            /** Reference */
+            reference: string | null;
+            /** Text Version */
+            text_version: string;
+            /** Withdrawn At */
+            withdrawn_at: string | null;
+        };
+        /** ConsentStatusOut */
+        ConsentStatusOut: {
+            active: components["schemas"]["ConsentOut"] | null;
+            /** Can Give Self */
+            can_give_self: boolean;
+            /** Can Record Paper */
+            can_record_paper: boolean;
+            /** Current Version */
+            current_version: string;
+            /** History */
+            history: components["schemas"]["ConsentOut"][];
+            /** Player Name */
+            player_name: string;
+            /**
+             * Squad Player Id
+             * Format: uuid
+             */
+            squad_player_id: string;
+        };
+        /** ConsentTextOut */
+        ConsentTextOut: {
+            /** Text */
+            text: string;
+            /** Version */
+            version: string;
+        };
         /** DayPoint */
         DayPoint: {
             /** Acute */
@@ -1595,21 +1784,6 @@ export interface components {
             load: number;
             /** Z */
             z: number | null;
-        };
-        /** DecisionIn */
-        DecisionIn: {
-            /**
-             * Decision
-             * @enum {string}
-             */
-            decision: "suggested" | "accepted" | "rejected";
-            /**
-             * Fixture Id
-             * Format: uuid
-             */
-            fixture_id: string;
-            /** Reason */
-            reason?: string | null;
         };
         /**
          * Diagram
@@ -1774,6 +1948,17 @@ export interface components {
             title: string;
             /** Why */
             why: string;
+        };
+        /** ErasureResult */
+        ErasureResult: {
+            /** Assignments */
+            assignments: number;
+            /** Consents */
+            consents: number;
+            /** Loads */
+            loads: number;
+            /** Wellness */
+            wellness: number;
         };
         /**
          * EvidenceOut
@@ -2018,6 +2203,31 @@ export interface components {
             };
             /** Status */
             status: string;
+        };
+        /** InventoryItemOut */
+        InventoryItemOut: {
+            /** Encrypted */
+            encrypted: boolean;
+            /** Fields */
+            fields: string[];
+            /** Key */
+            key: string;
+            /** Legal Basis */
+            legal_basis: string;
+            /** Purpose */
+            purpose: string;
+            /** Retention */
+            retention: string;
+            /** Retention Days */
+            retention_days: number | null;
+            /** Special Category */
+            special_category: boolean;
+            /** Subjects */
+            subjects: string;
+            /** Tables */
+            tables: string[];
+            /** Title */
+            title: string;
         };
         /** LlmSettings */
         LlmSettings: {
@@ -2427,6 +2637,37 @@ export interface components {
              */
             user_id: string;
         };
+        /**
+         * PlayerExport
+         * @description Veri sahibinin verisinin kopyası (KVKK m.11).
+         */
+        PlayerExport: {
+            /** Assignments */
+            assignments: {
+                [key: string]: unknown;
+            }[];
+            /** Consents */
+            consents: components["schemas"]["ConsentOut"][];
+            /**
+             * Generated At
+             * Format: date-time
+             */
+            generated_at: string;
+            /** Loads */
+            loads: {
+                [key: string]: unknown;
+            }[];
+            /** Player */
+            player: {
+                [key: string]: unknown;
+            };
+            /** Requests */
+            requests: components["schemas"]["RequestOut"][];
+            /** Wellness */
+            wellness: {
+                [key: string]: unknown;
+            }[];
+        };
         /** PlayerLoadOut */
         PlayerLoadOut: {
             /** Alerts */
@@ -2548,6 +2789,14 @@ export interface components {
             /** Routines */
             routines: components["schemas"]["RoutineRef"][];
             rule_set: components["schemas"]["RuleSetRef"];
+        };
+        /** PrivacySettingsOut */
+        PrivacySettingsOut: {
+            /** Data Region */
+            data_region: string;
+            /** Inventory */
+            inventory: components["schemas"]["InventoryItemOut"][];
+            retention: components["schemas"]["Retention"];
         };
         /**
          * RateOut
@@ -2704,6 +2953,81 @@ export interface components {
              * @enum {string}
              */
             type: "opponent" | "match_plan";
+        };
+        /** RequestDecisionOut */
+        RequestDecisionOut: {
+            erased: components["schemas"]["ErasureResult"] | null;
+            request: components["schemas"]["RequestOut"];
+        };
+        /** RequestIn */
+        RequestIn: {
+            /**
+             * Kind
+             * @default erasure
+             * @constant
+             */
+            kind: "erasure";
+            /** Reason */
+            reason?: string | null;
+            /**
+             * Squad Player Id
+             * Format: uuid
+             */
+            squad_player_id: string;
+        };
+        /** RequestOut */
+        RequestOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Decided At */
+            decided_at: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Kind
+             * @constant
+             */
+            kind: "erasure";
+            /** Note */
+            note: string | null;
+            /** Player Name */
+            player_name: string;
+            /** Reason */
+            reason: string | null;
+            /**
+             * Squad Player Id
+             * Format: uuid
+             */
+            squad_player_id: string;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "open" | "completed" | "rejected";
+        };
+        /** Retention */
+        Retention: {
+            /**
+             * Audit Days
+             * @default 730
+             */
+            audit_days: number;
+            /**
+             * Loads Days
+             * @default 1095
+             */
+            loads_days: number;
+            /**
+             * Wellness Days
+             * @default 730
+             */
+            wellness_days: number;
         };
         /**
          * Role
@@ -3665,6 +3989,28 @@ export interface components {
             squad_player_id: string;
             /** Stress */
             stress: number;
+        };
+        /** DecisionIn */
+        kurgu_api__prep__schemas__DecisionIn: {
+            /**
+             * Decision
+             * @enum {string}
+             */
+            decision: "suggested" | "accepted" | "rejected";
+            /**
+             * Fixture Id
+             * Format: uuid
+             */
+            fixture_id: string;
+            /** Reason */
+            reason?: string | null;
+        };
+        /** DecisionIn */
+        kurgu_api__privacy__schemas__DecisionIn: {
+            /** Approve */
+            approve: boolean;
+            /** Note */
+            note?: string | null;
         };
     };
     responses: never;
@@ -4771,6 +5117,206 @@ export interface operations {
             };
         };
     };
+    getConsentText: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentTextOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listPrivacyRequests: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RequestOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    createPrivacyRequest: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RequestIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RequestOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    decidePrivacyRequest: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                request_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["kurgu_api__privacy__schemas__DecisionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RequestDecisionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    updateRetention: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["Retention"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["Retention"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getPrivacySettings: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrivacySettingsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     decideRecommendation: {
         parameters: {
             query?: never;
@@ -4784,7 +5330,7 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["DecisionIn"];
+                "application/json": components["schemas"]["kurgu_api__prep__schemas__DecisionIn"];
             };
         };
         responses: {
@@ -5799,6 +6345,142 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CardsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getConsent: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                player_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentStatusOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    giveConsent: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                player_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ConsentIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentStatusOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    withdrawConsent: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                player_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConsentStatusOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    exportPlayerData: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                player_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlayerExport"];
                 };
             };
             /** @description Validation Error */

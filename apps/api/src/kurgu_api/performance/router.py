@@ -43,6 +43,7 @@ from kurgu_api.performance.service import (
     today,
     trends,
 )
+from kurgu_api.privacy.service import active_consent
 
 router = APIRouter(tags=["performance"])
 
@@ -214,6 +215,9 @@ async def save_wellness(
     ).first()
     if exists is None:
         raise ProblemError(404, "not-found", "Squad player not found")
+    # Özel nitelikli veri: etkin açık rıza olmadan kayıt alınmaz (ADR-0019, A-92).
+    if await active_consent(session, body.squad_player_id) is None:
+        raise ProblemError(409, "consent-required", "The player has no active health consent")
     scores = {k: getattr(body, k) for k in ("sleep", "stress", "fatigue", "soreness")}
     total = hooper_index(**scores)
     tenant = _tenant(principal)

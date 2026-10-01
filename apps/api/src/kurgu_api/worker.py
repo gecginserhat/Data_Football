@@ -7,7 +7,7 @@ Faz 5: video HLS dönüştürme. Faz 6: PDF raporlar.
 
 from typing import Any, ClassVar, cast
 
-from arq import func
+from arq import cron, func
 from arq.connections import RedisSettings
 from arq.typing import WorkerCoroutine
 
@@ -18,6 +18,7 @@ from kurgu_api.core.metrics import tracked
 from kurgu_api.core.observability import setup_sentry, setup_tracing
 from kurgu_api.ingestion.jobs import run_ingestion_job
 from kurgu_api.league.views import refresh_metric_views
+from kurgu_api.privacy.jobs import retention_job
 from kurgu_api.reports.jobs import generate_report_job
 from kurgu_api.video.jobs import transcode_video_job
 
@@ -52,6 +53,15 @@ class WorkerSettings:
         func(cast(WorkerCoroutine, tracked(transcode_video_job)), timeout=4 * 3600, max_tries=1),
         # Rapor tek denemedir; hata kayda yazılır, kullanıcı yeniden ister (A-71).
         func(cast(WorkerCoroutine, tracked(generate_report_job)), timeout=120, max_tries=1),
+    ]
+    # Saklama süreleri her gece 03:15'te (UTC 00:15) uygulanır (ADR-0019).
+    cron_jobs: ClassVar[list[Any]] = [
+        cron(
+            cast(WorkerCoroutine, tracked(retention_job)),
+            hour={0},
+            minute={15},
+            run_at_startup=False,
+        )
     ]
     on_startup = startup
     redis_settings = RedisSettings.from_dsn(get_settings().redis_url)
