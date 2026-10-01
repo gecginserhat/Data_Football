@@ -171,3 +171,23 @@ Kabul edilen öneri plana madde ekler: hücum ve denge önerileri MD-3'e (sıkı
 
 **A-67 · VARSAYIM · Video silme depoyu da temizler.** Videoyu silmek kliplerini (yabancı anahtarla) ve depodaki kaynak ile HLS dosyalarını siler. Yarım kalan yükleme iptal edilir. Silme denetim kaydına yazılır.
 
+## Faz 6
+
+**A-68 · VARSAYIM · Rapor türleri.** Faz 6'da iki tür vardır: `opponent` (rakip raporu) ve `match_plan` (maç planı). İkisi de kulübün bir fikstürüne bağlıdır; rakip, fikstürdeki diğer takımdır. Oyuncu görev kartları (SPEC §14, P1) oyuncu-rol atamasına bağlı olduğundan Faz 7'ye kalır (A-53). Rapor oluşturma ve indirme `read_analysis` ister: rapor, kullanıcının zaten okuyabildiği verinin dökümüdür.
+
+**A-69 · VARSAYIM · Maç planındaki "görev atamaları".** Oyuncu atamaları Faz 7'de (A-53). Faz 6 maç planında görev atamaları, MD planı maddelerinin sorumlu kişileri ve rutinlerdeki rol etiketleridir. "Savunma organizasyonu" kabul edilen savunma önerileri ve bağlı savunma rutinleridir.
+
+**A-70 · VARSAYIM · Rapor indirme.** PDF nesne deposunda durur; `GET /reports/{id}` hazır raporda 10 dakikalık imzalı adres döner (SPEC §14). Arşiv sayfası adresi her açılışta yeniler. Rapor silme Faz 6'da yoktur.
+
+**A-71 · VARSAYIM · 15 saniye ölçümü.** Kabul ölçütü işin başlangıcından PDF'in depoya yazılmasına kadar geçen süredir (`reports.duration_ms`). E2E testi ayrıca isteğin gönderilmesinden "hazır" durumuna kadar geçen süreyi ölçer ve 15 sn sınırını orada da uygular.
+
+**A-72 · VARSAYIM · Isı haritası ve klip QR kodları.** Isı haritası rakibin sezon duran toplarının hedef bölgelerinden (§3.3) sayılır; bölgesi olmayan diziler sayılmaz, hiç bölge yoksa "Bölge verisi yok" yazar. QR kodu, rakibin duran toplarına bağlı kliplerin web adresini (`KURGU_PUBLIC_WEB_URL` + `/video/{id}?clip=`) taşır; en çok 6 klip.
+
+**A-73 · VARSAYIM · Brifing girdisi.** Brifing bir fikstür içindir. Girdi: fikstür (hafta, tarih, ev/deplasman), rakibin ve kulübün eşleşme metrikleri (ham değer, gösterim, sıra, takım sayısı, lig ortalaması, dolaylı işareti, az veri işareti), reddedilmemiş öneriler (başlık, gerekçe, aksiyon, kanıt) ve MD planı özeti. Oyuncu adı girdide yoktur.
+
+**A-74 · VARSAYIM · Sayı eşleştirme kuralları.** Metindeki her sayı (ondalık virgül, binlik nokta, yüzde, sıra noktası ve tarih biçimleri dahil) girdideki bir sayının aynı ya da gösterim biçimindeki karşılığı olmalıdır. Girdideki oranlar hem 0-1 hem yüzde biçiminde kabul edilir. Yuvarlama serbest değildir: girdide `15,4` varsa metinde `15` kabul edilmez. Tek basamaklı `0` ve `1` de denetlenir.
+
+**A-75 · VARSAYIM · Brifing eşzamanlı üretilir.** `POST /fixtures/{id}/briefing` modeli çağırır ve sonucu döner (en çok iki deneme). Brifing kısadır; ayrı iş kuyruğu kullanılmaz. Son doğrulanmış brifing `GET /fixtures/{id}/briefing` ile okunur ve rakip raporuna eklenir.
+
+**A-76 · VARSAYIM · LLM kiracı ayarı.** `tenants.settings.llm = {enabled, monthly_requests, monthly_tokens}`; varsayılan açık, ayda 200 istek ve 2.000.000 token. Ay, UTC takvim ayıdır; her deneme (yeniden deneme dahil) bir istek sayılır. Ayarı yönetici (`user_admin_audit`) değiştirir. İzinler matriste yok (SPEC §12.1): brifing üretmek hazırlık içeriği yazan rollere (`edit_routines`: yönetici, teknik direktör, duran top antrenörü, analist) açıktır, okumak `read_analysis` ister.
+

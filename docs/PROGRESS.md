@@ -365,6 +365,44 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 
 ---
 
+## Faz 6: Raporlar ve LLM
+
+### Kabul kriterleri (SPEC §19)
+- [ ] Rakip raporu ve maç planı PDF'leri 15 sn içinde üretilir.
+- [ ] LLM brifingi sayı eşleştirme kontrolünden geçer; kontrol başarısız olursa kullanıcıya gösterilmez.
+
+### Görevler
+
+**6.1 Rapor altyapısı (ADR-0012, A-68 … A-72)**
+- [ ] Göç `0007_reports_llm`: `reports`, `llm_runs`. RLS, izinler, göç döngüsü.
+- [ ] `POST /reports {type, fixture_id}` (202, iş kuyruğu), `GET /reports`, `GET /reports/{id}` (ilerleme ve imzalı indirme adresi).
+- [ ] Worker: HTML şablonu (Jinja2) → Chromium (Playwright) ile PDF → nesne deposu. Süre `duration_ms` olarak kaydedilir.
+- [ ] Docker imajı Chromium içerir; yazı tipi IBM Plex (OFL) repoda.
+
+**6.2 Rapor içerikleri (SPEC §14)**
+- [ ] Rakip raporu (2-4 sayfa): özet, profil (sıra ve lig ortalaması), bulgular, öneriler, bölge ısı haritası, varsa klip QR kodları, kaynak ve veri tarihi.
+- [ ] Maç planı: kabul edilen öneriler ve rutinleri (diyagramlarıyla), savunma organizasyonu, görev atamaları (plan sorumluları), MD planı.
+- [ ] Az veri, dolaylı ve örnek veri etiketleri PDF'te de görünür.
+
+**6.3 LLM brifingi (SPEC §15, ADR-0013, A-73 … A-76)**
+- [ ] Girdi JSON'u (metrikler, tetiklenen öneriler, plan) ve sistem istemi.
+- [ ] Sayı eşleştirme: çıktıdaki tüm sayılar girdide bulunmalı; eşleşmezse bir kez yeniden dene, yine olmazsa gösterme.
+- [ ] `llm_runs` kaydı; kiracı başına aylık istek ve token sınırı; kiracı ayarından kapatma.
+- [ ] `KURGU_LLM_MODEL` ve `KURGU_ANTHROPIC_API_KEY` yoksa özellik "yapılandırılmamış" görünür.
+
+**6.4 Arayüz**
+- [ ] `/reports`: rapor oluşturma, ilerleme, arşiv ve indirme.
+- [ ] Hazırlık sayfasında "PDF" düğmeleri ve brifing paneli.
+- [ ] `/admin/llm`: LLM ayarı ve bu ayki kullanım.
+
+**6.5 Doğrulama ve kapanış**
+- [ ] Testler: şablon içerikleri, sayı eşleştirme (Türkçe biçimler), bütçe, izinler, kiracı izolasyonu, PDF üretimi (gerçek Chromium).
+- [ ] E2E: iki PDF 15 sn içinde hazır ve iniyor; brifing (sahte model) gösteriliyor; axe.
+- [ ] `docs/demo/faz6/` ekran görüntüleri; CLAUDE.md komutları güncel.
+- [ ] Kabul kriterleri işaretlendi, kısa rapor verildi.
+
+---
+
 ## Kullanıcının çalıştıracağı `sudo` komutları (Ubuntu terminali)
 
 Faz 0-1 için yalnızca biri gerekiyor. Faz 0.9'dan önce çalıştırılmalı:
