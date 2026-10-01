@@ -528,8 +528,10 @@
       "dateTbd": "Tarih belli değil",
       "nextHint": "Rakibin adına dokunarak duran top profilini açabilirsiniz. Sıralar bu sezonun verisinden.",
       "recommendations": "Sezon önerileri",
-      "recommendationsTitle": "Öneriler maç hazırlığıyla gelecek",
-      "recommendationsLater": "Kural tabanlı öneriler ve tehdit etiketleri öneri motoruyla (Faz 4) eklenecek. Şimdilik yaklaşan rakiplerin duran top sıraları yukarıda."
+      "recommendationsTitle": "Bu sezon için öneri yok",
+      "recommendationsNone": "Sezon kurallarından hiçbiri tetiklenmedi. Maç önerileri Maç hazırlığı sayfasında.",
+      "threat": "Tehdit",
+      "prepLink": "Maç hazırlığı"
     }
   },
   "routines": {
@@ -751,5 +753,187 @@
       "shot": "Şutla biten",
       "shrunkNote": "Oranlar kulübünüzün tüm rutinlerine doğru büzülmüştür (beta-binom)."
     }
+  },
+  "prep": {
+    "title": "Maç hazırlığı",
+    "subtitle": "Yaklaşan maçlar, öneriler ve haftalık duran top planı.",
+    "emptyTitle": "Planlı maç yok",
+    "empty": "Fikstür yüklendiğinde kulübünüzün yaklaşan maçları burada görünür.",
+    "week": "{week}. hafta",
+    "dateTbd": "Tarih belli değil",
+    "home": "İç saha",
+    "away": "Deplasman",
+    "next": "Sıradaki",
+    "recCount": "{count, plural, =0 {Öneri yok} other {# öneri}}",
+    "threats": "Tehditler",
+    "breadcrumb": "Gezinti",
+    "fixtureSub": "{season} · {week}. hafta · {venue}",
+    "errors": {
+      "generic": "İşlem tamamlanamadı ({code}).",
+      "reason-required": "Reddetmek için gerekçe yazın.",
+      "invalid": "Form eksik ya da geçersiz.",
+      "plan-exists": "Bu maç için plan zaten var.",
+      "plan-missing": "Önce haftalık planı oluşturun.",
+      "invalid-assignee": "Seçilen kişi kulüp üyesi değil ya da plan işaretleme izni yok.",
+      "invalid-routine": "Rutin bulunamadı ya da arşivde.",
+      "invalid-field": "Başlık ve gün boş bırakılamaz.",
+      "not-found": "Kayıt bulunamadı; sayfayı yenileyin.",
+      "network": "Sunucuya ulaşılamadı. Bağlantıyı kontrol edip yeniden deneyin.",
+      "http-403": "Bu işlem için yetkiniz yok."
+    },
+    "recommendations": "Öneriler",
+    "ruleSetDefault": "Kural seti: varsayılan {label}",
+    "ruleSetClub": "Kural seti: kulüp sürümü {version}",
+    "editRules": "Kuralları düzenle",
+    "basis": "Rakip ve kulüp sıraları {previous} sezonundan; güncel sezon ({current}) değerleri ayrıca gösterilir. Öneriler her açılışta güncel veriyle yeniden hesaplanır.",
+    "noRecsTitle": "Bu maç için öneri yok",
+    "noRecs": "Hiçbir kural tetiklenmedi ya da veri yetersiz. Kural eşiklerini Yönetim › Kurallar sayfasından deneyebilirsiniz.",
+    "rejectedCount": "{count, plural, other {Reddedilen öneriler (#)}}",
+    "matchup": {
+      "title": "Eşleşme notları",
+      "caption": "Rakip ve kulübün duran top metrikleri, lig sırası ve lig ortalamasıyla",
+      "opponent": "{team} · {season}",
+      "club": "{team} · {season}",
+      "emptyTitle": "Eşleşme verisi yok",
+      "empty": "Önceki sezonun takım metrikleri yüklendiğinde burada görünür."
+    },
+    "plan": {
+      "heading": "Haftalık plan",
+      "emptyTitle": "Bu maç için plan yok",
+      "empty": "Şablon seçip planı oluşturun. Kabul ettiğiniz öneriler plana kendiliğinden eklenir.",
+      "emptyRead": "Plan henüz oluşturulmadı.",
+      "template": "Şablon",
+      "templates": {
+        "standard": "Standart hafta (MD-4 … MD+1)",
+        "congested": "Sıkışık hafta (MD-2 … MD+1)"
+      },
+      "templateHint": {
+        "standard": "Tek maçlı hafta",
+        "congested": "Hafta içi maçı olan dönem"
+      },
+      "create": "Planı oluştur",
+      "markTodo": "{title}: yapılacak olarak işaretle",
+      "markDone": "{title}: tamamlandı olarak işaretle",
+      "doneLabel": "tamamlandı",
+      "fromRecommendation": "Öneriden",
+      "routine": "Rutin: {name}",
+      "doneBy": "Tamamlayan: {name}",
+      "assignee": "Sorumlu",
+      "unassigned": "Atanmadı",
+      "assign": "Ata",
+      "remove": "{title} maddesini kaldır",
+      "removeShort": "Kaldır",
+      "progress": "{done} / {total} tamamlandı",
+      "progressLabel": "Plan ilerlemesi",
+      "dateTbd": "Tarih yok",
+      "noItems": "Bu gün için madde yok.",
+      "add": "Madde ekle",
+      "day": "Gün",
+      "title": "Başlık",
+      "detail": "Açıklama",
+      "routineField": "Rutin",
+      "noRoutine": "Rutin yok",
+      "addSubmit": "Ekle"
+    },
+    "confidence": {
+      "high": "Güven: yüksek",
+      "medium": "Güven: orta",
+      "low": "Güven: düşük"
+    },
+    "area": {
+      "attack": "Hücum",
+      "defense": "Savunma",
+      "balance": "Denge",
+      "season": "Sezon"
+    },
+    "priority": "Öncelik {priority}",
+    "status": {
+      "accepted": "Kabul edildi",
+      "rejected": "Reddedildi"
+    },
+    "inactive": "Güncel veriyle artık tetiklenmiyor",
+    "actionLabel": "Ne yapılmalı:",
+    "template": "Şablon: {name}",
+    "routine": "Rutin: {name}",
+    "evidence": {
+      "title": "{count, plural, other {Kanıt (# satır)}}",
+      "metric": "Metrik",
+      "value": "Değer",
+      "rank": "Lig sırası",
+      "rankOf": "{rank}./{teams}",
+      "leagueMean": "Lig ort.",
+      "notes": "Not",
+      "matches": "{count} maç"
+    },
+    "decidedBy": {
+      "accepted": "{name} kabul etti · {date}",
+      "rejected": "{name} reddetti · {date}"
+    },
+    "reasonLabel": "Gerekçe:",
+    "undo": "Kararı geri al",
+    "accept": "Kabul et",
+    "reject": "Reddet",
+    "reasonPrompt": "Neden reddediyorsunuz?",
+    "rejectSubmit": "Gerekçeyle reddet",
+    "subject": {
+      "opponent": "Rakip (geçen sezon)",
+      "opponent_current": "Rakip (bu sezon)",
+      "club": "Kulüp (geçen sezon)",
+      "club_current": "Kulüp (bu sezon)",
+      "league": "Lig (geçen sezon)",
+      "own_log": {
+        "routine": "Rutin (kulüp kaydı)",
+        "defense": "Savunma (kulüp kaydı)"
+      }
+    },
+    "metric": {
+      "uses": "Kullanım",
+      "shots": "Şutla biten",
+      "goals": "Gol",
+      "xg": "xG",
+      "set_pieces": "Duran top",
+      "shot_rate": "Şut oranı",
+      "shot_rate_posterior": "Şut oranı (büzülmüş)",
+      "first_contact_rate": "İlk temas oranı (büzülmüş)"
+    }
+  },
+  "rules": {
+    "title": "Öneri kuralları",
+    "adminLink": "Öneri kuralları",
+    "adminLinkDescription": "Eşikleri, öncelikleri değiştirin; taslağı bir maçta deneyin ve yayımlayın.",
+    "intro": "Varsayılan kural seti tohumdan gelir. Değişiklikler kulübünüze ait yeni bir sürüm olarak yayımlanır; eski sürümler silinmez. Yayımlamadan önce taslağı yaklaşan bir maçta deneyin.",
+    "currentDefault": "Güncel: varsayılan set {label}",
+    "currentClub": "Güncel: kulüp sürümü {version} · {date} · {name}",
+    "edit": "Kurallar",
+    "history": "Sürüm geçmişi",
+    "priority": "Öncelik",
+    "rankOp": "sıra {op}",
+    "threshold": "{metric} eşiği",
+    "dryRunFixture": "Deneme maçı",
+    "dryRun": "Taslağı dene",
+    "message": "Değişiklik notu",
+    "publish": "Yeni sürüm yayımla",
+    "published": "Sürüm {version} yayımlandı.",
+    "unchanged": "Değişiklik yok; yeni sürüm açılmadı.",
+    "conflict": "Bu arada başka biri sürüm {version} yayımladı. Sayfayı yenileyip değişikliklerinizi yeniden uygulayın.",
+    "error": "Kaydedilemedi ({code}).",
+    "dryRunSummary": "{fixture}: {fired} kural tetiklendi, {shown} öneri ekranda görünür (kaydedilmedi).",
+    "col": {
+      "rule": "Kural",
+      "status": "Durum",
+      "confidence": "Güven",
+      "title": "Başlık"
+    },
+    "ruleStatus": {
+      "fired": "Tetiklendi",
+      "not_met": "Koşul sağlanmadı",
+      "missing_data": "Veri yok",
+      "low_sample": "Az veri",
+      "disabled": "Kapalı"
+    },
+    "shown": "görünür",
+    "fixtureOption": "{week}. hafta · {home} – {away}",
+    "defaultVersion": "Varsayılan {label}",
+    "clubVersion": "Kulüp sürümü {version}"
   }
 }

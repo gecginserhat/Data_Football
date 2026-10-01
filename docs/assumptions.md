@@ -105,9 +105,42 @@ Kaynak dosyalar: kök `CLAUDE.md`, `SPEC.md`, `BASLANGIC.md` (WSL sürümü) esa
 
 **A-42 · VARSAYIM · Rutin dışa aktarımı API'de, matplotlib ile.** SPEC §9 PDF için Playwright öngörüyor; o rapor (Faz 6) worker'da üretilecek. Tek rutin sayfası küçük ve anlık olduğundan API'de eşzamanlı üretilir: `kurgu_analytics.reports.routine_sheet` diyagramı matplotlib ile vektör PDF ve PNG'ye çizer. Yazı tipi DejaVu Sans'tır: IBM Plex projede yalnızca web biçiminde (woff2) var ve Türkçe karakterler için gömülebilir TTF gerekiyor. Dışa aktarılan, kaydedilmiş sürümdür; kaydedilmemiş değişiklik varsa düğme önce kaydetmeyi ister.
 
-**A-43 · VARSAYIM · Oyuncu atamaları Faz 4'te.** `routine_assignments` ve `POST /fixtures/{id}/assignments` maç hazırlığı ekranına (Faz 4) bağlı; Faz 3 kabul kriterlerinde yok. Faz 3'te rutin rollerinde yalnızca serbest metin oyuncu etiketi var.
+**A-43 · VARSAYIM · Oyuncu atamaları Faz 4'te.** *(Güncellendi: A-53, Faz 7'ye kaydı.)* `routine_assignments` ve `POST /fixtures/{id}/assignments` maç hazırlığı ekranına (Faz 4) bağlı; Faz 3 kabul kriterlerinde yok. Faz 3'te rutin rollerinde yalnızca serbest metin oyuncu etiketi var.
 
 **A-44 · VARSAYIM · Rutin performansı olay kayıtlarından.** SPEC §6.3 rutin metrikleri, rutine bağlı duran top dizilerinden (`set_pieces.routine_id`) hesaplanır. Bu bağı canlı kayıt (Faz 5) kuracak; o zamana kadar panel boş durumda kalır. Kiracı satırı olduğu için materialized view değil, `security_invoker` görünüm (`v_routine_stats`) kullanılır (ADR-0007'deki `mv_routine_stats` yerine). Oranların önseli kulübün tüm rutinlerinden momentler yöntemiyle; veri olan rutin 2'den azsa Beta(1, 1).
 
 **A-45 · VARSAYIM · Editör yarım saha gösterir.** Editör x ∈ [52,5; 105] aralığını çizer (SPEC §4 "yarım saha görünümü"). Şablonların hepsi x ≥ 78. Editörde sürükleme ve ok tuşları bu aralıkta kalır; API tüm sahayı (0-105) kabul eder.
 
+
+## Faz 4
+
+**A-46 · VARSAYIM · Kural özneleri hangi sezonu okur.** Kural dosyası `opponent` ve `club` için 2025/26, `*_current` için 2026/27 diyor. Bu genelleştirildi: fikstürün sezonu "güncel" sezondur; `opponent` ve `club` aynı yarışmanın bir önceki sezonudur. Önceki sezonda olmayan takım (ör. yeni çıkan) için o öznenin değerleri yoktur. Değeri olmayan koşul tetiklenmez; deneme modu bunu "veri yok" diye gösterir. `league` öznesi önceki sezonun lig toplamlarıdır. Sezon önerileri (`scope: season`), kulübün sıradaki maçının sezonuna göre değerlendirilir.
+
+**A-47 · VARSAYIM · Metrik adları ve biçimlendiriciler.** Kural dosyasındaki `set_piece_goals_per_100_corners_approx`, metrik modülündeki `goals_per_100_corners` metriğidir; tohumda yaklaşık olduğu için kanıtta "yaklaşık" işaretlenir (A-37). Metrik modülü oranları 0-1 tutar. Bu yüzden `pct100` biçimlendiricisi, değer 1'den küçük ya da 1'e eşitse onu oran sayar ve `pct` gibi gösterir. Sıralar 1 = en yüksek değerdir (CLAUDE.md). `{x.rank.m}` o metrikteki lig sırasını yazar.
+
+**A-48 · VARSAYIM · Güven hesabı.** Her koşul için eşikten uzaklık 0-1 arasına çekilir:
+- `rank_gte v`: (sıra − v) / (takım sayısı − v). `rank_lte v`: (v − sıra) / (v − 1).
+- `gte`/`gt`/`lte`/`lt`: |x − v| / max(|v|, 1), en çok 1. `pctl_*` sıra gibi.
+- `eq` ve `exists`: 1.
+
+`all` için en zayıf koşul, `any` için en güçlü tetiklenen koşul alınır. Puan ≥ 0,5 `high`, ≥ 0,2 `medium`, altı `low`. Koşullardan birinin verisinde "az veri" varsa güven bir basamak düşer. Örnek: ATK_WIN_FOULS'ta rakip 4., eşik 6 → (6 − 4)/5 = 0,4 → `medium`.
+
+**A-49 · VARSAYIM · `min_sample`.** Kuralda `min_sample.matches` varsa, koşullardaki öznelerin maç sayısı bunun altındaysa kural tetiklenmez. Deneme modu bunu "örneklem yetersiz" diye gösterir.
+
+**A-50 · VARSAYIM · Öneriler karar anında kaydedilir.** Öneriler her açılışta güncel kural setiyle yeniden hesaplanır; ekranı açmak veritabanına yazmaz. Öneri kimliği belirlenimcidir: fikstür, kural ve (rutin kuralı için) rutinden `uuid5`. Kabul ya da red, öneriyi o anki kanıt, metin ve kural sürümüyle `recommendations` tablosuna yazar. Kararı verilmiş öneri, kural artık tetiklenmese de kendi kanıtıyla görünmeye devam eder. Karar geri alınabilir (öneri tekrar "öneri" olur). Her karar ve geri alma denetim kaydına girer. Red için gerekçe zorunludur.
+
+**A-51 · VARSAYIM · Kural setleri.** Varsayılan set `seed/recommendation_rules.json` dosyasından, paylaşılan ve kiracısız 0. sürüm olarak yüklenir. Kulüp ilk değişiklikte kendi 1. sürümünü açar; her kayıt yeni sürümdür ve `base_version` ile çakışma denetlenir. Arayüzde açma/kapama, öncelik, koşul eşikleri ve `min_sample` düzenlenir. Metinler (başlık, neden, ne yapın) v1'de varsayılandan gelir. API tüm seti şemayla doğrular. Kural ayarlarını admin ve head_coach değiştirir (SPEC §12.1); kural ekranı `/admin/rules` altındadır.
+
+**A-52 · VARSAYIM · MD planı şablonları.** İki şablon var:
+- **Standart hafta:** SPEC §8.1'deki gibi MD+1, MD-4, MD-3, MD-2, MD-1, MD.
+- **Sıkışık hafta:** iki maçlı hafta için MD+1, MD-2, MD-1, MD. Savunma organizasyonu MD-2'ye, rutin teyidi MD-1'e toplanır.
+
+Plan, fikstür için ilk kez açıldığında seçilen şablondan oluşturulur. Gün tarihleri başlama saatinden Europe/Istanbul gününe göre hesaplanır. MD+1 bu maçın ertesi günüdür; planda maçın video üzerinden duran top incelemesi için yer alır (saha çalışması yok).
+
+Kabul edilen öneri plana madde ekler: hücum ve denge önerileri MD-3'e (sıkışık haftada MD-1'e), savunma önerileri MD-4'e (sıkışık haftada MD-2'ye) gider. Karar geri alınırsa madde, henüz tamamlanmadıysa silinir. Sorumlu, kulüpte plan maddesi işaretleme izni olan üyelerden seçilir.
+
+**A-53 · VARSAYIM · Oyuncu atamaları Faz 7'ye.** A-43 bunları Faz 4'e almıştı, ancak tohumda kadro (oyuncu listesi) yok ve atama ekranı markaj optimizasyonuyla (Faz 7, SPEC §7.3) aynı oyuncu verisine dayanıyor. Faz 4'te plan maddeleri bir rutine bağlanabilir ("Rutin provası"); oyuncu-rol ataması Faz 7'de oyuncu verisiyle gelir.
+
+**A-54 · VARSAYIM · Öneri geri beslemesi Faz 5'te.** SPEC §7.1'deki "maçtan sonra öneriyle ilişkili duran top sonuçları", maç içi kayda (Faz 5) bağlı. Faz 4'te karar geçmişi tutulur; sonuç paneli, "ilişki, neden değil" uyarısıyla birlikte Faz 5'te eklenir.
+
+**A-55 · VARSAYIM · Genel bakış önerileri tek uçtan.** SPEC §11'deki `GET /recommendations/season` yerine `GET /prep/overview` kullanılır. Tek çağrı hem sezon önerilerini hem yaklaşan maçların tehdit etiketlerini (en çok iki savunma önerisi) ve fikstür bilgisini döner; `/prep` listesi de aynı ucu okur. Sezon önerileri karar almaz, yalnızca gösterilir.

@@ -7,7 +7,7 @@ from typing import Any
 
 import asyncpg
 import pytest
-from kurgu_api.league.seed import run_templates
+from kurgu_api.league.seed import run_product_content
 
 from .conftest import Seeded, TokenFactory, add_member
 
@@ -18,7 +18,7 @@ URL = "/api/v1/routines"
 
 @pytest.fixture
 async def templates() -> None:
-    await run_templates(seed_dir=SEED_DIR)
+    await run_product_content(seed_dir=SEED_DIR)
 
 
 async def _headers(
@@ -118,9 +118,9 @@ async def test_templates_are_loaded_from_seed(
 
 
 async def test_template_loading_is_idempotent(superuser: asyncpg.Connection) -> None:
-    await run_templates(seed_dir=SEED_DIR)
+    await run_product_content(seed_dir=SEED_DIR)
     before = await superuser.fetch("select id, updated_at from routine_templates order by id")
-    await run_templates(seed_dir=SEED_DIR)
+    await run_product_content(seed_dir=SEED_DIR)
     after = await superuser.fetch("select id, updated_at from routine_templates order by id")
     assert before == after
 

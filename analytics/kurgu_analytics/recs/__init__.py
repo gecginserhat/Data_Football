@@ -1,1 +1,55 @@
-"""Öneri motoru (SPEC §7). Faz 4."""
+"""Öneri motoru (SPEC §7, ADR-0009): kural şeması ve güvenli değerlendirici."""
+
+from kurgu_analytics.recs.evaluate import (
+    CONFIDENCE_ORDER,
+    METRIC_ALIASES,
+    ConditionResult,
+    Fact,
+    Facts,
+    RuleResult,
+    Subject,
+    confidence,
+    evaluate,
+    evaluate_rule,
+    format_value,
+    recommendations,
+    render,
+)
+from kurgu_analytics.recs.rules import (
+    FORMATS,
+    ROUTINE_SUBJECT,
+    SUBJECTS,
+    Condition,
+    MinSample,
+    Rule,
+    RuleSet,
+    When,
+    check_text,
+    iter_conditions,
+)
+
+__all__ = [
+    "CONFIDENCE_ORDER",
+    "FORMATS",
+    "METRIC_ALIASES",
+    "ROUTINE_SUBJECT",
+    "SUBJECTS",
+    "Condition",
+    "ConditionResult",
+    "Fact",
+    "Facts",
+    "MinSample",
+    "Rule",
+    "RuleResult",
+    "RuleSet",
+    "Subject",
+    "When",
+    "check_text",
+    "confidence",
+    "evaluate",
+    "evaluate_rule",
+    "format_value",
+    "iter_conditions",
+    "recommendations",
+    "render",
+]

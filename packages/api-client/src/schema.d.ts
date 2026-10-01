@@ -25,6 +25,63 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/fixtures/{fixture_id}/plan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Plan
+         * @description Şablondan MD planı (A-52). Plan zaten varsa 409. Kabul edilmiş öneriler eklenir.
+         */
+        post: operations["createFixturePlan"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fixtures/{fixture_id}/plan/items": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add Plan Item */
+        post: operations["addPlanItem"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fixtures/{fixture_id}/prep": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Prep
+         * @description Öneriler (kanıt ve güvenle), eşleşme notları, MD planı, sorumlu adayları (SPEC §13.2).
+         */
+        get: operations["getFixturePrep"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/imports": {
         parameters: {
             query?: never;
@@ -153,6 +210,67 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/plan-items/{item_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Plan Item */
+        delete: operations["deletePlanItem"];
+        options?: never;
+        head?: never;
+        /**
+         * Update Plan Item
+         * @description Durum (tamamlandı / yapılacak), sorumlu, başlık, açıklama ya da gün.
+         */
+        patch: operations["updatePlanItem"];
+        trace?: never;
+    };
+    "/api/v1/prep/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Prep Overview
+         * @description Sezon önerileri ve yaklaşan maçların tehdit etiketleri (SPEC §13.1, A-38).
+         */
+        get: operations["getPrepOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/recommendations/{recommendation_id}/decision": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Decide Recommendation
+         * @description Kabul, gerekçeli red ya da geri alma (A-50). Kabul plana madde ekler (A-52).
+         */
+        post: operations["decideRecommendation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/routine-templates": {
         parameters: {
             query?: never;
@@ -267,6 +385,67 @@ export interface paths {
         };
         /** Export Version */
         get: operations["exportRoutineVersion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/rule-sets/current": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Current Rule Set
+         * @description Kulübün güncel kural seti; kulüp henüz değiştirmediyse varsayılan set (A-51).
+         */
+        get: operations["getCurrentRuleSet"];
+        /**
+         * Update Rule Set
+         * @description Yeni kulüp sürümü yayımlar. `base_version` güncel değilse 409; içerik aynıysa sürüm açmaz.
+         */
+        put: operations["updateCurrentRuleSet"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/rule-sets/dry-run": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Dry Run
+         * @description Bir fikstürde hangi kuralların tetiklendiği ve nedeni; taslak setle de çalışır, kaydetmez.
+         */
+        post: operations["dryRunRuleSet"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/rule-sets/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Rule Set Versions */
+        get: operations["listRuleSetVersions"];
         put?: never;
         post?: never;
         delete?: never;
@@ -505,6 +684,40 @@ export interface components {
             /** Name */
             name: string;
         };
+        /** ConditionOut */
+        ConditionOut: {
+            /** Metric */
+            metric: string;
+            /** Op */
+            op: string;
+            /** Passed */
+            passed: boolean | null;
+            /** Rank */
+            rank: number | null;
+            /** Subject */
+            subject: string;
+            /** Teams */
+            teams: number | null;
+            /** Threshold */
+            threshold: number | boolean | null;
+            /** Value */
+            value: number | null;
+        };
+        /** DecisionIn */
+        DecisionIn: {
+            /**
+             * Decision
+             * @enum {string}
+             */
+            decision: "suggested" | "accepted" | "rejected";
+            /**
+             * Fixture Id
+             * Format: uuid
+             */
+            fixture_id: string;
+            /** Reason */
+            reason?: string | null;
+        };
         /**
          * Diagram
          * @description Bir rutin sürümünün çizimi.
@@ -613,6 +826,95 @@ export interface components {
             x: number;
             /** Y */
             y: number;
+        };
+        /** DryRunIn */
+        DryRunIn: {
+            /**
+             * Fixture Id
+             * Format: uuid
+             */
+            fixture_id: string;
+            /** Rules */
+            rules?: {
+                [key: string]: unknown;
+            }[] | null;
+        };
+        /** DryRunOut */
+        DryRunOut: {
+            fixture: components["schemas"]["PrepFixtureOut"];
+            /** Results */
+            results: components["schemas"]["DryRunRule"][];
+        };
+        /** DryRunRule */
+        DryRunRule: {
+            /**
+             * Area
+             * @enum {string}
+             */
+            area: "attack" | "defense" | "balance" | "season";
+            /** Conditions */
+            conditions: components["schemas"]["ConditionOut"][];
+            /** Confidence */
+            confidence: ("high" | "medium" | "low") | null;
+            /** Enabled */
+            enabled: boolean;
+            /** Priority */
+            priority: number;
+            routine: components["schemas"]["RoutineRef"] | null;
+            /** Rule Id */
+            rule_id: string;
+            /**
+             * Scope
+             * @enum {string}
+             */
+            scope: "fixture" | "season";
+            /** Shown */
+            shown: boolean;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "fired" | "not_met" | "missing_data" | "low_sample" | "disabled";
+            /** Strength */
+            strength: number;
+            /** Title */
+            title: string;
+            /** Why */
+            why: string;
+        };
+        /**
+         * EvidenceOut
+         * @description Kanıt satırı (SPEC §7.1): metrik, değer, lig sırası, lig ortalaması, örneklem.
+         */
+        EvidenceOut: {
+            /** Approx */
+            approx: boolean;
+            /** Indirect */
+            indirect: boolean;
+            /** League Mean */
+            league_mean: number | null;
+            /** Low Sample */
+            low_sample: boolean;
+            /** Matches */
+            matches: number | null;
+            /** Metric */
+            metric: string;
+            /** Op */
+            op: string;
+            /** Rank */
+            rank: number | null;
+            /** Source */
+            source: string | null;
+            /** Subject */
+            subject: string;
+            /** Teams */
+            teams: number | null;
+            /** Threshold */
+            threshold: number | boolean | null;
+            /** Trials */
+            trials: number | null;
+            /** Value */
+            value: number;
         };
         /** FieldOut */
         FieldOut: {
@@ -829,6 +1131,21 @@ export interface components {
                 [key: string]: string | null;
             } | null;
         };
+        /**
+         * MatchupRow
+         * @description Eşleşme notu: aynı metrikte rakip ve kulüp, lig ortalamasıyla.
+         */
+        MatchupRow: {
+            club: components["schemas"]["SideValue"] | null;
+            /** Indirect */
+            indirect: boolean;
+            /** League Mean */
+            league_mean: number | null;
+            /** Metric */
+            metric: string;
+            opponent: components["schemas"]["SideValue"] | null;
+            opponent_current: components["schemas"]["SideValue"] | null;
+        };
         /** MeOut */
         MeOut: {
             active_tenant: components["schemas"]["ActiveTenantOut"] | null;
@@ -888,11 +1205,160 @@ export interface components {
             /** Value */
             value: number;
         };
+        /** OverviewRecsOut */
+        OverviewRecsOut: {
+            /** Recommendations */
+            recommendations: components["schemas"]["RecommendationOut"][];
+            rule_set: components["schemas"]["RuleSetRef"];
+            season: components["schemas"]["SeasonRef"] | null;
+            /** Upcoming */
+            upcoming: components["schemas"]["UpcomingThreats"][];
+        };
         /**
          * Permission
          * @enum {string}
          */
         Permission: "read_analysis" | "edit_routines" | "decide_recommendations" | "mark_plan_items" | "live_tagging_video" | "load_wellness" | "medical_notes" | "rule_settings" | "user_admin_audit" | "player_cards";
+        /** PlanCreate */
+        PlanCreate: {
+            /**
+             * Template
+             * @enum {string}
+             */
+            template: "standard" | "congested";
+        };
+        /** PlanDay */
+        PlanDay: {
+            /** Date */
+            date: string | null;
+            /** Focus */
+            focus: string;
+            /**
+             * Md Code
+             * @enum {string}
+             */
+            md_code: "MD-4" | "MD-3" | "MD-2" | "MD-1" | "MD" | "MD+1";
+        };
+        /** PlanItemCreate */
+        PlanItemCreate: {
+            /** Assignee Id */
+            assignee_id?: string | null;
+            /**
+             * Detail
+             * @default
+             */
+            detail: string;
+            /**
+             * Md Code
+             * @enum {string}
+             */
+            md_code: "MD-4" | "MD-3" | "MD-2" | "MD-1" | "MD" | "MD+1";
+            /** Routine Id */
+            routine_id?: string | null;
+            /** Title */
+            title: string;
+        };
+        /** PlanItemOut */
+        PlanItemOut: {
+            assignee: components["schemas"]["UserRef"] | null;
+            /** Detail */
+            detail: string;
+            /** Done At */
+            done_at: string | null;
+            done_by: components["schemas"]["UserRef"] | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Md Code
+             * @enum {string}
+             */
+            md_code: "MD-4" | "MD-3" | "MD-2" | "MD-1" | "MD" | "MD+1";
+            /** Position */
+            position: number;
+            /** Recommendation Id */
+            recommendation_id: string | null;
+            routine: components["schemas"]["RoutineRef"] | null;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "todo" | "done";
+            /** Title */
+            title: string;
+        };
+        /** PlanItemPatch */
+        PlanItemPatch: {
+            /** Assignee Id */
+            assignee_id?: string | null;
+            /** Detail */
+            detail?: string | null;
+            /** Md Code */
+            md_code?: ("MD-4" | "MD-3" | "MD-2" | "MD-1" | "MD" | "MD+1") | null;
+            /** Status */
+            status?: ("todo" | "done") | null;
+            /** Title */
+            title?: string | null;
+        };
+        /** PlanOut */
+        PlanOut: {
+            /** Days */
+            days: components["schemas"]["PlanDay"][];
+            /** Done */
+            done: number;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Items */
+            items: components["schemas"]["PlanItemOut"][];
+            /**
+             * Template
+             * @enum {string}
+             */
+            template: "standard" | "congested";
+            /** Total */
+            total: number;
+        };
+        /** PrepFixtureOut */
+        PrepFixtureOut: {
+            away: components["schemas"]["TeamRef"];
+            club: components["schemas"]["TeamRef"];
+            home: components["schemas"]["TeamRef"];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Home */
+            is_home: boolean;
+            /** Kickoff At */
+            kickoff_at: string | null;
+            opponent: components["schemas"]["TeamRef"];
+            previous_season: components["schemas"]["SeasonRef"] | null;
+            season: components["schemas"]["SeasonRef"];
+            /** Status */
+            status: string;
+            /** Week */
+            week: number | null;
+        };
+        /** PrepOut */
+        PrepOut: {
+            /** Assignees */
+            assignees: components["schemas"]["UserRef"][];
+            fixture: components["schemas"]["PrepFixtureOut"];
+            /** Matchup */
+            matchup: components["schemas"]["MatchupRow"][];
+            plan: components["schemas"]["PlanOut"] | null;
+            /** Recommendations */
+            recommendations: components["schemas"]["RecommendationOut"][];
+            /** Routines */
+            routines: components["schemas"]["RoutineRef"][];
+            rule_set: components["schemas"]["RuleSetRef"];
+        };
         /**
          * RateOut
          * @description Oran ve beta-binom büzülmesi (SPEC §6.4).
@@ -908,6 +1374,52 @@ export interface components {
             trials: number;
             /** Value */
             value: number | null;
+        };
+        /** RecommendationOut */
+        RecommendationOut: {
+            /** Action */
+            action: string;
+            /** Active */
+            active: boolean;
+            /**
+             * Area
+             * @enum {string}
+             */
+            area: "attack" | "defense" | "balance" | "season";
+            /**
+             * Confidence
+             * @enum {string}
+             */
+            confidence: "high" | "medium" | "low";
+            /** Decided At */
+            decided_at: string | null;
+            decided_by: components["schemas"]["UserRef"] | null;
+            /** Evidence */
+            evidence: components["schemas"]["EvidenceOut"][];
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Priority */
+            priority: number;
+            /** Reason */
+            reason: string | null;
+            routine: components["schemas"]["RoutineRef"] | null;
+            /** Rule Id */
+            rule_id: string;
+            /** Rule Set Version */
+            rule_set_version: number;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "suggested" | "accepted" | "rejected";
+            template: components["schemas"]["TemplateRef"] | null;
+            /** Title */
+            title: string;
+            /** Why */
+            why: string;
         };
         /** ReferenceOut */
         ReferenceOut: {
@@ -1008,6 +1520,16 @@ export interface components {
             /** Archived */
             archived: boolean;
         };
+        /** RoutineRef */
+        RoutineRef: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+        };
         /**
          * RoutineStatsOut
          * @description Rutin performansı (SPEC §6.3). Rutine bağlı duran top dizilerinden (A-44).
@@ -1086,6 +1608,64 @@ export interface components {
              */
             when_to_use: string;
         };
+        /** RuleSetOut */
+        RuleSetOut: {
+            /** Is Default */
+            is_default: boolean;
+            /** Label */
+            label: string | null;
+            /** Message */
+            message: string | null;
+            /**
+             * Published At
+             * Format: date-time
+             */
+            published_at: string;
+            published_by: components["schemas"]["UserRef"] | null;
+            /** Rules */
+            rules: {
+                [key: string]: unknown;
+            }[];
+            /** Version */
+            version: number;
+        };
+        /** RuleSetRef */
+        RuleSetRef: {
+            /** Is Default */
+            is_default: boolean;
+            /** Label */
+            label: string | null;
+            /** Version */
+            version: number;
+        };
+        /** RuleSetUpdate */
+        RuleSetUpdate: {
+            /** Base Version */
+            base_version: number;
+            /** Message */
+            message?: string | null;
+            /** Rules */
+            rules: {
+                [key: string]: unknown;
+            }[];
+        };
+        /** RuleSetVersionOut */
+        RuleSetVersionOut: {
+            /** Is Default */
+            is_default: boolean;
+            /** Label */
+            label: string | null;
+            /** Message */
+            message: string | null;
+            /**
+             * Published At
+             * Format: date-time
+             */
+            published_at: string;
+            published_by: components["schemas"]["UserRef"] | null;
+            /** Version */
+            version: number;
+        };
         /** SeasonOut */
         SeasonOut: {
             /** Code */
@@ -1107,6 +1687,16 @@ export interface components {
             items: components["schemas"]["SeasonOut"][];
             /** Next Cursor */
             next_cursor: string | null;
+        };
+        /** SeasonRef */
+        SeasonRef: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Label */
+            label: string;
         };
         /** SetPieceOut */
         SetPieceOut: {
@@ -1156,6 +1746,19 @@ export interface components {
             items: components["schemas"]["SetPieceOut"][];
             /** Next Cursor */
             next_cursor: string | null;
+        };
+        /** SideValue */
+        SideValue: {
+            /** Approx */
+            approx: boolean;
+            /** Low Sample */
+            low_sample: boolean;
+            /** Rank */
+            rank: number;
+            /** Teams */
+            teams: number;
+            /** Value */
+            value: number;
         };
         /** StandingRowOut */
         StandingRowOut: {
@@ -1329,6 +1932,33 @@ export interface components {
             /** When To Use */
             when_to_use: string;
         };
+        /** TemplateRef */
+        TemplateRef: {
+            /** Id */
+            id: string;
+            /** Name */
+            name: string;
+        };
+        /** ThreatOut */
+        ThreatOut: {
+            /**
+             * Confidence
+             * @enum {string}
+             */
+            confidence: "high" | "medium" | "low";
+            /** Rule Id */
+            rule_id: string;
+            /** Title */
+            title: string;
+        };
+        /** UpcomingThreats */
+        UpcomingThreats: {
+            fixture: components["schemas"]["PrepFixtureOut"];
+            /** Recommendations */
+            recommendations: number;
+            /** Threats */
+            threats: components["schemas"]["ThreatOut"][];
+        };
         /** UserRef */
         UserRef: {
             /**
@@ -1423,6 +2053,113 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FixturePage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    createFixturePlan: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                fixture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlanCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    addPlanItem: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                fixture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlanItemCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getFixturePrep: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                fixture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PrepOut"];
                 };
             };
             /** @description Validation Error */
@@ -1723,6 +2460,146 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    deletePlanItem: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    updatePlanItem: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                item_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["PlanItemPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getPrepOverview: {
+        parameters: {
+            query?: {
+                limit?: number;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverviewRecsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    decideRecommendation: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                recommendation_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DecisionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RecommendationOut"];
                 };
             };
             /** @description Validation Error */
@@ -2082,6 +2959,138 @@ export interface operations {
                 content: {
                     "application/pdf": unknown;
                     "image/png": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getCurrentRuleSet: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RuleSetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    updateCurrentRuleSet: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RuleSetUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RuleSetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    dryRunRuleSet: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DryRunIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DryRunOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listRuleSetVersions: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RuleSetVersionOut"][];
                 };
             };
             /** @description Validation Error */

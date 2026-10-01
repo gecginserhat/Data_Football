@@ -528,8 +528,10 @@
       "dateTbd": "Date to be confirmed",
       "nextHint": "Tap an opponent to open its set-piece profile. Ranks use this season's data.",
       "recommendations": "Season recommendations",
-      "recommendationsTitle": "Recommendations arrive with match prep",
-      "recommendationsLater": "Rule-based recommendations and threat tags come with the recommendation engine (phase 4). For now, upcoming opponents' set-piece ranks are shown above."
+      "recommendationsTitle": "No season recommendations",
+      "recommendationsNone": "No season rule fired. Match recommendations are on the Match prep page.",
+      "threat": "Threat",
+      "prepLink": "Match prep"
     }
   },
   "routines": {
@@ -751,5 +753,187 @@
       "shot": "Ended in a shot",
       "shrunkNote": "Rates are shrunk toward all of your club's routines (beta-binomial)."
     }
+  },
+  "prep": {
+    "title": "Match prep",
+    "subtitle": "Upcoming matches, recommendations and the weekly set-piece plan.",
+    "emptyTitle": "No scheduled matches",
+    "empty": "Your club's upcoming matches appear here once fixtures are loaded.",
+    "week": "Week {week}",
+    "dateTbd": "Date TBD",
+    "home": "Home",
+    "away": "Away",
+    "next": "Next",
+    "recCount": "{count, plural, =0 {No recommendations} one {# recommendation} other {# recommendations}}",
+    "threats": "Threats",
+    "breadcrumb": "Breadcrumb",
+    "fixtureSub": "{season} · week {week} · {venue}",
+    "errors": {
+      "generic": "The action could not be completed ({code}).",
+      "reason-required": "Write a reason to reject.",
+      "invalid": "The form is incomplete or invalid.",
+      "plan-exists": "A plan already exists for this match.",
+      "plan-missing": "Create the weekly plan first.",
+      "invalid-assignee": "The selected person is not a club member who can mark plan items.",
+      "invalid-routine": "Routine not found or archived.",
+      "invalid-field": "Title and day cannot be empty.",
+      "not-found": "Record not found; reload the page.",
+      "network": "Could not reach the server. Check the connection and try again.",
+      "http-403": "You do not have permission for this action."
+    },
+    "recommendations": "Recommendations",
+    "ruleSetDefault": "Rule set: default {label}",
+    "ruleSetClub": "Rule set: club version {version}",
+    "editRules": "Edit rules",
+    "basis": "Opponent and club ranks come from {previous}; current-season ({current}) values are shown separately. Recommendations are recomputed with current data on every visit.",
+    "noRecsTitle": "No recommendations for this match",
+    "noRecs": "No rule fired or the data is too thin. You can try thresholds under Admin › Rules.",
+    "rejectedCount": "{count, plural, other {Rejected recommendations (#)}}",
+    "matchup": {
+      "title": "Matchup notes",
+      "caption": "Opponent and club set-piece metrics with league rank and league mean",
+      "opponent": "{team} · {season}",
+      "club": "{team} · {season}",
+      "emptyTitle": "No matchup data",
+      "empty": "Shown once the previous season's team metrics are loaded."
+    },
+    "plan": {
+      "heading": "Weekly plan",
+      "emptyTitle": "No plan for this match",
+      "empty": "Pick a template and create the plan. Accepted recommendations are added to it automatically.",
+      "emptyRead": "The plan has not been created yet.",
+      "template": "Template",
+      "templates": {
+        "standard": "Standard week (MD-4 … MD+1)",
+        "congested": "Congested week (MD-2 … MD+1)"
+      },
+      "templateHint": {
+        "standard": "One match this week",
+        "congested": "Midweek match period"
+      },
+      "create": "Create plan",
+      "markTodo": "{title}: mark as to do",
+      "markDone": "{title}: mark as done",
+      "doneLabel": "done",
+      "fromRecommendation": "From recommendation",
+      "routine": "Routine: {name}",
+      "doneBy": "Done by {name}",
+      "assignee": "Owner",
+      "unassigned": "Unassigned",
+      "assign": "Assign",
+      "remove": "Remove {title}",
+      "removeShort": "Remove",
+      "progress": "{done} / {total} done",
+      "progressLabel": "Plan progress",
+      "dateTbd": "No date",
+      "noItems": "No items for this day.",
+      "add": "Add item",
+      "day": "Day",
+      "title": "Title",
+      "detail": "Detail",
+      "routineField": "Routine",
+      "noRoutine": "No routine",
+      "addSubmit": "Add"
+    },
+    "confidence": {
+      "high": "Confidence: high",
+      "medium": "Confidence: medium",
+      "low": "Confidence: low"
+    },
+    "area": {
+      "attack": "Attack",
+      "defense": "Defense",
+      "balance": "Balance",
+      "season": "Season"
+    },
+    "priority": "Priority {priority}",
+    "status": {
+      "accepted": "Accepted",
+      "rejected": "Rejected"
+    },
+    "inactive": "No longer fires with current data",
+    "actionLabel": "What to do:",
+    "template": "Template: {name}",
+    "routine": "Routine: {name}",
+    "evidence": {
+      "title": "{count, plural, one {Evidence (# row)} other {Evidence (# rows)}}",
+      "metric": "Metric",
+      "value": "Value",
+      "rank": "League rank",
+      "rankOf": "{rank}/{teams}",
+      "leagueMean": "League avg.",
+      "notes": "Notes",
+      "matches": "{count} matches"
+    },
+    "decidedBy": {
+      "accepted": "Accepted by {name} · {date}",
+      "rejected": "Rejected by {name} · {date}"
+    },
+    "reasonLabel": "Reason:",
+    "undo": "Undo decision",
+    "accept": "Accept",
+    "reject": "Reject",
+    "reasonPrompt": "Why are you rejecting it?",
+    "rejectSubmit": "Reject with reason",
+    "subject": {
+      "opponent": "Opponent (last season)",
+      "opponent_current": "Opponent (this season)",
+      "club": "Club (last season)",
+      "club_current": "Club (this season)",
+      "league": "League (last season)",
+      "own_log": {
+        "routine": "Routine (club log)",
+        "defense": "Defense (club log)"
+      }
+    },
+    "metric": {
+      "uses": "Uses",
+      "shots": "Ended in a shot",
+      "goals": "Goals",
+      "xg": "xG",
+      "set_pieces": "Set pieces",
+      "shot_rate": "Shot rate",
+      "shot_rate_posterior": "Shot rate (shrunk)",
+      "first_contact_rate": "First contact rate (shrunk)"
+    }
+  },
+  "rules": {
+    "title": "Recommendation rules",
+    "adminLink": "Recommendation rules",
+    "adminLinkDescription": "Change thresholds and priorities, try the draft on a match and publish.",
+    "intro": "The default rule set comes from the seed. Changes are published as a new version owned by your club; old versions are kept. Try the draft on an upcoming match before publishing.",
+    "currentDefault": "Current: default set {label}",
+    "currentClub": "Current: club version {version} · {date} · {name}",
+    "edit": "Rules",
+    "history": "Version history",
+    "priority": "Priority",
+    "rankOp": "rank {op}",
+    "threshold": "{metric} threshold",
+    "dryRunFixture": "Trial match",
+    "dryRun": "Try draft",
+    "message": "Change note",
+    "publish": "Publish new version",
+    "published": "Version {version} published.",
+    "unchanged": "No changes; no new version created.",
+    "conflict": "Someone published version {version} in the meantime. Reload the page and apply your changes again.",
+    "error": "Could not save ({code}).",
+    "dryRunSummary": "{fixture}: {fired} rules fired, {shown} recommendations would show (not saved).",
+    "col": {
+      "rule": "Rule",
+      "status": "Status",
+      "confidence": "Confidence",
+      "title": "Title"
+    },
+    "ruleStatus": {
+      "fired": "Fired",
+      "not_met": "Not met",
+      "missing_data": "No data",
+      "low_sample": "Low sample",
+      "disabled": "Disabled"
+    },
+    "shown": "shown",
+    "fixtureOption": "Week {week} · {home} – {away}",
+    "defaultVersion": "Default {label}",
+    "clubVersion": "Club version {version}"
   }
 }
