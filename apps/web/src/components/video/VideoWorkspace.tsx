@@ -83,28 +83,27 @@ export function VideoWorkspace({
     let cancelled = false;
     const onReady = () => setReady(true);
     video.addEventListener("loadedmetadata", onReady);
-    if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = src;
-    } else {
-      void import("hls.js").then(({ default: HlsJs }) => {
-        if (cancelled) return;
-        if (!HlsJs.isSupported()) {
-          setPlayerError("generic");
-          return;
-        }
-        hls = new HlsJs();
-        hls.on(HlsJs.Events.MANIFEST_PARSED, () => setManifest(true));
-        hls.on(HlsJs.Events.ERROR, (_event, data) => {
-          if (!data.fatal) return;
-          const h264 =
-            typeof MediaSource !== "undefined" &&
-            MediaSource.isTypeSupported('video/mp4; codecs="avc1.42E01E"');
-          setPlayerError(h264 ? "generic" : "codec");
-        });
-        hls.loadSource(src);
-        hls.attachMedia(video);
+    // MSE varsa hls.js tercih edilir: yeni Chromium sürümleri yerel HLS desteği bildirse de
+    // çözücü olmadan sessizce takılır. Yerel oynatıcı yalnız MSE olmayan tarayıcılarda (iOS Safari).
+    void import("hls.js").then(({ default: HlsJs }) => {
+      if (cancelled) return;
+      if (!HlsJs.isSupported()) {
+        if (video.canPlayType("application/vnd.apple.mpegurl")) video.src = src;
+        else setPlayerError("generic");
+        return;
+      }
+      hls = new HlsJs();
+      hls.on(HlsJs.Events.MANIFEST_PARSED, () => setManifest(true));
+      hls.on(HlsJs.Events.ERROR, (_event, data) => {
+        if (!data.fatal) return;
+        const h264 =
+          typeof MediaSource !== "undefined" &&
+          MediaSource.isTypeSupported('video/mp4; codecs="avc1.42E01E"');
+        setPlayerError(h264 ? "generic" : "codec");
       });
-    }
+      hls.loadSource(src);
+      hls.attachMedia(video);
+    });
     return () => {
       cancelled = true;
       video.removeEventListener("loadedmetadata", onReady);
