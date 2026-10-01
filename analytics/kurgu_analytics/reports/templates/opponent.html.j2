@@ -53,7 +53,7 @@
     <td class="n"><strong>{{ m.metric | metric(m.value) }}</strong></td>
     <td class="n">{{ m.rank }}./{{ m.teams }}</td>
     <td class="n">{% if m.league_mean is not none %}{{ m.metric | metric(m.league_mean) }}{% else %}–{% endif %}</td>
-    {% if split %}<td class="n">{% if m.current_value is not none %}{{ m.metric | metric(m.current_value) }}{% if m.current_rank %} ({{ m.current_rank }}.){% endif %}{% if m.current_low_sample %} <span class="badge low">Az veri</span>{% endif %}{% else %}–{% endif %}</td>{% endif %}
+    {% if split %}<td class="n">{% if m.current_value is not none %}{{ m.metric | metric(m.current_value) }}{% if m.current_rank %} ({{ m.current_rank }}.){% endif %}{% if m.current_low_sample %}<br><span class="badge low">Az veri</span>{% endif %}{% else %}–{% endif %}</td>{% endif %}
     <td class="n">{% if m.club_value is not none %}{{ m.metric | metric(m.club_value) }}{% if m.club_rank %} ({{ m.club_rank }}.){% endif %}{% else %}–{% endif %}</td>
     <td>{{ badges(m) }}</td>
   </tr>

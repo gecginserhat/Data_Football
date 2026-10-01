@@ -129,6 +129,7 @@ async def test_match_plan_report_with_accepted_recommendation(
         document = await data.match_plan_report(session, uuid.UUID(fixture_id), club.tenant_a, None)
     assert [r.title for r in document.recommendations] == [CORNERS]
     assert document.fixture.opponent.code == "SAM"
+    assert document.meta.sources
 
     created = await _request(client, coach, fixture_id, "match_plan")
     started = time.monotonic()

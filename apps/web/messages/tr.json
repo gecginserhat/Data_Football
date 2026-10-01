@@ -902,7 +902,26 @@
       "attack": "Hücum önerileri · {team} duran topları",
       "defense": "Savunma önerileri · {team} duran topları",
       "none": "Bu takımın kayıtlı duran topu yok."
-    }
+    },
+    "briefing": {
+      "title": "Yapay zekâ brifingi",
+      "generate": "Brifing üret",
+      "regenerate": "Yeniden üret",
+      "generating": "Üretiliyor…",
+      "label": "Yapay zekâ ile üretildi · sayılar kayıtla eşleşti ({count} sayı denetlendi)",
+      "emptyTitle": "Henüz brifing yok",
+      "empty": "Brifing; rakip profili, öneriler ve haftalık plandan kısa bir metin üretir. Metindeki her sayı kayıtla eşleştirilir.",
+      "emptyRead": "Bu maç için brifing üretilmedi.",
+      "errors": {
+        "briefing-unverified": "Brifing üretilemedi: metindeki sayılar kayıtla eşleşmedi. Metin gösterilmedi.",
+        "briefing-error": "Brifing üretilemedi: model yanıt vermedi.",
+        "llm-disabled": "Brifing kulüp ayarlarında kapalı.",
+        "llm-budget-exceeded": "Bu ayki brifing sınırına ulaşıldı.",
+        "llm-not-configured": "Brifing için sunucuda model tanımlı değil.",
+        "generic": "Brifing üretilemedi ({code})."
+      }
+    },
+    "reports": "Raporlar"
   },
   "rules": {
     "title": "Öneri kuralları",
@@ -1064,5 +1083,66 @@
     "processing": "Video HLS'ye dönüştürülüyor. Sayfa kendiliğinden yenilenir.",
     "routineClips": "Klipler",
     "routineClipsEmpty": "Bu rutinle kaydedilmiş duran toplara bağlı klip yok. Video merkezinde klip kesip duran topa bağlayın."
+  },
+  "reports": {
+    "title": "Raporlar",
+    "subtitle": "Rakip raporu ve maç planı PDF'leri. Dosyalar sunucuda üretilir; indirme bağlantısı her tıklamada yenilenir.",
+    "new": "Yeni rapor",
+    "archive": "Arşiv",
+    "fixture": "Maç",
+    "week": "{week}. hafta",
+    "request": {
+      "opponent": "Rakip raporu (PDF)",
+      "match_plan": "Maç planı (PDF)"
+    },
+    "requesting": "İsteniyor…",
+    "types": {
+      "opponent": "Rakip raporu",
+      "match_plan": "Maç planı"
+    },
+    "status": {
+      "queued": "Sırada",
+      "running": "Üretiliyor",
+      "ready": "Hazır",
+      "failed": "Üretilemedi"
+    },
+    "progress": "Rapor üretim ilerlemesi",
+    "failed": "Rapor üretilemedi. Yeniden isteyebilirsiniz.",
+    "pages": "{count, plural, one {# sayfa} other {# sayfa}}",
+    "duration": "{value} içinde üretildi",
+    "asOf": "Veri: {season}",
+    "asOfWeek": "Veri: {season}, {week}. haftaya kadar",
+    "download": "PDF indir",
+    "emptyTitle": "Henüz rapor yok",
+    "empty": "İstenen rakip raporu ve maç planı PDF'leri burada listelenir.",
+    "noFixturesTitle": "Maç bulunamadı",
+    "noFixtures": "Rapor için kulübün güncel sezonda bir maçı olmalı.",
+    "errors": {
+      "generic": "Rapor istenemedi ({code})."
+    }
+  },
+  "llm": {
+    "title": "Yapay zekâ brifingi",
+    "subtitle": "Brifing yalnız kayıtlı sayılarla yazılır; eşleşmeyen sayı içeren metin gösterilmez.",
+    "breadcrumb": "Konum",
+    "admin": "Yönetim",
+    "adminLink": "Yapay zekâ brifingi",
+    "adminLinkDescription": "Özelliği açıp kapatın, aylık istek ve token sınırını belirleyin.",
+    "usage": "Bu ayki kullanım",
+    "requests": "İstek",
+    "tokens": "Token",
+    "period": "Dönem başlangıcı: {start} (UTC). Her deneme, yeniden deneme dahil, bir istek sayılır.",
+    "settings": "Ayarlar",
+    "enabled": "Brifing üretimi açık",
+    "monthlyRequests": "Aylık istek sınırı",
+    "monthlyTokens": "Aylık token sınırı",
+    "help": "Sınıra ulaşıldığında ay sonuna kadar yeni brifing üretilmez.",
+    "save": "Kaydet",
+    "saving": "Kaydediliyor…",
+    "saved": "Ayarlar kaydedildi.",
+    "notConfigured": "Sunucuda model ya da API anahtarı tanımlı değil. Brifing üretmek için sistem yöneticisi .env dosyasında KURGU_LLM_MODEL ve KURGU_ANTHROPIC_API_KEY değerlerini girmeli.",
+    "errors": {
+      "generic": "Ayar kaydedilemedi ({code})."
+    }
   }
 }

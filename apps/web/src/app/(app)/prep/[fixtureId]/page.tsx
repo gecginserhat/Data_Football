@@ -2,13 +2,16 @@ import { EmptyState, TeamBadge } from "@kurgu/ui";
 import Link from "next/link";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { NotLoaded, PageTitle, Section } from "@/components/analysis/States";
+import { BriefingPanel } from "@/components/prep/BriefingPanel";
 import { FeedbackPanel } from "@/components/prep/FeedbackPanel";
 import { MatchupTable } from "@/components/prep/MatchupTable";
 import { CreatePlan, PlanBoard } from "@/components/prep/PlanBoard";
 import { RecommendationCard } from "@/components/prep/RecommendationCard";
+import { ReportList, RequestReport } from "@/components/reports/ReportList";
 import { getPrep, prepAccess } from "@/lib/prep";
+import { getBriefing, listReports, reportsAccess } from "@/lib/reports";
 
-type Search = { error?: string };
+type Search = { error?: string; briefing?: string; report?: string };
 
 export default async function PrepFixturePage({
   params,
@@ -34,7 +37,12 @@ export default async function PrepFixturePage({
       </>
     );
   }
-  const prep = await getPrep(fixtureId);
+  const [prep, briefing, reports, reportAccess] = await Promise.all([
+    getPrep(fixtureId),
+    getBriefing(fixtureId),
+    listReports(fixtureId),
+    reportsAccess(),
+  ]);
   if (prep.status !== "ok") {
     return (
       <>
@@ -148,6 +156,13 @@ export default async function PrepFixturePage({
         ) : null}
       </Section>
 
+      <BriefingPanel
+        briefing={briefing}
+        fixtureId={fixture.id}
+        canBrief={reportAccess.brief}
+        error={search.briefing}
+      />
+
       <FeedbackPanel fixture={fixture} recommendations={recommendations} />
       <Section id="matchup" title={t("matchup.title")}>
         {prep.data.matchup.length ? (
@@ -168,6 +183,18 @@ export default async function PrepFixturePage({
           />
         ) : (
           <CreatePlan fixtureId={fixture.id} canMark={access.mark} />
+        )}
+      </Section>
+
+      <Section
+        id="reports"
+        title={t("reports")}
+        action={<RequestReport fixtureId={fixture.id} returnTo="prep" />}
+      >
+        {reports.status === "ok" ? (
+          <ReportList reports={reports.data.slice(0, 6)} highlight={search.report} />
+        ) : (
+          <NotLoaded result={reports} />
         )}
       </Section>
     </>

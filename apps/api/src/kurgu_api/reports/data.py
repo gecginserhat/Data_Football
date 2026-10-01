@@ -35,7 +35,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from kurgu_api.config import get_settings
 from kurgu_api.league.metrics import SeasonMetrics
 from kurgu_api.league.schemas import TeamRef
-from kurgu_api.prep.facts import FixtureInfo, load_fixture
+from kurgu_api.prep.facts import FixtureInfo, MetricsCache, load_fixture
 from kurgu_api.prep.schemas import RecommendationOut
 from kurgu_api.prep.service import evaluate_fixture, load_plan, merged_recommendations
 
@@ -251,6 +251,23 @@ async def _briefing(session: AsyncSession, fixture_id: uuid.UUID) -> Briefing | 
     return Briefing(text=row.output, created_at=row.created_at) if row else None
 
 
+async def _profile(
+    session: AsyncSession, cache: MetricsCache, fixture: FixtureInfo
+) -> tuple[SeasonMetrics, list[MetricRow], str]:
+    """İçinde bulunulan sezon, rakip profil satırları ve profilin sezonu (A-78)."""
+    out = fixture.out
+    current = await cache.get(session, out.season.id)
+    profile = await cache.get(session, out.previous_season.id) if out.previous_season else None
+    if profile is not None and fixture.opponent_id not in profile.values:
+        profile = None  # rakip önceki sezonda ligde değil
+    label = (
+        out.previous_season.label
+        if profile is not None and out.previous_season
+        else out.season.label
+    )
+    return current, profile_rows(profile, current, fixture.opponent_id, fixture.club_id), label
+
+
 async def opponent_report(
     session: AsyncSession, fixture_id: uuid.UUID, tenant_id: uuid.UUID, user_id: uuid.UUID | None
 ) -> OpponentReport:
@@ -258,16 +275,7 @@ async def opponent_report(
     ev = await evaluate_fixture(session, fixture)
     recs = await merged_recommendations(session, ev, tenant_id)
     out = fixture.out
-    current = await ev.cache.get(session, out.season.id)
-    profile = await ev.cache.get(session, out.previous_season.id) if out.previous_season else None
-    if profile is not None and fixture.opponent_id not in profile.values:
-        profile = None  # rakip önceki sezonda ligde değil (A-78)
-    profile_label = (
-        out.previous_season.label
-        if profile is not None and out.previous_season
-        else out.season.label
-    )
-    metrics = profile_rows(profile, current, fixture.opponent_id, fixture.club_id)
+    current, metrics, profile_label = await _profile(session, ev.cache, fixture)
     standing_season = out.season.id
     standing = await _standing(session, standing_season, fixture)
     if standing is None and out.previous_season:
@@ -353,9 +361,12 @@ async def match_plan_report(
             PlanDay(md_code=code, date=None, focus="", items=items)
             for code, items in by_day.items()
         ]
-    current = await ev.cache.get(session, fixture.out.season.id)
+    # Kaynak ve veri tarihi önerilerin dayandığı rakip profilinden gelir.
+    current, metrics, profile_label = await _profile(session, ev.cache, fixture)
     return MatchPlanReport(
-        meta=await _meta(session, fixture, current, None, set(), user_id),
+        meta=await _meta(
+            session, fixture, current, profile_label, {m.source for m in metrics}, user_id
+        ),
         fixture=fixture_label(fixture),
         recommendations=[_recommendation(r) for r in accepted],
         routines=await _routines(session, routine_ids),
