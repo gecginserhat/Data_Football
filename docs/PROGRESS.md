@@ -1,7 +1,7 @@
 # İlerleme
 
-**Durum:** Faz 0 tamam (PR #1). Faz 1 tamam, `faz-1-veri` dalında PR olarak incelemede (30.09.2026).
-**Sonraki adım:** Faz 2 tamamlandı (PR #3). PR'lar birleşince Faz 3 (rutin kütüphanesi).
+**Durum:** Faz 0-2 tamam ve `main`'e birleşti (PR #1-#3, 01.10.2026). Faz 3 (rutin kütüphanesi) `faz-3-rutinler` dalında sürüyor.
+**Sonraki adım:** Faz 3 görevleri (aşağıda).
 
 Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce). Her commit öncesi `make lint typecheck test` temiz olmalı. Bir görev SPEC §19 DoD'yi karşılamadan işaretlenmez. Faz sonunda kabul kriterleri işaretlenir ve kısa rapor verilir.
 
@@ -229,6 +229,50 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 - [x] Altın kontroller (API ve e2e): %20,4 (166/812); TS 15 golle 1.; GÖZ 15,4 xG ile 1.
 - [x] E2E ve axe; `docs/demo/faz2/` ekran görüntüleri; CLAUDE.md komutları güncel.
 - [x] Kabul kriterleri işaretlendi, kısa rapor verildi.
+
+---
+
+## Faz 3: Rutin kütüphanesi
+
+### Kabul kriterleri (SPEC §19)
+- [ ] Editör: oyuncu (rolle), koşu, top yolu, perdeleme, ayna, geri al / yinele ve klavye desteği.
+- [ ] Sürümleme çalışır.
+- [ ] 7 şablon `seed/routine_templates.json` dosyasından yüklenir ve kütüphaneye eklenebilir.
+- [ ] PNG ve PDF dışa aktarım çalışır.
+
+### Görevler
+
+**3.1 Diyagram biçimi ve geometri (ADR-0008, A-39)**
+- [ ] Diyagram v1 şeması: oyuncular, çizgiler (koşu, top yolu, perdeleme), bölge vurguları, top ve kareler. Python'da Pydantic doğrulaması, TS'de tip.
+- [ ] `packages/pitch`: kavis kontrol noktası, ayna (sol/sağ), ızgaraya hizalama, kare enterpolasyonu, sürüm farkı; ortak test vektörleri Python ile.
+- [ ] `packages/pitch/roles.json`: rutin rolleri ve tr/en adları (SPEC §3.4 + şablon rolleri); web ve PDF aynı dosyayı okur.
+
+**3.2 Şema ve şablonlar**
+- [ ] Göç `0004_routines`: `routine_templates` (paylaşılan), `routines`, `routine_versions` (değişmez), `set_pieces.routine_id` yabancı anahtarı, `v_routine_stats` (`security_invoker`). RLS ve izinler; göç döngüsü.
+- [ ] Şablon yükleme: `make seed` ve ortamdan bağımsız `kurgu-seed --templates` (A-40). 7 şablon v1 diyagramına çevrilir.
+
+**3.3 API (SPEC §11)**
+- [ ] `GET /routine-templates`, `GET/POST /routines`, `POST /routines/from-template/{tplId}`, `GET/PUT/PATCH /routines/{id}`, `GET /routines/{id}/versions`, `GET /routines/{id}/versions/{v}`.
+- [ ] Sürümleme: her kayıt yeni değişmez sürüm; `base_version` ile çakışma 409; içerik aynıysa sürüm açılmaz; arşivleme (silme yok, A-41). Denetim kaydı.
+- [ ] Rutin performansı (SPEC §6.3): kullanım, ilk temas oranı, şut oranı, kullanım başına xG, gol; oranlar beta-binom büzülmesiyle (A-44).
+- [ ] Testler: izinler, kiracı izolasyonu, çakışma, doğrulama hataları (problem+json).
+
+**3.4 Dışa aktarım (A-42)**
+- [ ] `kurgu_analytics.reports.routine_sheet`: diyagramdan PNG ve A4 PDF (başlık, saha, rol açıklaması, notlar, kareler). Saf fonksiyon, testli.
+- [ ] `GET /routines/{id}/versions/{v}/export?format=png|pdf`.
+
+**3.5 Arayüz**
+- [ ] `/routines`: kütüphane (tür süzgeci, arşiv) ve şablonlar sekmesi (önizleme, "Kütüphaneye ekle"), yeni rutin.
+- [ ] `/routines/[id]` editörü: yarım saha SVG; oyuncu ekleme (takım ve rol), koşu, top yolu (kavisli, noktalı), perdeleme, bölge vurgusu; ızgara, ayna; geri al / yinele (zundo); klavyeyle seçme ve ok tuşlarıyla taşıma; özellik paneli.
+- [ ] Kare kare animasyon: kare ekleme, oyuncu ve top konumu, oynatma (`prefers-reduced-motion` desteği).
+- [ ] Sürüm geçmişi, eski sürümü görme, geri dönme (yeni sürüm olarak) ve iki sürümü karşılaştırma.
+- [ ] Dışa aktarım düğmeleri (PNG, PDF); yalnızca okuma yetkisi olanlar için salt okunur görünüm.
+- [ ] Yükleniyor, boş, hata durumları; `tr` ve `en` metinleri.
+
+**3.6 Doğrulama ve kapanış**
+- [ ] E2E: şablondan ekle → düzenle (klavye, ayna, geri al) → kaydet → sürüm 2 → karşılaştır → PDF ve PNG indir; axe.
+- [ ] `docs/demo/faz3/` ekran görüntüleri; CLAUDE.md komutları güncel.
+- [ ] Kabul kriterleri işaretlendi, kısa rapor verildi.
 
 ---
 
