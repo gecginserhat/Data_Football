@@ -1,7 +1,7 @@
 # İlerleme
 
-**Durum:** Faz 0-4 tamam ve `main`'e birleşti (PR #1-#5, 01.10.2026). Faz 5 (canlı kayıt ve video) tamam; `faz-5-canli` dalında, birleştirme onayı bekliyor.
-**Sonraki adım:** Faz 8 (sertleştirme).
+**Durum:** Faz 0-7 tamam ve `main`'e birleşti (PR #1-#8, 01.10.2026). Faz 8 (sertleştirme) tamam; `faz-8-sertlestirme` dalında, birleştirme onayı bekliyor.
+**Sonraki adım:** SPEC §19'daki fazlar bitti. Canlıya çıkış öncesi açık işler Faz 8 raporunda.
 
 Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce). Her commit öncesi `make lint typecheck test` temiz olmalı. Bir görev SPEC §19 DoD'yi karşılamadan işaretlenmez. Faz sonunda kabul kriterleri işaretlenir ve kısa rapor verilir.
 
@@ -450,42 +450,47 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 ## Faz 8: Sertleştirme
 
 ### Kabul kriterleri (SPEC §19)
-- [ ] Güvenlik gözden geçirmesi (OWASP ASVS L2 kontrol listesi) tamam.
-- [ ] Performans bütçeleri k6 ve Lighthouse ile doğrulandı.
-- [ ] axe taramasında 0 ciddi ihlal.
-- [ ] Türkçe kullanıcı kılavuzu yazıldı.
-- [ ] Runbook'lar ve geri yükleme tatbikatı tamam.
+- [x] Güvenlik gözden geçirmesi (OWASP ASVS L2 kontrol listesi) tamam.
+- [x] Performans bütçeleri k6 ve Lighthouse ile doğrulandı.
+- [x] axe taramasında 0 ciddi ihlal.
+- [x] Türkçe kullanıcı kılavuzu yazıldı.
+- [x] Runbook'lar ve geri yükleme tatbikatı tamam.
+
+### Rapor
+- **Yapıldı:** Güvenlik başlıkları, nonce'lu CSP, hız sınırı, MFA adım yükseltme; çıkışta Keycloak oturumunun kapatılması; API yanıtlarında varsayılan `no-store`; staging ve üretimde `/docs` kapalı. Yükleme denetimi (xlsx bomba ve kılık değiştirmiş dosya, ffmpeg beyaz listesi). Gözlem (OTel, Sentry, `/metrics`). KVKK: rıza, envanter, saklama ve gecelik silme, dışa aktarma ve silme talebi, `/admin/privacy`. axe taraması 4 rol × açık/koyu × masaüstü/tablet temiz. Şifreli yedek ve tatbikat (41 tablo, 3134 satır, BAŞARILI). Anahtar üretme ve döndürme (`kurgu-keys`). Beş runbook, ASVS L2 listesi, Türkçe kılavuz (9 bölüm).
+- **Sapmalar:** k6 bütçesi (p95 ≤ 300 ms) tek API sürecinde tutmadı (339 ms); üretim imajı 2 uvicorn süreciyle çalışıyor (201 ms; A-99). LCP bütçesi Lighthouse'un uygulanan yavaşlatmasıyla ölçüldü (1,9-2,1 sn); varsayılan simülasyon 3,0-3,7 sn tahmin ediyor (A-93, `docs/validation/performance.md`).
+- **Riskler ve açık işler:** Üretim Keycloak'ta parola politikası elle ayarlanmalı (`docs/runbooks/deploy.md`). Üyelik ve rol yönetimi arayüzü yok; SQL ile yapılıyor (`docs/runbooks/users-mfa.md`). Yüklemelerde virüs taraması (ClamAV) yok. Tehdit modeli belgesi ve bağımsız sızma testi yapılmadı. KVKK metinleri ve saklama süreleri hukuk onayı bekliyor (`docs/compliance.md`).
 
 ### Görevler
 
 **8.1 Güvenlik (SPEC §12.2, ADR-0016, A-88 … A-90)**
-- [ ] API güvenlik başlıkları; web'de nonce'lu CSP; HSTS yalnız staging ve production'da.
-- [ ] Redis tabanlı hız sınırı (yükleme, içe aktarma, video, rapor, brifing) ve 429 problem+json; Keycloak kaba kuvvet koruması.
-- [ ] MFA: Keycloak'ta iki düzeyli (parola, TOTP) koşullu akış; web'de `mfa-required` yanıtında adım yükseltme; production'da denetim zorunlu. E2E: MFA'lı kullanıcı TOTP ile girer.
-- [ ] Yükleme denetimi gözden geçirmesi (tür, boyut, imzalı adres).
+- [x] API güvenlik başlıkları; web'de nonce'lu CSP; HSTS yalnız staging ve production'da.
+- [x] Redis tabanlı hız sınırı (yükleme, içe aktarma, video, rapor, brifing) ve 429 problem+json; Keycloak kaba kuvvet koruması.
+- [x] MFA: Keycloak'ta iki düzeyli (parola, TOTP) koşullu akış; web'de `mfa-required` yanıtında adım yükseltme; production'da denetim zorunlu. E2E: MFA'lı kullanıcı TOTP ile girer.
+- [x] Yükleme denetimi gözden geçirmesi (tür, boyut, imzalı adres).
 
 **8.2 Gözlem (SPEC §17, ADR-0017, A-91)**
-- [ ] OpenTelemetry (isteğe bağlı), Sentry (isteğe bağlı, kişisel veri yok), `X-Request-ID`, `/metrics` (istek ve kuyruk metrikleri, token korumalı).
+- [x] OpenTelemetry (isteğe bağlı), Sentry (isteğe bağlı, kişisel veri yok), `X-Request-ID`, `/metrics` (istek ve kuyruk metrikleri, token korumalı).
 
 **8.3 KVKK (SPEC §12.3, ADR-0019, A-92)**
-- [ ] Göç `0009_privacy`: `health_consents`, `privacy_requests`, RLS, göç döngüsü.
-- [ ] Rıza (oyuncunun kendisi ya da kâğıt rıza), rızasız iyi oluş kaydının reddi.
-- [ ] Kişisel veri envanteri (kodda tek kayıt, test), saklama süreleri ve gecelik silme görevi.
-- [ ] Veri sahibi talepleri: dışa aktarma, silme talebi ve yönetici onayı; `/admin/privacy`; `docs/compliance.md`.
+- [x] Göç `0009_privacy`: `health_consents`, `privacy_requests`, RLS, göç döngüsü.
+- [x] Rıza (oyuncunun kendisi ya da kâğıt rıza), rızasız iyi oluş kaydının reddi.
+- [x] Kişisel veri envanteri (kodda tek kayıt, test), saklama süreleri ve gecelik silme görevi.
+- [x] Veri sahibi talepleri: dışa aktarma, silme talebi ve yönetici onayı; `/admin/privacy`; `docs/compliance.md`.
 
 **8.4 Erişilebilirlik ve performans (SPEC §13.4, A-93, A-94)**
-- [ ] axe taraması tüm rotalarda, açık ve koyu tema, masaüstü ve tablet; 0 ciddi ihlal.
-- [ ] Rota başına ilk JS yükü ≤ 200 KB (gzip) denetimi CI'da.
-- [ ] k6 ile özet uçlarında p95 ≤ 300 ms; Lighthouse ile kritik sayfalarda LCP ≤ 2,5 sn; canlı kayıtta dokunuştan yerel kayda ≤ 50 ms. Sonuçlar `docs/validation/performance.md`.
+- [x] axe taraması tüm rotalarda, açık ve koyu tema, masaüstü ve tablet; 0 ciddi ihlal.
+- [x] Rota başına ilk JS yükü ≤ 200 KB (gzip) denetimi CI'da.
+- [x] k6 ile özet uçlarında p95 ≤ 300 ms; Lighthouse ile kritik sayfalarda LCP ≤ 2,5 sn; canlı kayıtta dokunuştan yerel kayda ≤ 50 ms. Sonuçlar `docs/validation/performance.md`.
 
 **8.5 Yedekleme ve runbook'lar (SPEC §17, ADR-0018, A-95)**
-- [ ] Şifreli yedek ve geri yükleme tatbikatı betikleri; tatbikat kaydı.
-- [ ] Runbook'lar: yedekleme ve geri yükleme, anahtar yönetimi ve döndürme, dağıtım, olay müdahalesi, kullanıcı ve MFA yönetimi.
+- [x] Şifreli yedek ve geri yükleme tatbikatı betikleri; tatbikat kaydı.
+- [x] Runbook'lar: yedekleme ve geri yükleme, anahtar yönetimi ve döndürme, dağıtım, olay müdahalesi, kullanıcı ve MFA yönetimi.
 
 **8.6 Belgeler ve kapanış (A-96, A-97)**
-- [ ] Türkçe kullanıcı kılavuzu (`docs/kilavuz/`).
-- [ ] ASVS L2 kontrol listesi (`docs/security/asvs-l2.md`).
-- [ ] Kabul kriterleri işaretlendi, kısa rapor verildi.
+- [x] Türkçe kullanıcı kılavuzu (`docs/kilavuz/`).
+- [x] ASVS L2 kontrol listesi (`docs/security/asvs-l2.md`).
+- [x] Kabul kriterleri işaretlendi, kısa rapor verildi.
 
 ---
 
