@@ -1,4 +1,4 @@
 <div style="font-family: sans-serif; font-size: 7px; color: #63706A; width: 100%; padding: 0 13mm; display: flex; justify-content: space-between;">
-  <span>Kurgu · {{ r.meta.club.name }} · Kaynak: {{ sources_text(r.meta) }} · {{ r.meta.season }}{% if r.meta.data_week %}, {{ r.meta.data_week }}. haftaya kadar{% endif %} · Üretim: {{ r.meta.generated_at | local }}{% if r.meta.demo %} · Örnek veri içerir{% endif %}</span>
+  <span>Kurgu · {{ r.meta.club.name }} · Kaynak: {{ sources_text(r.meta) }} · {{ r.meta.season }}{% if r.meta.data_week %}, {{ r.meta.data_week }}. haftaya kadar{% endif %}{% if r.meta.profile_season and r.meta.profile_season != r.meta.season %} (profil {{ r.meta.profile_season }}){% endif %} · Üretim: {{ r.meta.generated_at | local }}{% if r.meta.demo %} · Örnek veri içerir{% endif %}</span>
   <span>Sayfa <span class="pageNumber"></span> / <span class="totalPages"></span></span>
 </div>

@@ -34,8 +34,9 @@ def meta() -> ReportMeta:
         club=CLUB,
         generated_at=NOW,
         generated_by="Analist",
-        season="2025/26",
-        data_week=None,
+        season="2026/27",
+        profile_season="2025/26",
+        data_week=6,
         sources=["seed:super_lig"],
     )
 
@@ -110,7 +111,17 @@ def opponent_report(briefing: bool = True) -> OpponentReport:
         ),
         MetricRow(metric="set_piece_goal_share", value=0.24, rank=6, teams=18, league_mean=0.204),
         MetricRow(metric="set_piece_goals_minus_xg", value=1.8, rank=4, teams=18, league_mean=-0.5),
-        MetricRow(metric="corners_per_match", value=6.4, rank=2, teams=18, league_mean=5.1),
+        MetricRow(
+            metric="corners_per_match",
+            value=6.4,
+            rank=2,
+            teams=18,
+            league_mean=5.1,
+            current_value=5.5,
+            current_rank=6,
+            current_teams=18,
+            current_low_sample=True,
+        ),
         MetricRow(
             metric="first_contact_win_pct",
             value=0.31,

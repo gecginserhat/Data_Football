@@ -127,3 +127,12 @@ def test_routine_svg_cannot_carry_markup_from_labels() -> None:
     svg = str(routine_svg(unsafe))
     assert "<script" not in svg
     assert "<!--" not in svg
+
+
+def test_current_season_column_only_when_profile_is_previous_season() -> None:
+    report = opponent_report()
+    assert "SAM 2026/27" in text_of(render_opponent_html(report))
+    report.meta.profile_season = report.meta.season
+    text = text_of(render_opponent_html(report))
+    assert "SAM 2026/27" not in text
+    assert "Profil · 2026/27" in text

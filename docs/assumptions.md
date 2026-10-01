@@ -191,3 +191,7 @@ Kabul edilen öneri plana madde ekler: hücum ve denge önerileri MD-3'e (sıkı
 
 **A-76 · VARSAYIM · LLM kiracı ayarı.** `tenants.settings.llm = {enabled, monthly_requests, monthly_tokens}`; varsayılan açık, ayda 200 istek ve 2.000.000 token. Ay, UTC takvim ayıdır; her deneme (yeniden deneme dahil) bir istek sayılır. Ayarı yönetici (`user_admin_audit`) değiştirir. İzinler matriste yok (SPEC §12.1): brifing üretmek hazırlık içeriği yazan rollere (`edit_routines`: yönetici, teknik direktör, duran top antrenörü, analist) açıktır, okumak `read_analysis` ister.
 
+
+**A-77 · VARSAYIM · Rapor bulguları.** "Bulgular" bölümü, rakibin profil metriklerinden lig sırası ilk üç ya da son üç olanları listeler (en az 6 takımlı ligde). Cümleler nötrdür ("ligde 2./18"), iyi/kötü yorumu öneriler bölümüne bırakılır. Az veri ve dolaylı rozetleri bulgularda da görünür.
+
+**A-78 · VARSAYIM · Raporun profil sezonu.** Öneri motoru gibi (A-46) rakip profili önceki sezondan gelir; içinde bulunulan sezonun değeri ve sırası yanında ayrı sütunda gösterilir. Profil sezonu başlıkta ve sayfa altında yazılır. Önceki sezon yoksa ya da rakip o sezonda ligde değilse (ör. yeni çıkan) profil içinde bulunulan sezondur ve ek sütun gösterilmez.

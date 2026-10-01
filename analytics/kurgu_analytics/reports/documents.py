@@ -26,7 +26,9 @@ class ReportMeta(BaseModel):
     generated_at: dt.datetime
     generated_by: str | None = None
     season: str
-    """Sezon etiketi, örn. `2025/26`."""
+    """Fikstürün sezonu, örn. `2026/27`."""
+    profile_season: str | None = None
+    """Profil ve sıraların dayandığı sezon (önceki sezon varsa o, A-78)."""
     data_week: int | None = None
     """Verinin geçerli olduğu son hafta; tamamlanmış sezonda boş."""
     sources: list[str] = Field(default_factory=list)
@@ -55,6 +57,11 @@ class MetricRow(BaseModel):
     source: str = "seed"
     club_value: float | None = None
     club_rank: int | None = None
+    current_value: float | None = None
+    """Rakibin içinde bulunulan sezondaki değeri (profil önceki sezondan ise)."""
+    current_rank: int | None = None
+    current_teams: int | None = None
+    current_low_sample: bool = False
 
 
 class Evidence(BaseModel):
