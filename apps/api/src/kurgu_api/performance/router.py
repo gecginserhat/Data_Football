@@ -27,8 +27,8 @@ from kurgu_api.performance.schemas import (
     PlayerLoadRow,
     PlayerSession,
     SessionIn,
-    TrainingSessionOut,
     TeamSummary,
+    TrainingSessionOut,
     WeekPoint,
     WellnessIn,
     WellnessOut,
@@ -84,7 +84,9 @@ async def _audit_read(
     )
 
 
-async def _sessions(session: SessionDep, since: dt.date, until: dt.date) -> list[TrainingSessionOut]:
+async def _sessions(
+    session: SessionDep, since: dt.date, until: dt.date
+) -> list[TrainingSessionOut]:
     rows = await session.execute(text(SESSIONS_SQL), {"since": since, "until": until, "limit": 20})
     return [
         TrainingSessionOut(
