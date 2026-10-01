@@ -121,6 +121,19 @@ async def test_pipeline_loads_and_is_idempotent(
     assert raw["tenant_id"] is None
     assert (tmp_path / raw["storage_key"]).is_file()
 
+    # Yükleme sonrası metrik görünümü yenilenir (ADR-0007): hücum ve savunma toplamları.
+    agg = await superuser.fetch(
+        "select t.*, (m.home_team_id = t.team_id) as is_home from mv_team_setpiece_season t"
+        " join matches m on m.id = $1 and t.season_id = m.season_id"
+        " and t.team_id in (m.home_team_id, m.away_team_id)",
+        match_id,
+    )
+    attack = next(r for r in agg if r["set_pieces"])
+    defence = next(r for r in agg if not r["set_pieces"])
+    assert (attack["matches"], attack["corners"], attack["set_piece_goals"]) == (1, 1, 1)
+    assert attack["set_piece_xg"] == pytest.approx(0.4)
+    assert defence["set_piece_goals_against"] == 1
+
     rerun = await _new_run(worker_engine)
     stats = await run_ingestion(
         worker_engine, store, rerun, tenant_id=None, provider=provider, params={}

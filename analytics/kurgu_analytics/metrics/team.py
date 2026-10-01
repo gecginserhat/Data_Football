@@ -7,9 +7,15 @@ bir metriğin girdisi yoksa o metrik hesaplanmaz. Ham sütunlar iki kaynaktan ge
   `set_piece_xg`, `corners_per_match`, `headed_goals`, `direct_fk_goals`, `fast_break_goals`,
   `aerial_win_pct` (0-100), `aerials_won_per_match`, `fouls_committed`, `fouls_won` (sezon
   toplamı), `clearances_per_match`.
-- Olay verisinden dizi toplamları (`mv_team_setpiece_season`): `set_pieces`, `corners`,
-  `sp_with_contact`, `sp_first_contact_won`, `sp_with_shot`, `sp_xg_phase1`, `sp_xg_phase2`,
-  `corner_goals`, `set_piece_goals_against`, `def_sp_with_contact`, `def_sp_first_contact_won`.
+- Olay verisinden dizi toplamları (`mv_team_setpiece_season`): `event_matches` (olay verisi
+  olan maç), `set_pieces`, `corners`, `sp_goals`, `sp_xg`, `sp_with_contact`,
+  `sp_first_contact_won`, `sp_with_shot`, `sp_xg_phase1`, `sp_xg_phase2`, `corner_goals`,
+  `set_piece_goals_against`, `def_sp_with_contact`, `def_sp_first_contact_won`.
+
+Olay verisinden türeyen metrikler yalnızca olay sütunlarını ve `event_matches`'i kullanır; böylece
+kulübün birkaç maçlık içe aktarımı tohumdaki 34 maçlık sayılarla karışmaz. Takım-sezon kaydı
+olmayan sezonlarda (ör. yalnızca StatsBomb) temel sütunlar (`matches`, `set_piece_goals`,
+`set_piece_xg`) olay toplamlarından doldurulur; bu birleştirme veri katmanının işidir.
 
 Penaltı hiçbir girdide yer almaz (duran top tanımı dışında; ayrı raporlanır).
 Tüm fonksiyonlar saftır. Oranlar 0-1 aralığında döner (yüzde biçimi arayüzün işidir).
@@ -17,7 +23,7 @@ Tüm fonksiyonlar saftır. Oranlar 0-1 aralığında döner (yüzde biçimi aray
 
 from __future__ import annotations
 
-from collections.abc import Callable
+from collections.abc import Callable, Mapping
 from dataclasses import dataclass
 from typing import Literal
 
@@ -91,30 +97,39 @@ def set_piece_goals_per_match(raw: pd.DataFrame) -> pd.Series:
 def set_pieces_per_match(raw: pd.DataFrame) -> pd.Series:
     """Maç başı duran top.
 
-    Formül: set_pieces / matches (korner, serbest vuruş ve ceza sahasına uzun taç; penaltı
+    Formül: set_pieces / event_matches (korner, serbest vuruş ve ceza sahasına uzun taç; penaltı
     hariç). Birim: maç başına dizi. Kaynak: SPEC §6.1, olay verisi.
     """
-    return _divide(_col(raw, "set_pieces"), _col(raw, "matches"))
+    return _divide(_col(raw, "set_pieces"), _col(raw, "event_matches"))
+
+
+def corner_exposure(raw: pd.DataFrame) -> pd.DataFrame:
+    """Korner sayısı ve ait olduğu maç sayısı.
+
+    Formül: olay verisi varsa (`corners`, `event_matches`); yoksa
+    (corners_per_match × matches, matches) (tohum). Çıktı sütunları: `corners`, `matches`.
+    Birim: korner, maç. Kaynak: SPEC §6.1.
+    """
+    events = _col(raw, "corners").notna() & _col(raw, "event_matches").notna()
+    corners = _col(raw, "corners").where(
+        events, _col(raw, "corners_per_match") * _col(raw, "matches")
+    )
+    matches = _col(raw, "event_matches").where(events, _col(raw, "matches"))
+    return pd.DataFrame({"corners": corners, "matches": matches})
 
 
 def corner_count(raw: pd.DataFrame) -> pd.Series:
-    """Korner sayısı.
-
-    Formül: olay verisinde `corners`; yoksa corners_per_match × matches (tohum).
-    Birim: korner. Kaynak: SPEC §6.1.
-    """
-    from_events = _col(raw, "corners")
-    from_rate = _col(raw, "corners_per_match") * _col(raw, "matches")
-    return from_events.fillna(from_rate)
+    """Korner sayısı (bkz. `corner_exposure`). Birim: korner."""
+    return corner_exposure(raw)["corners"]
 
 
 def corners_per_match(raw: pd.DataFrame) -> pd.Series:
     """Korner / maç.
 
-    Formül: corners / matches; olay verisi yoksa kayıttaki corners_per_match.
+    Formül: corners / event_matches; olay verisi yoksa kayıttaki corners_per_match.
     Birim: maç başına korner. Kaynak: SPEC §6.1.
     """
-    return _divide(_col(raw, "corners"), _col(raw, "matches")).fillna(
+    return _divide(_col(raw, "corners"), _col(raw, "event_matches")).fillna(
         _col(raw, "corners_per_match")
     )
 
@@ -149,9 +164,10 @@ def shots_per_set_piece(raw: pd.DataFrame) -> pd.Series:
 def xg_per_set_piece(raw: pd.DataFrame) -> pd.Series:
     """Duran top başına xG.
 
-    Formül: set_piece_xg / set_pieces. Birim: dizi başına xG. Kaynak: SPEC §6.1.
+    Formül: sp_xg / set_pieces (ikisi de olay verisinden). Birim: dizi başına xG.
+    Kaynak: SPEC §6.1.
     """
-    return _divide(_col(raw, "set_piece_xg"), _col(raw, "set_pieces"))
+    return _divide(_col(raw, "sp_xg"), _col(raw, "set_pieces"))
 
 
 def phase_xg_shares(raw: pd.DataFrame) -> pd.DataFrame:
@@ -180,7 +196,7 @@ def corner_goals_or_approx(raw: pd.DataFrame) -> pd.DataFrame:
     Formül: olay verisinde korner golleri (`corner_goals`); yoksa tüm duran top golleri
     (yaklaşık, A-37). Çıktı: `goals` ve `approx` (yaklaşık mı) sütunları. Kaynak: SPEC §6.1 notu.
     """
-    exact = _col(raw, "corner_goals")
+    exact = _col(raw, "corner_goals").where(_col(raw, "corners").notna())
     approx = exact.isna() & _col(raw, "set_piece_goals").notna()
     return pd.DataFrame({"goals": exact.fillna(_col(raw, "set_piece_goals")), "approx": approx})
 
@@ -276,11 +292,15 @@ class MetricDef:
     pair: Pair | None = None
     scale: float = 1.0
     """Büzülmüş değerin birimi için çarpan (ör. 100 kornere gol)."""
+    inputs: tuple[str, ...] = ()
+    """Ham girdi sütunları; değerin kaynağını (tohum, sağlayıcı, içe aktarım) belirlemek için."""
+    exposure: str = "matches"
+    """Az veri kuralındaki maç sayısı sütunu; olay metriklerinde `event_matches`."""
 
 
 CATALOG: tuple[MetricDef, ...] = (
-    MetricDef("set_piece_goals", "count", "goals", set_piece_goals),
-    MetricDef("set_piece_xg", "count", "xg", set_piece_xg),
+    MetricDef("set_piece_goals", "count", "goals", set_piece_goals, inputs=("set_piece_goals",)),
+    MetricDef("set_piece_xg", "count", "xg", set_piece_xg, inputs=("set_piece_xg",)),
     MetricDef(
         "set_piece_goal_share",
         "rate",
@@ -288,8 +308,15 @@ CATALOG: tuple[MetricDef, ...] = (
         set_piece_goal_share,
         shrink="beta",
         pair=_pair(set_piece_goals, "goals"),
+        inputs=("set_piece_goals", "goals"),
     ),
-    MetricDef("set_piece_goals_minus_xg", "diff", "goals", set_piece_goals_minus_xg),
+    MetricDef(
+        "set_piece_goals_minus_xg",
+        "diff",
+        "goals",
+        set_piece_goals_minus_xg,
+        inputs=("set_piece_goals", "set_piece_xg"),
+    ),
     MetricDef(
         "set_piece_goals_per_match",
         "per_match",
@@ -297,6 +324,7 @@ CATALOG: tuple[MetricDef, ...] = (
         set_piece_goals_per_match,
         shrink="gamma",
         pair=_pair(set_piece_goals, "matches"),
+        inputs=("set_piece_goals", "matches"),
     ),
     MetricDef(
         "set_pieces_per_match",
@@ -304,7 +332,9 @@ CATALOG: tuple[MetricDef, ...] = (
         "per_match",
         set_pieces_per_match,
         shrink="gamma",
-        pair=_pair(lambda r: _col(r, "set_pieces"), "matches"),
+        pair=_pair(lambda r: _col(r, "set_pieces"), "event_matches"),
+        inputs=("set_pieces", "event_matches"),
+        exposure="event_matches",
     ),
     MetricDef(
         "corners_per_match",
@@ -312,7 +342,8 @@ CATALOG: tuple[MetricDef, ...] = (
         "per_match",
         corners_per_match,
         shrink="gamma",
-        pair=_pair(corner_count, "matches"),
+        pair=lambda r: (corner_exposure(r)["corners"], corner_exposure(r)["matches"]),
+        inputs=("corners", "corners_per_match", "event_matches", "matches"),
     ),
     MetricDef(
         "first_contact_win_pct",
@@ -321,6 +352,8 @@ CATALOG: tuple[MetricDef, ...] = (
         first_contact_win_pct,
         shrink="beta",
         pair=_pair(lambda r: _col(r, "sp_first_contact_won"), "sp_with_contact"),
+        inputs=("sp_first_contact_won", "sp_with_contact"),
+        exposure="event_matches",
     ),
     MetricDef(
         "first_contact_win_pct_def",
@@ -329,6 +362,8 @@ CATALOG: tuple[MetricDef, ...] = (
         first_contact_win_pct_def,
         shrink="beta",
         pair=_pair(lambda r: _col(r, "def_sp_first_contact_won"), "def_sp_with_contact"),
+        inputs=("def_sp_first_contact_won", "def_sp_with_contact"),
+        exposure="event_matches",
     ),
     MetricDef(
         "shots_per_set_piece",
@@ -337,9 +372,25 @@ CATALOG: tuple[MetricDef, ...] = (
         shots_per_set_piece,
         shrink="beta",
         pair=_pair(lambda r: _col(r, "sp_with_shot"), "set_pieces"),
+        inputs=("sp_with_shot", "set_pieces"),
+        exposure="event_matches",
     ),
-    MetricDef("xg_per_set_piece", "ratio", "per_set_piece", xg_per_set_piece),
-    MetricDef("second_phase_xg_share", "ratio", "ratio", second_phase_xg_share),
+    MetricDef(
+        "xg_per_set_piece",
+        "ratio",
+        "per_set_piece",
+        xg_per_set_piece,
+        inputs=("sp_xg", "set_pieces"),
+        exposure="event_matches",
+    ),
+    MetricDef(
+        "second_phase_xg_share",
+        "ratio",
+        "ratio",
+        second_phase_xg_share,
+        inputs=("sp_xg_phase1", "sp_xg_phase2"),
+        exposure="event_matches",
+    ),
     MetricDef(
         "goals_per_100_corners",
         "rate",
@@ -348,12 +399,29 @@ CATALOG: tuple[MetricDef, ...] = (
         shrink="beta",
         pair=lambda r: (corner_goals_or_approx(r)["goals"], corner_count(r)),
         scale=100.0,
+        inputs=(
+            "corner_goals",
+            "set_piece_goals",
+            "corners",
+            "corners_per_match",
+            "event_matches",
+            "matches",
+        ),
     ),
-    MetricDef("set_piece_goals_against", "count", "goals", set_piece_goals_against),
-    MetricDef("headed_goals", "count", "goals", headed_goals),
-    MetricDef("direct_fk_goals", "count", "goals", direct_fk_goals),
-    MetricDef("fast_break_goals", "count", "goals", fast_break_goals),
-    MetricDef("aerial_win_pct", "rate", "ratio", aerial_win_pct, indirect=True),
+    MetricDef(
+        "set_piece_goals_against",
+        "count",
+        "goals",
+        set_piece_goals_against,
+        inputs=("set_piece_goals_against",),
+        exposure="event_matches",
+    ),
+    MetricDef("headed_goals", "count", "goals", headed_goals, inputs=("headed_goals",)),
+    MetricDef("direct_fk_goals", "count", "goals", direct_fk_goals, inputs=("direct_fk_goals",)),
+    MetricDef("fast_break_goals", "count", "goals", fast_break_goals, inputs=("fast_break_goals",)),
+    MetricDef(
+        "aerial_win_pct", "rate", "ratio", aerial_win_pct, indirect=True, inputs=("aerial_win_pct",)
+    ),
     MetricDef(
         "aerials_won_per_match",
         "per_match",
@@ -362,6 +430,7 @@ CATALOG: tuple[MetricDef, ...] = (
         indirect=True,
         shrink="gamma",
         pair=_per_match_pair(aerials_won_per_match),
+        inputs=("aerials_won_per_match",),
     ),
     MetricDef(
         "fouls_committed_per_match",
@@ -371,6 +440,7 @@ CATALOG: tuple[MetricDef, ...] = (
         indirect=True,
         shrink="gamma",
         pair=_pair(lambda r: _col(r, "fouls_committed"), "matches"),
+        inputs=("fouls_committed", "matches"),
     ),
     MetricDef(
         "fouls_won_per_match",
@@ -379,6 +449,7 @@ CATALOG: tuple[MetricDef, ...] = (
         fouls_won_per_match,
         shrink="gamma",
         pair=_pair(lambda r: _col(r, "fouls_won"), "matches"),
+        inputs=("fouls_won", "matches"),
     ),
     MetricDef(
         "clearances_per_match",
@@ -388,6 +459,7 @@ CATALOG: tuple[MetricDef, ...] = (
         indirect=True,
         shrink="gamma",
         pair=_per_match_pair(clearances_per_match),
+        inputs=("clearances_per_match",),
     ),
 )
 METRICS: dict[str, MetricDef] = {m.id: m for m in CATALOG}
@@ -424,10 +496,10 @@ def team_metrics(raw: pd.DataFrame) -> pd.DataFrame:
     - `approx`: değer yaklaşık mı (A-37).
     Kaynak: SPEC §6.1, §6.4.
     """
-    matches = _col(raw, "matches")
     frames: list[pd.DataFrame] = []
     for metric in CATALOG:
         values = metric.formula(raw)
+        matches = _col(raw, metric.exposure)
         valid = values.notna()
         if not valid.any():
             continue
@@ -492,22 +564,33 @@ def league_benchmarks(metrics: pd.DataFrame) -> pd.DataFrame:
     ).reset_index()
 
 
-def league_totals(raw: pd.DataFrame) -> dict[str, float]:
+def league_totals(sums: Mapping[str, float]) -> dict[str, float]:
     """Lig toplamları ve toplamdan oranlar.
 
-    Formül: Σ goals, Σ set_piece_goals, lig maçı = Σ matches / 2;
-    set_piece_goal_share = Σ set_piece_goals / Σ goals;
+    Girdi `mv_league_benchmarks` satırlarıdır: ham alan adı → takımlar üzerinden toplam. Takım-sezon
+    kaydı önceliklidir; yoksa puan durumu (`standings.*`) ya da olay toplamları (`events.*`).
+    Formül: lig maçı = Σ takım maçı / 2; set_piece_goal_share = Σ set_piece_goals / Σ goals;
     set_piece_goals_per_match = Σ set_piece_goals / lig maçı.
     Birim: gol, maç, oran. Kaynak: SPEC §6.1 (2025/26: 166 / 812 = %20,4; 166 / 306 = 0,542).
-    Bir girdisi eksik olan toplam döndürülmez.
+    Girdisi olmayan toplam döndürülmez.
     """
+
+    def pick(name: str, *fallbacks: str) -> float | None:
+        for key in (name, *fallbacks):
+            if sums.get(key) is not None:
+                return float(sums[key])
+        return None
+
     out: dict[str, float] = {}
-    sums = {c: _col(raw, c) for c in ("goals", "set_piece_goals", "matches", "set_piece_xg")}
-    for name, col in sums.items():
-        if col.notna().any() and col.notna().all():
-            out[name] = float(col.sum())
-    if "matches" in out:
-        out["matches"] = out["matches"] / 2
+    picked = {
+        "goals": pick("goals", "standings.goals"),
+        "set_piece_goals": pick("set_piece_goals", "events.set_piece_goals"),
+        "set_piece_xg": pick("set_piece_xg", "events.set_piece_xg"),
+        "team_matches": pick("matches", "standings.matches", "events.matches"),
+    }
+    out.update({k: v for k, v in picked.items() if v is not None and k != "team_matches"})
+    if picked["team_matches"]:
+        out["matches"] = picked["team_matches"] / 2
     if out.get("goals") and "set_piece_goals" in out:
         out["set_piece_goal_share"] = out["set_piece_goals"] / out["goals"]
     if out.get("matches") and "set_piece_goals" in out:

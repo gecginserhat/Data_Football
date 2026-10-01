@@ -34,6 +34,7 @@ from sqlalchemy.ext.asyncio import AsyncConnection, create_async_engine
 
 from kurgu_api.config import get_settings
 from kurgu_api.dev_identities import DEMO_TENANT_ID, SECOND_TENANT_ID, seed_dev_identities
+from kurgu_api.league.views import refresh_metric_views
 
 PROVIDER = "seed"
 SUPER_LIG = ("TR-SL", "Süper Lig", "TR")
@@ -363,6 +364,7 @@ async def run_seed(database_url: str | None = None, seed_dir: Path | None = None
         async with engine.begin() as conn:
             result = await load_league(conn, seed)
             await link_tenants(conn, result.teams)
+            await refresh_metric_views(conn)
     finally:
         await engine.dispose()
     result.report = report

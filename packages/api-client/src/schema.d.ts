@@ -4,6 +4,27 @@
  */
 
 export interface paths {
+    "/api/v1/fixtures": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Fixtures
+         * @description Fikstür ve sonuçlar: başlama zamanına göre sıralı. `from` verilirse o günden itibaren
+         *     (saati belli olmayan planlı maçlar dahil).
+         */
+        get: operations["listFixtures"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/imports": {
         parameters: {
             query?: never;
@@ -149,6 +170,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/seasons/{season_id}/benchmarks": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Benchmarks
+         * @description Lig kıyasları: metrik başına en düşük, en yüksek ve ortalama; lig toplamları; aynı sezonun
+         *     kayıttaki referans kıyasları (ör. Premier League).
+         */
+        get: operations["getBenchmarks"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/seasons/{season_id}/standings": {
         parameters: {
             query?: never;
@@ -178,7 +220,8 @@ export interface paths {
         };
         /**
          * List Team Metrics
-         * @description Takım başına sezon metrikleri (ham kayıt değerleri), takım koduna göre sıralı.
+         * @description Takım başına sezon metrikleri: değer, lig sırası, yüzdelik, büzülmüş değer, az veri ve
+         *     kaynak (SPEC §6). Takım koduna göre sıralı.
          */
         get: operations["listTeamMetrics"];
         put?: never;
@@ -198,9 +241,30 @@ export interface paths {
         };
         /**
          * Get Team Profile
-         * @description Takım profili: sezon metrikleri ve son puan durumu satırı (Faz 1: ham değerler).
+         * @description Takım profili: metrikler ve sıralar, lig kıyasları, kendi kulübümüzün değerleri, son puan
+         *     durumu satırı ve son 5 maçın formu.
          */
         get: operations["getTeamProfile"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{team_id}/set-pieces": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Team Set Pieces
+         * @description Takımın sezondaki duran top dizileri (olay verisi ya da kulübün kendi kaydı).
+         */
+        get: operations["listTeamSetPieces"];
         put?: never;
         post?: never;
         delete?: never;
@@ -263,6 +327,35 @@ export interface components {
             /** Tenant Name */
             tenant_name: string;
         };
+        /** BenchmarkOut */
+        BenchmarkOut: {
+            /** Max */
+            max: number;
+            /** Mean */
+            mean: number;
+            /** Min */
+            min: number;
+            /** Teams */
+            teams: number;
+        };
+        /** BenchmarksOut */
+        BenchmarksOut: {
+            /** Metrics */
+            metrics: {
+                [key: string]: components["schemas"]["BenchmarkOut"];
+            };
+            /** References */
+            references: components["schemas"]["ReferenceOut"][];
+            /**
+             * Season Id
+             * Format: uuid
+             */
+            season_id: string;
+            /** Totals */
+            totals: {
+                [key: string]: number;
+            };
+        };
         /** Body_createImport */
         Body_createImport: {
             /** File */
@@ -296,6 +389,60 @@ export interface components {
             name: string;
             /** Required */
             required: boolean;
+        };
+        /** FixtureOut */
+        FixtureOut: {
+            away: components["schemas"]["TeamRef"];
+            /** Away Score */
+            away_score: number | null;
+            home: components["schemas"]["TeamRef"];
+            /** Home Score */
+            home_score: number | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Kickoff At */
+            kickoff_at: string | null;
+            /**
+             * Season Id
+             * Format: uuid
+             */
+            season_id: string;
+            /** Status */
+            status: string;
+            /** Week */
+            week: number | null;
+        };
+        /** FixturePage */
+        FixturePage: {
+            /** Items */
+            items: components["schemas"]["FixtureOut"][];
+            /** Next Cursor */
+            next_cursor: string | null;
+        };
+        /** FormOut */
+        FormOut: {
+            /** Goals Against */
+            goals_against: number;
+            /** Goals For */
+            goals_for: number;
+            /** Home */
+            home: boolean;
+            /**
+             * Match Id
+             * Format: uuid
+             */
+            match_id: string;
+            opponent: components["schemas"]["TeamRef"];
+            /**
+             * Result
+             * @enum {string}
+             */
+            result: "W" | "D" | "L";
+            /** Week */
+            week: number | null;
         };
         /** HTTPValidationError */
         HTTPValidationError: {
@@ -479,10 +626,54 @@ export interface components {
             tenant_name: string;
         };
         /**
+         * MetricValueOut
+         * @description Bir takımın bir metrikteki değeri (SPEC §6.1, §6.4).
+         */
+        MetricValueOut: {
+            /** Approx */
+            approx: boolean;
+            /** Indirect */
+            indirect: boolean;
+            /** Low Sample */
+            low_sample: boolean;
+            /** Matches */
+            matches: number | null;
+            /** Percentile */
+            percentile: number | null;
+            /** Rank */
+            rank: number;
+            /** Shrunk */
+            shrunk: number | null;
+            /** Shrunk High */
+            shrunk_high: number | null;
+            /** Shrunk Low */
+            shrunk_low: number | null;
+            /** Source */
+            source: string;
+            /** Teams */
+            teams: number;
+            /** Trials */
+            trials: number | null;
+            /** Value */
+            value: number;
+        };
+        /**
          * Permission
          * @enum {string}
          */
         Permission: "read_analysis" | "edit_routines" | "decide_recommendations" | "mark_plan_items" | "live_tagging_video" | "load_wellness" | "medical_notes" | "rule_settings" | "user_admin_audit" | "player_cards";
+        /** ReferenceOut */
+        ReferenceOut: {
+            competition: components["schemas"]["CompetitionRef"];
+            /** Metric */
+            metric: string;
+            /** Season Code */
+            season_code: string;
+            /** Source */
+            source: string;
+            /** Value */
+            value: number;
+        };
         /**
          * Role
          * @enum {string}
@@ -507,6 +698,55 @@ export interface components {
         SeasonPage: {
             /** Items */
             items: components["schemas"]["SeasonOut"][];
+            /** Next Cursor */
+            next_cursor: string | null;
+        };
+        /** SetPieceOut */
+        SetPieceOut: {
+            /** First Contact Team Id */
+            first_contact_team_id: string | null;
+            /** Goal */
+            goal: boolean;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Match Id
+             * Format: uuid
+             */
+            match_id: string;
+            opponent: components["schemas"]["TeamRef"];
+            /** Outcome */
+            outcome: string | null;
+            /** Period */
+            period: number;
+            /** Phase Of Goal */
+            phase_of_goal: number | null;
+            /** Shots */
+            shots: number;
+            /** Side */
+            side: string | null;
+            /** Source */
+            source: string;
+            /** Sp Subtype */
+            sp_subtype: string | null;
+            /** Sp Type */
+            sp_type: string;
+            /** Start Time S */
+            start_time_s: number;
+            /** Target Zone */
+            target_zone: string | null;
+            /** Week */
+            week: number | null;
+            /** Xg Total */
+            xg_total: number;
+        };
+        /** SetPiecePage */
+        SetPiecePage: {
+            /** Items */
+            items: components["schemas"]["SetPieceOut"][];
             /** Next Cursor */
             next_cursor: string | null;
         };
@@ -574,16 +814,20 @@ export interface components {
         TeamMetricsOut: {
             /** As Of Week */
             as_of_week: number | null;
-            /** Metrics */
-            metrics: {
+            /** Inputs */
+            inputs: {
                 [key: string]: number;
             };
-            /** Source */
-            source: string;
             team: components["schemas"]["TeamRef"];
+            /** Values */
+            values: {
+                [key: string]: components["schemas"]["MetricValueOut"];
+            };
         };
         /** TeamMetricsPage */
         TeamMetricsPage: {
+            /** Club Team Id */
+            club_team_id: string | null;
             /** Items */
             items: components["schemas"]["TeamMetricsOut"][];
             /** Next Cursor */
@@ -624,17 +868,26 @@ export interface components {
         TeamProfileOut: {
             /** As Of Week */
             as_of_week: number | null;
-            /** Metrics */
-            metrics: {
-                [key: string]: number;
+            /** Benchmarks */
+            benchmarks: {
+                [key: string]: components["schemas"]["BenchmarkOut"];
             };
+            club: components["schemas"]["TeamRef"] | null;
+            /** Club Values */
+            club_values: {
+                [key: string]: components["schemas"]["MetricValueOut"];
+            };
+            /** Form */
+            form: components["schemas"]["FormOut"][];
             season: components["schemas"]["SeasonOut"];
-            /** Source */
-            source: string | null;
             standing: components["schemas"]["StandingRowOut"] | null;
             /** Standing Week */
             standing_week: number | null;
             team: components["schemas"]["TeamOut"];
+            /** Values */
+            values: {
+                [key: string]: components["schemas"]["MetricValueOut"];
+            };
         };
         /** TeamRef */
         TeamRef: {
@@ -670,6 +923,44 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    listFixtures: {
+        parameters: {
+            query?: {
+                team?: string | null;
+                season?: string | null;
+                from?: string | null;
+                status?: ("scheduled" | "finished") | null;
+                cursor?: string | null;
+                limit?: number;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FixturePage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     listImports: {
         parameters: {
             query?: never;
@@ -1004,6 +1295,39 @@ export interface operations {
             };
         };
     };
+    getBenchmarks: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                season_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["BenchmarksOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     getStandings: {
         parameters: {
             query?: {
@@ -1098,6 +1422,46 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["TeamProfileOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listTeamSetPieces: {
+        parameters: {
+            query: {
+                /** @description Sezon kimliği */
+                season: string;
+                /** @description Duran top türü */
+                type?: ("corner" | "free_kick" | "throw_in") | null;
+                cursor?: string | null;
+                limit?: number;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                team_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetPiecePage"];
                 };
             };
             /** @description Validation Error */

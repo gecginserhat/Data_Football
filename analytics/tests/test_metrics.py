@@ -46,9 +46,11 @@ def test_formulas_on_hand_values() -> None:
     raw = pd.DataFrame(
         {
             "matches": [10, 0],
+            "event_matches": [10, 0],
             "goals": [20, 0],
             "set_piece_goals": [5, 0],
             "set_piece_xg": [4.0, 0.0],
+            "sp_xg": [4.0, 0.0],
             "set_pieces": [80, 0],
             "corners": [50, 0],
             "corner_goals": [2, 0],
@@ -77,6 +79,25 @@ def test_formulas_on_hand_values() -> None:
     assert f.aerial_win_pct(raw)["a"] == 0.55
 
 
+def test_event_metrics_use_event_matches() -> None:
+    """3 maçlık içe aktarım tohumdaki 34 maçla bölünmez; az veri bayrağı da 3 maça bakar."""
+    raw = pd.DataFrame(
+        {
+            "matches": [34],
+            "event_matches": [3],
+            "set_pieces": [30],
+            "corners": [15],
+            "sp_with_contact": [20],
+            "sp_first_contact_won": [9],
+        }
+    )
+    out = team_metrics(raw)
+    assert _value(out, 0, "set_pieces_per_match") == 10
+    assert _value(out, 0, "corners_per_match") == 5
+    assert bool(_value(out, 0, "first_contact_win_pct", "low_sample")) is True
+    assert _value(out, 0, "first_contact_win_pct", "matches") == 3
+
+
 def test_missing_inputs_skip_metric() -> None:
     raw = pd.DataFrame({"matches": [34], "set_piece_goals": [10]}, index=["a"])
     out = team_metrics(raw)
@@ -90,7 +111,7 @@ def test_goals_per_100_corners_approximates_from_seed() -> None:
     out = team_metrics(raw)
     assert _value(out, 0, "goals_per_100_corners") == pytest.approx(10.0)
     assert bool(_value(out, 0, "goals_per_100_corners", "approx")) is True
-    exact = raw.assign(corners=[170], corner_goals=[8])
+    exact = raw.assign(corners=[170], corner_goals=[8], event_matches=[34])
     assert bool(_value(team_metrics(exact), 0, "goals_per_100_corners", "approx")) is False
 
 
@@ -102,6 +123,15 @@ def test_indirect_flags_match_claude_md() -> None:
         "fouls_committed_per_match",
         "clearances_per_match",
     }
+
+
+def test_league_totals_fall_back_to_standings_and_events() -> None:
+    totals = league_totals({"standings.goals": 40, "standings.matches": 20, "set_piece_goals": 8})
+    assert totals["set_piece_goal_share"] == 0.2
+    assert totals["matches"] == 10
+    events = league_totals({"events.set_piece_goals": 3, "events.matches": 4})
+    assert events["set_piece_goals_per_match"] == 1.5
+    assert "set_piece_goal_share" not in events
 
 
 def test_no_penalty_metric_in_catalog() -> None:
@@ -192,8 +222,10 @@ def test_shrunk_rates_stay_in_unit_interval(pairs: list[tuple[int, int]]) -> Non
     successes = pd.Series([s for s, _ in pairs])
     trials = pd.Series([n for _, n in pairs])
     out = beta_binomial_shrink(successes, trials)
+    # Çarpık sonsalda ortalama aralığın dışında kalabilir; değişmez olan sınırların sırasıdır.
     assert ((out["low"] >= 0) & (out["high"] <= 1)).all()
-    assert ((out["low"] <= out["mean"] + 1e-12) & (out["mean"] <= out["high"] + 1e-12)).all()
+    assert (out["low"] <= out["high"]).all()
+    assert ((out["mean"] >= 0) & (out["mean"] <= 1)).all()
 
 
 @given(
@@ -256,7 +288,7 @@ def test_team_metrics_rates_in_range(rows: list[tuple[int, int, int]]) -> None:
 
 
 def test_seed_golden_values(seed_2025: pd.DataFrame) -> None:
-    totals = league_totals(seed_2025)
+    totals = league_totals({c: float(seed_2025[c].sum()) for c in seed_2025.columns})
     assert totals["set_piece_goals"] == 166
     assert totals["goals"] == 812
     assert round(totals["set_piece_goal_share"], 3) == 0.204
@@ -273,3 +305,11 @@ def test_seed_golden_values(seed_2025: pd.DataFrame) -> None:
     assert bench.loc["set_piece_goals", "max"] == 15
     assert bench.loc["set_piece_goals", "teams"] == 18
     assert bench.loc["aerial_win_pct", "max"] <= 1
+
+
+def test_catalog_inputs_cover_formulas() -> None:
+    """Her metriğin girdileri verildiğinde değer hesaplanır; girdiler kaynak takibi için tamdır."""
+    for metric in METRICS.values():
+        assert metric.inputs, metric.id
+        raw = pd.DataFrame({c: [10.0, 6.0] for c in metric.inputs})
+        assert metric.formula(raw).notna().all(), metric.id
