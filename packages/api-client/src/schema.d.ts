@@ -153,6 +153,111 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/routine-templates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Templates */
+        get: operations["listRoutineTemplates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/routines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Routines */
+        get: operations["listRoutines"];
+        put?: never;
+        /** Create Routine */
+        post: operations["createRoutine"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/routines/from-template/{template_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Create From Template */
+        post: operations["createRoutineFromTemplate"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/routines/{routine_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Routine */
+        get: operations["getRoutine"];
+        /** Update Routine */
+        put: operations["updateRoutine"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        /** Patch Routine */
+        patch: operations["patchRoutine"];
+        trace?: never;
+    };
+    "/api/v1/routines/{routine_id}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Versions */
+        get: operations["listRoutineVersions"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/routines/{routine_id}/versions/{version}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Version */
+        get: operations["getRoutineVersion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/seasons": {
         parameters: {
             query?: never;
@@ -382,6 +487,115 @@ export interface components {
             id: string;
             /** Name */
             name: string;
+        };
+        /**
+         * Diagram
+         * @description Bir rutin sürümünün çizimi.
+         */
+        Diagram: {
+            /** Ball */
+            ball?: [
+                number,
+                number
+            ] | null;
+            /** Frames */
+            frames?: components["schemas"]["DiagramFrame"][];
+            /** Lines */
+            lines?: components["schemas"]["DiagramLine"][];
+            /** Players */
+            players?: components["schemas"]["DiagramPlayer"][];
+            /**
+             * Schema
+             * @default 1
+             * @constant
+             */
+            schema: 1;
+            /** Zones */
+            zones?: components["schemas"]["DiagramZone"][];
+        };
+        /** DiagramFrame */
+        DiagramFrame: {
+            /** Ball */
+            ball?: [
+                number,
+                number
+            ] | null;
+            /**
+             * Duration Ms
+             * @default 1000
+             */
+            duration_ms: number;
+            /** Id */
+            id: string;
+            /** Positions */
+            positions?: {
+                [key: string]: [
+                    number,
+                    number
+                ];
+            };
+        };
+        /** DiagramLine */
+        DiagramLine: {
+            /**
+             * Curve
+             * @default 0
+             */
+            curve: number;
+            /** From */
+            from: [
+                number,
+                number
+            ];
+            /** Id */
+            id: string;
+            /**
+             * Kind
+             * @enum {string}
+             */
+            kind: "run" | "ball_path" | "screen";
+            /** Player Id */
+            player_id?: string | null;
+            /** To */
+            to: [
+                number,
+                number
+            ];
+        };
+        /** DiagramPlayer */
+        DiagramPlayer: {
+            /** Id */
+            id: string;
+            /** Label */
+            label?: string | null;
+            /** Number */
+            number?: number | null;
+            /** Role */
+            role: string;
+            /**
+             * Team
+             * @enum {string}
+             */
+            team: "own" | "opponent";
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
+        };
+        /** DiagramZone */
+        DiagramZone: {
+            /** H */
+            h: number;
+            /** Id */
+            id: string;
+            /** Label */
+            label?: string | null;
+            /** W */
+            w: number;
+            /** X */
+            x: number;
+            /** Y */
+            y: number;
         };
         /** FieldOut */
         FieldOut: {
@@ -662,6 +876,22 @@ export interface components {
          * @enum {string}
          */
         Permission: "read_analysis" | "edit_routines" | "decide_recommendations" | "mark_plan_items" | "live_tagging_video" | "load_wellness" | "medical_notes" | "rule_settings" | "user_admin_audit" | "player_cards";
+        /**
+         * RateOut
+         * @description Oran ve beta-binom büzülmesi (SPEC §6.4).
+         */
+        RateOut: {
+            /** High */
+            high: number | null;
+            /** Low */
+            low: number | null;
+            /** Shrunk */
+            shrunk: number | null;
+            /** Trials */
+            trials: number;
+            /** Value */
+            value: number | null;
+        };
         /** ReferenceOut */
         ReferenceOut: {
             competition: components["schemas"]["CompetitionRef"];
@@ -679,6 +909,166 @@ export interface components {
          * @enum {string}
          */
         Role: "admin" | "head_coach" | "sp_coach" | "analyst" | "performance" | "medical" | "player" | "viewer";
+        /** RoutineCreate */
+        RoutineCreate: {
+            diagram?: components["schemas"]["Diagram"];
+            /**
+             * Is Defensive
+             * @default false
+             */
+            is_defensive: boolean;
+            /** Name */
+            name: string;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+            /** Side */
+            side?: ("left" | "right") | null;
+            /**
+             * Sp Type
+             * @enum {string}
+             */
+            sp_type: "corner" | "free_kick" | "throw_in";
+            /**
+             * When To Use
+             * @default
+             */
+            when_to_use: string;
+        };
+        /** RoutineFromTemplate */
+        RoutineFromTemplate: {
+            /** Name */
+            name?: string | null;
+        };
+        /** RoutineOut */
+        RoutineOut: {
+            /** Archived */
+            archived: boolean;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** Current Version */
+            current_version: number;
+            /** From Template */
+            from_template: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Defensive */
+            is_defensive: boolean;
+            /** Name */
+            name: string;
+            /** Side */
+            side: ("left" | "right") | null;
+            /**
+             * Sp Type
+             * @enum {string}
+             */
+            sp_type: "corner" | "free_kick" | "throw_in";
+            stats: components["schemas"]["RoutineStatsOut"];
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            version: components["schemas"]["VersionOut"];
+        };
+        /** RoutinePage */
+        RoutinePage: {
+            /** Items */
+            items: components["schemas"]["RoutineSummary"][];
+            /** Next Cursor */
+            next_cursor: string | null;
+        };
+        /** RoutinePatch */
+        RoutinePatch: {
+            /** Archived */
+            archived: boolean;
+        };
+        /**
+         * RoutineStatsOut
+         * @description Rutin performansı (SPEC §6.3). Rutine bağlı duran top dizilerinden (A-44).
+         */
+        RoutineStatsOut: {
+            first_contact: components["schemas"]["RateOut"];
+            /** Goals */
+            goals: number;
+            /** Low Sample */
+            low_sample: boolean;
+            /** Matches */
+            matches: number;
+            shot: components["schemas"]["RateOut"];
+            /** Uses */
+            uses: number;
+            /** Xg */
+            xg: number;
+            /** Xg Per Use */
+            xg_per_use: number | null;
+        };
+        /** RoutineSummary */
+        RoutineSummary: {
+            /** Archived */
+            archived: boolean;
+            /** Current Version */
+            current_version: number;
+            diagram: components["schemas"]["Diagram"];
+            /** From Template */
+            from_template: string | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Defensive */
+            is_defensive: boolean;
+            /** Name */
+            name: string;
+            /** Side */
+            side: ("left" | "right") | null;
+            /**
+             * Sp Type
+             * @enum {string}
+             */
+            sp_type: "corner" | "free_kick" | "throw_in";
+            stats: components["schemas"]["RoutineStatsOut"];
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+            updated_by: components["schemas"]["UserRef"] | null;
+        };
+        /**
+         * RoutineUpdate
+         * @description Yeni sürüm. `base_version` güncel sürüm değilse 409 (A-41).
+         */
+        RoutineUpdate: {
+            /** Base Version */
+            base_version: number;
+            diagram: components["schemas"]["Diagram"];
+            /** Message */
+            message?: string | null;
+            /** Name */
+            name: string;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+            /** Side */
+            side?: ("left" | "right") | null;
+            /**
+             * When To Use
+             * @default
+             */
+            when_to_use: string;
+        };
         /** SeasonOut */
         SeasonOut: {
             /** Code */
@@ -901,6 +1291,37 @@ export interface components {
             /** Name */
             name: string;
         };
+        /** TemplateOut */
+        TemplateOut: {
+            diagram: components["schemas"]["Diagram"];
+            /** Id */
+            id: string;
+            /** Is Defensive */
+            is_defensive: boolean;
+            /** Name */
+            name: string;
+            /** Notes */
+            notes: string;
+            /** Side */
+            side: ("left" | "right") | null;
+            /**
+             * Sp Type
+             * @enum {string}
+             */
+            sp_type: "corner" | "free_kick" | "throw_in";
+            /** When To Use */
+            when_to_use: string;
+        };
+        /** UserRef */
+        UserRef: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string | null;
+        };
         /** ValidationError */
         ValidationError: {
             /** Context */
@@ -913,6 +1334,43 @@ export interface components {
             msg: string;
             /** Error Type */
             type: string;
+        };
+        /** VersionOut */
+        VersionOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            created_by: components["schemas"]["UserRef"] | null;
+            diagram: components["schemas"]["Diagram"];
+            /** Message */
+            message: string | null;
+            /** Name */
+            name: string;
+            /** Notes */
+            notes: string;
+            /** Side */
+            side: ("left" | "right") | null;
+            /** Version */
+            version: number;
+            /** When To Use */
+            when_to_use: string;
+        };
+        /** VersionSummary */
+        VersionSummary: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            created_by: components["schemas"]["UserRef"] | null;
+            /** Message */
+            message: string | null;
+            /** Name */
+            name: string;
+            /** Version */
+            version: number;
         };
     };
     responses: never;
@@ -1248,6 +1706,327 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MeOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listRoutineTemplates: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listRoutines: {
+        parameters: {
+            query?: {
+                type?: ("corner" | "free_kick" | "throw_in") | null;
+                archived?: boolean;
+                q?: string | null;
+                cursor?: string | null;
+                limit?: number;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoutinePage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    createRoutine: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RoutineCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoutineOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    createRoutineFromTemplate: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                template_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["RoutineFromTemplate"] | null;
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoutineOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getRoutine: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                routine_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoutineOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    updateRoutine: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                routine_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RoutineUpdate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoutineOut"];
+                };
+            };
+            /** @description `base_version` is not the current version */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    patchRoutine: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                routine_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RoutinePatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RoutineOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listRoutineVersions: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                routine_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VersionSummary"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getRoutineVersion: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                routine_id: string;
+                version: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["VersionOut"];
                 };
             };
             /** @description Validation Error */

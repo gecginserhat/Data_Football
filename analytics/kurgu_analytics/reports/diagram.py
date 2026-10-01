@@ -13,7 +13,7 @@ import json
 import os
 from functools import cache
 from pathlib import Path
-from typing import Any, Literal, Self
+from typing import Annotated, Any, Literal, Self
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
@@ -28,9 +28,9 @@ MAX_FRAMES = 20
 ROLES_ENV = "KURGU_ROLES_PATH"
 _ROLES_RELATIVE = Path("packages") / "pitch" / "roles.json"
 
-Id = Field(pattern=r"^[A-Za-z0-9_-]{1,32}$")
-X = Field(ge=0, le=PITCH_LENGTH)
-Y = Field(ge=0, le=PITCH_WIDTH)
+Id = Annotated[str, Field(pattern=r"^[A-Za-z0-9_-]{1,32}$")]
+X = Annotated[float, Field(ge=0, le=PITCH_LENGTH)]
+Y = Annotated[float, Field(ge=0, le=PITCH_WIDTH)]
 Point = tuple[float, float]
 
 
@@ -44,19 +44,19 @@ class _Model(BaseModel):
 
 
 class DiagramPlayer(_Model):
-    id: str = Id
+    id: Id
     team: Literal["own", "opponent"]
     role: str = Field(pattern=r"^[a-z][a-z0-9_]{0,31}$")
     number: int | None = Field(default=None, ge=1, le=99)
     label: str | None = Field(default=None, max_length=40)
-    x: float = X
-    y: float = Y
+    x: X
+    y: Y
 
 
 class DiagramLine(_Model):
     model_config = ConfigDict(extra="forbid", frozen=True, populate_by_name=True)
 
-    id: str = Id
+    id: Id
     kind: Literal["run", "ball_path", "screen"]
     from_: Point = Field(alias="from")
     to: Point
@@ -71,9 +71,9 @@ class DiagramLine(_Model):
 
 
 class DiagramZone(_Model):
-    id: str = Id
-    x: float = X
-    y: float = Y
+    id: Id
+    x: X
+    y: Y
     w: float = Field(gt=0, le=PITCH_LENGTH)
     h: float = Field(gt=0, le=PITCH_WIDTH)
     label: str | None = Field(default=None, max_length=24)
@@ -86,7 +86,7 @@ class DiagramZone(_Model):
 
 
 class DiagramFrame(_Model):
-    id: str = Id
+    id: Id
     positions: dict[str, Point] = Field(default_factory=dict)
     ball: Point | None = None
     duration_ms: int = Field(default=DEFAULT_FRAME_MS, ge=200, le=10_000)
