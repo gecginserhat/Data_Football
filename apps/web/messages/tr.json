@@ -282,5 +282,254 @@
       "title": "Sınırlamalar",
       "body": "Oranlar ve sayımlar küçük örneklemde büzülerek gösterilir; 8'den az deneme ya da 5'ten az maç varsa \"Az veri\" rozeti çıkar. Hava topu, faul ve uzaklaştırma savunma için dolaylı göstergedir ve öyle etiketlenir."
     }
+  },
+  "analysis": {
+    "rank": "{rank}./{teams}",
+    "rankShort": "({rank}.)",
+    "noValue": "Bu metrik için kayıt yok",
+    "yourClub": "Sizin kulübünüz",
+    "seasonPicker": "Sezon seçimi",
+    "breadcrumb": "Konum",
+    "metrics": {
+      "set_piece_goals": {
+        "label": "Duran top golü",
+        "short": "DT gol"
+      },
+      "set_piece_xg": {
+        "label": "Duran top xG",
+        "short": "DT xG"
+      },
+      "set_piece_goal_share": {
+        "label": "Duran top payı (gollerin %)",
+        "short": "DT payı"
+      },
+      "set_piece_goals_minus_xg": {
+        "label": "Gol eksi xG",
+        "short": "G−xG"
+      },
+      "set_piece_goals_per_match": {
+        "label": "Maç başı duran top golü",
+        "short": "Gol/maç"
+      },
+      "set_pieces_per_match": {
+        "label": "Maç başı duran top",
+        "short": "DT/maç"
+      },
+      "corners_per_match": {
+        "label": "Korner / maç",
+        "short": "Korner/maç"
+      },
+      "goals_per_100_corners": {
+        "label": "100 kornere düşen gol",
+        "short": "Gol/100 korner"
+      },
+      "first_contact_win_pct": {
+        "label": "İlk temas kazanma % (hücum)",
+        "short": "İlk temas"
+      },
+      "shots_per_set_piece": {
+        "label": "Duran top başına şut",
+        "short": "Şut/DT"
+      },
+      "xg_per_set_piece": {
+        "label": "Duran top başına xG",
+        "short": "xG/DT"
+      },
+      "second_phase_xg_share": {
+        "label": "İkinci faz xG payı",
+        "short": "2. faz"
+      },
+      "headed_goals": {
+        "label": "Kafa golü",
+        "short": "Kafa"
+      },
+      "direct_fk_goals": {
+        "label": "Direkt serbest vuruş golü",
+        "short": "Direkt SV"
+      },
+      "set_piece_goals_against": {
+        "label": "Duran toptan yenilen gol",
+        "short": "Yenilen DT"
+      },
+      "first_contact_win_pct_def": {
+        "label": "İlk temas kazanma % (savunma)",
+        "short": "İlk temas (sav.)"
+      },
+      "aerial_win_pct": {
+        "label": "Hava topu kazanma %",
+        "short": "Hava %"
+      },
+      "aerials_won_per_match": {
+        "label": "Kazanılan hava topu / maç",
+        "short": "Hava/maç"
+      },
+      "clearances_per_match": {
+        "label": "Uzaklaştırma / maç",
+        "short": "Uzakl./maç"
+      },
+      "fouls_committed_per_match": {
+        "label": "Yapılan faul / maç",
+        "short": "Faul/maç"
+      },
+      "fouls_won_per_match": {
+        "label": "Kazanılan faul / maç",
+        "short": "Kaz. faul/maç"
+      },
+      "fast_break_goals": {
+        "label": "Hızlı hücum golü",
+        "short": "Hızlı hücum"
+      }
+    },
+    "badges": {
+      "source": {
+        "seed": "Kaynak: tohum",
+        "events": "Kaynak: olay verisi",
+        "import": "Kaynak: kulüp kaydı",
+        "provider": "Kaynak: sağlayıcı"
+      },
+      "lowSample": "Az veri",
+      "indirect": "Dolaylı",
+      "approx": "Yaklaşık"
+    },
+    "form": {
+      "label": "Son maçlar (yeniden eskiye)",
+      "empty": "Bu sezon oynanmış maç kaydı yok.",
+      "detail": "{result}: {opponent} {venue}, {gf}-{ga}",
+      "home": "(iç saha)",
+      "away": "(deplasman)",
+      "result": {
+        "W": "Galibiyet",
+        "D": "Beraberlik",
+        "L": "Mağlubiyet"
+      },
+      "letter": {
+        "W": "G",
+        "D": "B",
+        "L": "M"
+      }
+    },
+    "bar": {
+      "min": "Lig en düşük {value}",
+      "mean": "ortalama {value}",
+      "max": "en yüksek {value}",
+      "club": "{code}: {value}",
+      "shrunk": "Büzülmüş tahmin {value} (%80 aralık {low}–{high})"
+    },
+    "scatter": {
+      "title": "Duran top xG ve gol",
+      "description": "Her nokta bir takım; yatay eksen duran top xG, dikey eksen duran top golü. Kesikli çizgi gol = xG.",
+      "diagonal": "gol = xG",
+      "x": "Duran top xG",
+      "y": "Duran top golü",
+      "caption": "Kesikli çizginin üstündeki takımlar xG'nin üzerinde gol attı; bu fark kalıcı bir beceri göstergesi değildir. Amber nokta sizin kulübünüz."
+    },
+    "standings": {
+      "caption": "{week}. hafta puan durumu",
+      "pos": "#",
+      "team": "Takım",
+      "played": "O",
+      "won": "G",
+      "drawn": "B",
+      "lost": "M",
+      "gf": "A",
+      "ga": "Y",
+      "pts": "P",
+      "playedLong": "Oynanan",
+      "wonLong": "Galibiyet",
+      "drawnLong": "Beraberlik",
+      "lostLong": "Mağlubiyet",
+      "gfLong": "Atılan gol",
+      "gaLong": "Yenilen gol",
+      "ptsLong": "Puan"
+    },
+    "table": {
+      "team": "Takım"
+    },
+    "league": {
+      "title": "Lig",
+      "subtitle": "Puan durumu, duran top tabloları ve lig kıyasları. Sıralarda 1 en yüksek değerdir; eşit değerler aynı sırayı alır.",
+      "noSeasonsTitle": "Sezon yok",
+      "noSeasons": "Lisanslı bir sezon bulunamadı. Yönetici tohum verisini yükleyebilir ya da veri lisansını kontrol edebilir.",
+      "emptyTitle": "Bu sezonda metrik yok",
+      "empty": "Seçilen sezon için takım kaydı ya da olay verisi henüz yüklenmedi.",
+      "totals": "Lig toplamı",
+      "reference": "Kıyas: {competition} maç başı duran top golü {value}",
+      "standings": "Puan durumu ({week}. hafta)",
+      "setPieceTable": "Duran top tablosu",
+      "tableNote": "Parantez içi lig sırasıdır. * işareti az veri (deneme < 8 ya da maç < 5). Hava topu savunma için dolaylı göstergedir. Penaltılar dahil değildir."
+    },
+    "totals": {
+      "set_piece_goal_share": "Duran top payı",
+      "set_piece_goals": "Duran top golü",
+      "goals": "Toplam gol",
+      "set_piece_goals_per_match": "Maç başı duran top golü"
+    },
+    "opponents": {
+      "title": "Rakip analizi",
+      "subtitle": "Bir takım seçin: profil çubukları ligin en düşük ve en yüksek değeri arasında çizilir.",
+      "cardGoals": "DT gol {value} ({rank}.)",
+      "cardXg": "DT xG {value} ({rank}.)",
+      "asOfWeek": "{season} · {week}. hafta itibarıyla",
+      "fullSeason": "{season} · sezon toplamı",
+      "status": "Durum",
+      "standing": "{position}. sıra · {pts} puan · {played} maç ({week}. hafta)",
+      "noMetricsTitle": "Bu takım için metrik yok",
+      "noMetrics": "Seçilen sezonda bu takımın kaydı bulunamadı.",
+      "summary": "Özet",
+      "defenceNote": "Kamuya açık veride duran toptan yenilen gol yok; hava topu, faul ve uzaklaştırma dolaylı göstergedir.",
+      "sequences": "Duran top dizileri",
+      "noSequencesTitle": "Dizi kaydı yok",
+      "noSequences": "Bu sezon için olay verisi yok. Lisanslı olay verisi ya da kulübün içe aktardığı maçlar yüklendiğinde diziler burada listelenir."
+    },
+    "groups": {
+      "attack": "Hücum",
+      "defence": "Savunma",
+      "other": "Diğer"
+    },
+    "legend": {
+      "club": "{code} (sizin kulübünüz)",
+      "mean": "Lig ortalaması"
+    },
+    "sequence": {
+      "match": "Rakip",
+      "minute": "Dakika",
+      "type": "Tür",
+      "zone": "Hedef bölge",
+      "outcome": "Sonuç",
+      "xg": "xG",
+      "week": "{week}. hafta",
+      "goal": "Gol"
+    },
+    "spType": {
+      "corner": "Korner",
+      "free_kick": "Serbest vuruş",
+      "throw_in": "Uzun taç"
+    },
+    "outcome": {
+      "goal": "Gol",
+      "shot_on_target": "İsabetli şut",
+      "shot_off_target": "İsabetsiz şut",
+      "shot_blocked": "Engellenen şut",
+      "first_contact_no_shot": "Şutsuz ilk temas",
+      "cleared": "Uzaklaştırıldı",
+      "possession_retained": "Top bizde kaldı",
+      "counter_conceded": "Kontra yenildi"
+    },
+    "overview": {
+      "asOfWeek": "{season} · {week}. hafta itibarıyla",
+      "status": "Kulüp durumu",
+      "noStanding": "Puan durumu kaydı yok.",
+      "profileLink": "Kulüp profilini aç",
+      "setPieces": "Duran top · {season}",
+      "lastSeason": "Geçen sezon · {season}",
+      "upcoming": "Yaklaşan maçlar",
+      "noFixturesTitle": "Planlı maç yok",
+      "noFixtures": "Fikstür yüklendiğinde sıradaki maçlar burada görünür.",
+      "dateTbd": "Tarih belli değil",
+      "nextHint": "Rakibin adına dokunarak duran top profilini açabilirsiniz. Sıralar bu sezonun verisinden.",
+      "recommendations": "Sezon önerileri",
+      "recommendationsTitle": "Öneriler maç hazırlığıyla gelecek",
+      "recommendationsLater": "Kural tabanlı öneriler ve tehdit etiketleri öneri motoruyla (Faz 4) eklenecek. Şimdilik yaklaşan rakiplerin duran top sıraları yukarıda."
+    }
   }
 }

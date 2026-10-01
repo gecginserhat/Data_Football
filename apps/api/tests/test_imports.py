@@ -113,9 +113,13 @@ async def test_team_stats_quarantine_confirm_commit(
     assert committed.json()["result"] == {"teams": 2, "values": 4}
 
     listing = await client.get(f"/api/v1/seasons/{season}/team-metrics", headers=headers)
-    metrics = listing.json()["items"]
-    imported = {m["team"]["code"]: m["metrics"] for m in metrics if m["source"] == "import"}
-    assert imported["GÖZ"] == {"goals": 40, "set_piece_goals": 9}
+    # Kulübün kendi kaydı paylaşılan tohum değerinin yerine geçer (A-36).
+    values = {m["team"]["code"]: m["values"] for m in listing.json()["items"]}
+    assert values["GÖZ"]["set_piece_goals"]["value"] == 9
+    assert values["GÖZ"]["set_piece_goals"]["source"] == "import"
+    assert values["GÖZ"]["set_piece_goal_share"]["value"] == 9 / 40
+    assert values["GÖZ"]["set_piece_xg"]["source"].startswith("seed")
+    assert values["FB"]["set_piece_goals"]["source"].startswith("seed")
     rows = await superuser.fetch(
         "select tenant_id from team_season_stats where source = 'import' and season_id = $1",
         uuid.UUID(season),
@@ -222,6 +226,23 @@ async def test_events_commit_writes_tenant_match_and_set_pieces(
         DEMO_TENANT_ID,
     )
     assert events == 322
+
+    # İçe aktarılan diziler kulübün metriklerine ve dizi listesine anında girer (A-36).
+    listing = await client.get(f"/api/v1/seasons/{season}/team-metrics", headers=headers)
+    ts = next(i for i in listing.json()["items"] if i["team"]["code"] == "TS")
+    per_match = ts["values"]["set_pieces_per_match"]
+    assert (per_match["value"], per_match["source"], per_match["low_sample"]) == (1, "import", True)
+    # Olay toplamları sezon kaydını (34 maç) ezmez; ayrı sütunlarda durur.
+    assert (ts["inputs"]["event_matches"], ts["inputs"]["sp_goals"]) == (1, 1)
+    assert ts["inputs"]["matches"] == 34
+    sps = await client.get(
+        f"/api/v1/teams/{ts['team']['id']}/set-pieces",
+        params={"season": season, "type": "corner"},
+        headers=headers,
+    )
+    assert [(i["sp_type"], i["goal"], i["source"]) for i in sps.json()["items"]] == [
+        ("corner", True, "import")
+    ]
 
     reupload = (await _upload(client, headers, content, season, "events", "events.csv")).json()
     result = (await client.post(f"/api/v1/imports/{reupload['id']}/commit", headers=headers)).json()

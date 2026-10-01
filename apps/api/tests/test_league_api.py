@@ -10,7 +10,7 @@ from typing import Any
 
 import asyncpg
 import pytest
-from kurgu_api.dev_identities import DEMO_TENANT_ID, DEV_USERS
+from kurgu_api.dev_identities import DEMO_TENANT_ID, DEV_USERS, SECOND_TENANT_ID
 from kurgu_api.league.seed import run_seed
 
 from .conftest import Seeded, TokenFactory, add_member
@@ -28,6 +28,20 @@ async def seeded() -> None:
 
 def _auth(make_token: TokenFactory, subject: str = SP_COACH) -> dict[str, str]:
     return {"Authorization": f"Bearer {make_token(subject)}", "X-Kurgu-Tenant": str(DEMO_TENANT_ID)}
+
+
+@pytest.fixture
+async def clean(make_token: TokenFactory, superuser: asyncpg.Connection) -> dict[str, str]:
+    """İçe aktarımı olmayan ikinci geliştirme kiracısı: yalnızca paylaşılan tohum verisini görür.
+
+    Demo kiracısının içe aktarım testleri bıraktığı satırlar (A-36) altın değerleri bozmasın diye.
+    """
+    subject = f"analyst-{uuid.uuid4()}"
+    await add_member(superuser, subject, SECOND_TENANT_ID, "analyst")
+    return {
+        "Authorization": f"Bearer {make_token(subject)}",
+        "X-Kurgu-Tenant": str(SECOND_TENANT_ID),
+    }
 
 
 async def _season_id(client: Any, headers: dict[str, str], code: str) -> str:
@@ -63,84 +77,176 @@ async def test_standings_match_seed(client: Any, make_token: TokenFactory, seede
     assert (body["rows"][0]["team"]["code"], body["rows"][0]["pts"]) == ("AMD", 13)
 
 
-async def test_team_metrics_match_seed(client: Any, make_token: TokenFactory, seeded: None) -> None:
-    headers = _auth(make_token)
-    season = await _season_id(client, headers, "2025_26")
+async def test_team_metrics_match_seed(client: Any, seeded: None, clean: dict[str, str]) -> None:
+    season = await _season_id(client, clean, "2025_26")
 
-    response = await client.get(f"/api/v1/seasons/{season}/team-metrics", headers=headers)
+    response = await client.get(f"/api/v1/seasons/{season}/team-metrics", headers=clean)
 
     assert response.status_code == 200
-    items = {i["team"]["code"]: i for i in response.json()["items"] if i["source"] == SEED_SOURCE}
+    items = {i["team"]["code"]: i for i in response.json()["items"]}
     assert len(items) == 18
     codes = {t["id"]: t["code"] for t in SEED["teams"]}
     for stats in SEED["seasons"]["2025_26"]["team_stats"]:
-        metrics = items[codes[stats["team_id"]]]["metrics"]
+        inputs = items[codes[stats["team_id"]]]["inputs"]
         for metric, value in stats.items():
             if metric != "team_id":
-                assert metrics[metric] == pytest.approx(value), (stats["team_id"], metric)
-    assert items["TS"]["metrics"]["set_piece_goals"] == 15
-    assert items["GÖZ"]["metrics"]["set_piece_xg"] == pytest.approx(15.4)
+                assert inputs[metric] == pytest.approx(value), (stats["team_id"], metric)
+    # SPEC §19 Faz 2 altın değerleri.
+    ts, goz = items["TS"]["values"], items["GÖZ"]["values"]
+    assert (ts["set_piece_goals"]["value"], ts["set_piece_goals"]["rank"]) == (15, 1)
+    assert goz["set_piece_xg"]["value"] == pytest.approx(15.4)
+    assert goz["set_piece_xg"]["rank"] == 1
+    assert ts["set_piece_goals"]["source"] == SEED_SOURCE
+    assert ts["set_piece_goals"]["low_sample"] is False
+    share = ts["set_piece_goal_share"]
+    assert share["value"] == pytest.approx(15 / items["TS"]["inputs"]["goals"])
+    assert share["shrunk_low"] <= share["shrunk"] <= share["shrunk_high"]
+    assert ts["aerial_win_pct"]["indirect"] is True
+    assert ts["goals_per_100_corners"]["approx"] is True
+    assert "set_piece_goals_against" not in ts  # kamuya açık tohumda yok
     assert items["TS"]["as_of_week"] is None
 
 
 async def test_current_season_metrics_carry_week(
-    client: Any, make_token: TokenFactory, seeded: None
+    client: Any, seeded: None, clean: dict[str, str]
 ) -> None:
-    headers = _auth(make_token)
-    season = await _season_id(client, headers, "2026_27")
-    response = await client.get(f"/api/v1/seasons/{season}/team-metrics", headers=headers)
+    season = await _season_id(client, clean, "2026_27")
+    response = await client.get(f"/api/v1/seasons/{season}/team-metrics", headers=clean)
     items = {i["team"]["code"]: i for i in response.json()["items"]}
     amd = next(r for r in SEED["seasons"]["2026_27"]["set_piece_to_date"] if r["team_id"] == "amd")
+    row = next(
+        r for r in SEED["seasons"]["2026_27"]["standings_after_week_6"] if r["team_id"] == "amd"
+    )
     assert items["AMD"]["as_of_week"] == 6
-    assert items["AMD"]["metrics"] == {
+    assert items["AMD"]["inputs"] == {
         "set_piece_goals": amd["set_piece_goals"],
         "set_piece_xg": pytest.approx(amd["set_piece_xg"]),
+        "matches": row["played"],
+        "goals": row["gf"],
     }
+    values = items["AMD"]["values"]
+    assert values["set_piece_goal_share"]["value"] == pytest.approx(
+        amd["set_piece_goals"] / row["gf"]
+    )
+    assert values["set_piece_goals_per_match"]["low_sample"] is False  # 6 maç ≥ 5
+
+
+async def test_benchmarks(client: Any, seeded: None, clean: dict[str, str]) -> None:
+    season = await _season_id(client, clean, "2025_26")
+    response = await client.get(f"/api/v1/seasons/{season}/benchmarks", headers=clean)
+    assert response.status_code == 200
+    body = response.json()
+    totals = body["totals"]
+    assert (totals["set_piece_goals"], totals["goals"], totals["matches"]) == (166, 812, 306)
+    assert round(totals["set_piece_goal_share"], 3) == 0.204
+    assert round(totals["set_piece_goals_per_match"], 3) == 0.542
+    goals = body["metrics"]["set_piece_goals"]
+    assert (goals["max"], goals["teams"]) == (15, 18)
+    assert goals["mean"] == pytest.approx(166 / 18)
+    refs = {(r["competition"]["code"], r["metric"]): r["value"] for r in body["references"]}
+    assert refs[("TR-SL", "set_piece_goal_share")] == pytest.approx(0.2044)
+    pl = SEED["benchmarks"]["premier_league_2025_26"]
+    assert (
+        next(v for (c, m), v in refs.items() if c != "TR-SL" and m == "set_piece_goals")
+        == (pl["set_piece_goals"])
+    )
 
 
 async def test_team_profile(client: Any, make_token: TokenFactory, seeded: None) -> None:
     headers = _auth(make_token)
     season = await _season_id(client, headers, "2026_27")
     standings = (await client.get(f"/api/v1/seasons/{season}/standings", headers=headers)).json()
-    ts = next(r for r in standings["rows"] if r["team"]["code"] == "TS")
+    gs = next(r for r in standings["rows"] if r["team"]["code"] == "GS")
 
     response = await client.get(
-        f"/api/v1/teams/{ts['team']['id']}/profile", params={"season": season}, headers=headers
+        f"/api/v1/teams/{gs['team']['id']}/profile", params={"season": season}, headers=headers
     )
 
     assert response.status_code == 200
     body = response.json()
-    assert body["team"]["name"] == "Trabzonspor"
-    assert body["standing"] == ts
+    assert body["team"]["name"] == "Galatasaray"
+    assert body["standing"] == gs
     assert body["standing_week"] == 6
-    ts_seed = next(
-        r for r in SEED["seasons"]["2026_27"]["set_piece_to_date"] if r["team_id"] == "ts"
+    gs_seed = next(
+        r for r in SEED["seasons"]["2026_27"]["set_piece_to_date"] if r["team_id"] == "gs"
     )
-    assert body["metrics"]["set_piece_goals"] == ts_seed["set_piece_goals"]
+    assert body["values"]["set_piece_goals"]["value"] == gs_seed["set_piece_goals"]
     assert body["as_of_week"] == 6
+    assert body["club"]["code"] == "TS"  # demo kiracısının kulübü
+    assert "set_piece_goals" in body["club_values"]
+    assert body["benchmarks"]["set_piece_goals"]["teams"] == 18
+
+    results = [
+        r for r in SEED["seasons"]["2026_27"]["results_weeks_1_6"] if "gs" in (r["home"], r["away"])
+    ]
+    results.sort(key=lambda r: -r["week"])
+    expected = []
+    for r in results[:5]:
+        home = r["home"] == "gs"
+        gf, ga = (r["home_goals"], r["away_goals"]) if home else (r["away_goals"], r["home_goals"])
+        expected.append((r["week"], home, gf, ga, "W" if gf > ga else "D" if gf == ga else "L"))
+    got = [
+        (f["week"], f["home"], f["goals_for"], f["goals_against"], f["result"])
+        for f in body["form"]
+    ]
+    assert got == expected
 
 
-async def test_pagination_walks_all_teams(
-    client: Any, make_token: TokenFactory, seeded: None
-) -> None:
-    headers = _auth(make_token)
-    season = await _season_id(client, headers, "2025_26")
+async def test_pagination_walks_all_teams(client: Any, seeded: None, clean: dict[str, str]) -> None:
+    season = await _season_id(client, clean, "2025_26")
     seen: list[str] = []
     cursor = None
     for _ in range(10):
         params = {"limit": 5} | ({"cursor": cursor} if cursor else {})
         page = (
-            await client.get(
-                f"/api/v1/seasons/{season}/team-metrics", params=params, headers=headers
-            )
+            await client.get(f"/api/v1/seasons/{season}/team-metrics", params=params, headers=clean)
         ).json()
-        # Kiracının içe aktardığı değerler ayrı kaynak olarak gelir (test_imports).
-        seen += [i["team"]["code"] for i in page["items"] if i["source"] == SEED_SOURCE]
+        seen += [i["team"]["code"] for i in page["items"]]
         cursor = page["next_cursor"]
         if cursor is None:
             break
     assert len(seen) == 18
     assert len(set(seen)) == 18
+
+
+async def test_fixtures_upcoming_for_team(client: Any, seeded: None, clean: dict[str, str]) -> None:
+    season = await _season_id(client, clean, "2026_27")
+    teams = (await client.get(f"/api/v1/seasons/{season}/standings", headers=clean)).json()
+    ts = next(r["team"]["id"] for r in teams["rows"] if r["team"]["code"] == "TS")
+    response = await client.get(
+        "/api/v1/fixtures",
+        params={"team": ts, "season": season, "status": "scheduled", "limit": 3},
+        headers=clean,
+    )
+    assert response.status_code == 200
+    items = response.json()["items"]
+    expected = [
+        f
+        for f in SEED["seasons"]["2026_27"]["fixtures_weeks_7_12"]
+        if "ts" in (f["home"], f["away"])
+    ]
+    assert [i["week"] for i in items] == [f["week"] for f in expected][:3]
+    assert all(i["status"] == "scheduled" for i in items)
+    assert response.json()["next_cursor"] is not None
+
+
+async def test_set_pieces_empty_without_event_data(
+    client: Any, seeded: None, clean: dict[str, str]
+) -> None:
+    season = await _season_id(client, clean, "2025_26")
+    teams = (await client.get(f"/api/v1/seasons/{season}/team-metrics", headers=clean)).json()
+    ts = next(i["team"]["id"] for i in teams["items"] if i["team"]["code"] == "TS")
+    response = await client.get(
+        f"/api/v1/teams/{ts}/set-pieces", params={"season": season}, headers=clean
+    )
+    assert response.status_code == 200
+    assert response.json() == {"items": [], "next_cursor": None}
+    bad = await client.get(
+        f"/api/v1/teams/{ts}/set-pieces",
+        params={"season": season, "type": "penalty"},
+        headers=clean,
+    )
+    assert bad.status_code == 422  # penaltı duran top değildir
 
 
 async def test_bad_cursor_is_problem(client: Any, make_token: TokenFactory, seeded: None) -> None:

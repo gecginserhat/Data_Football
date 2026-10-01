@@ -4,6 +4,8 @@ import { expectNoSeriousA11yViolations, signIn } from "./helpers";
 /**
  * Faz 1.9 kabul kriteri: CSV yükle → hatayı gör → eşleştirmeyi düzelt → işle.
  * Tohum verisi yüklü olmalıdır (`make seed`); takım adları tohumdaki Süper Lig takımlarıdır.
+ * Trabzonspor kullanılmaz: kulübün kendi kaydı tohumun yerine geçer (A-36) ve Faz 2 altın
+ * değerlerini (TS 15 duran top golü) değiştirirdi.
  */
 /** Sunucu eylemli formlar sayfa hidrate olduktan sonra gönderilir. */
 const settled = (page: import("@playwright/test").Page) => page.waitForLoadState("networkidle");
@@ -20,13 +22,14 @@ const shot = async (page: import("@playwright/test").Page, name: string) => {
 test("admin uploads a CSV, sees the errors, fixes the mapping and commits", async ({ page }) => {
   await signIn(page, "admin");
   await page.goto("/admin");
+  // Üst → alt istemci gezintisi ve eylem yönlendirmeleri (loading.tsx ile; ADR-0006).
   await page.getByRole("link", { name: /CSV\/Excel içe aktarım/ }).click();
   await expect(page.getByRole("heading", { level: 1, name: "İçe aktarım" })).toBeVisible();
   await settled(page);
   await expectNoSeriousA11yViolations(page);
 
   // Takım sütunu tanınmayan başlıkla, bir takım adı da yazım farkıyla gelir.
-  const csv = ["Kulup Adi;Atilan Gol;set_piece_goals", "Trabzonspor;50;13", "Goztepe SK;40;9"].join(
+  const csv = ["Kulup Adi;Atilan Gol;set_piece_goals", "Kasımpaşa;50;13", "Goztepe SK;40;9"].join(
     "\n",
   );
   await page

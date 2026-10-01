@@ -1,7 +1,6 @@
-import { FlatCompat } from "@eslint/eslintrc";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 import tseslint from "typescript-eslint";
-
-const compat = new FlatCompat({ baseDirectory: import.meta.dirname });
 
 export default tseslint.config(
   {
@@ -13,7 +12,8 @@ export default tseslint.config(
       "next-env.d.ts",
     ],
   },
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  ...nextVitals,
+  ...nextTs,
   {
     rules: {
       "no-restricted-syntax": [

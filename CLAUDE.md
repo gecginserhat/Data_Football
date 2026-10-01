@@ -5,7 +5,7 @@ Kurgu, profesyonel futbol kulüpleri için bir duran top analiz ve hazırlık pl
 **Ana şartname:** `docs/SPEC.md`. Karar vermeden önce ilgili bölümü oku. Şartnameyle çelişen bir şey yapman gerekirse önce sor, sonra ADR yaz.
 
 ## Yığın
-- **Web:** Next.js 15 (App Router), React 19, TypeScript strict, Tailwind CSS 4, shadcn/ui, TanStack Query/Table, Zustand + zundo, next-intl (tr varsayılan), Serwist (PWA), Dexie.
+- **Web:** Next.js 16 (App Router; ADR-0006), React 19, TypeScript strict, Tailwind CSS 4, shadcn/ui, TanStack Query/Table, Zustand + zundo, next-intl (tr varsayılan), Serwist (PWA), Dexie.
 - **API:** Python 3.12, FastAPI, Pydantic v2, SQLAlchemy 2 (async), Alembic. **Worker:** Arq + Redis.
 - **Analitik:** pandas/polars, socceraction, kloppy, scikit-learn, LightGBM, scipy, mplsoccer, pandera.
 - **Altyapı:** PostgreSQL 16 (RLS), Redis, S3 (yerelde MinIO), OIDC (yerelde Keycloak), Playwright ile PDF, ffmpeg ile HLS.
@@ -28,7 +28,7 @@ Kurgu, profesyonel futbol kulüpleri için bir duran top analiz ve hazırlık pl
 ## Komutlar (bu listeyi güncel tut)
 - `make dev`: tüm servisleri ayağa kaldırır (göç ve geliştirme kimlikleri dahil). `make down`, `make logs`, `make ps`.
 - `make doctor`: araçları, satır sonu ayarını ve portları kontrol eder.
-- `make seed`: tohum verisini yükler (geliştirme kimlikleri, lig verisi, lisanslar; idempotent). `make seed-report`: bütünlük raporunu yeniden üretir.
+- `make seed`: tohum verisini yükler (geliştirme kimlikleri, lig verisi, lisanslar; idempotent) ve metrik görünümlerini yeniler (ADR-0007). `make seed-report`: bütünlük raporunu yeniden üretir.
 - `make statsbomb-fetch` (StatsBomb Open Data'yı `data/statsbomb` önbelleğine indirir, repoya girmez) · `make statsbomb-load` (worker ile yükler) · `make validate` (duran top doğrulama raporu) · `make spadl-compare` (socceraction karşılaştırması).
 - CSV/Excel içe aktarım: web `/admin/imports` (yalnız yönetici); API `POST /imports`, `PUT /imports/{id}/mapping`, `POST /imports/{id}/commit`.
 - `make test` (`test-py`, `test-js`) · `make lint` · `make typecheck` · `make e2e`

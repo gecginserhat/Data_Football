@@ -24,6 +24,7 @@ from kurgu_api.ingestion.runs import RunStatus, store_raw, transition
 from kurgu_api.ingestion.setpieces import write_set_pieces
 from kurgu_api.ingestion.storage import ObjectStore
 from kurgu_api.ingestion.writer import write_canonical
+from kurgu_api.league.views import refresh_metric_views
 
 ProviderFactory = Callable[[], Provider]
 
@@ -115,6 +116,8 @@ async def run_ingestion(
         raise
     final: RunStatus = "quarantined" if stats["quarantined"] else "succeeded"
     async with engine.begin() as conn:
+        if stats["loaded"]:
+            await refresh_metric_views(conn)
         await _context(conn, tenant_id)
         await transition(conn, run_id, final, stats=stats, quality_report=quality)
     return stats

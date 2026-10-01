@@ -282,5 +282,254 @@
       "title": "Limitations",
       "body": "Rates and counts are shrunk for small samples; fewer than 8 attempts or 5 matches shows a \"Small sample\" badge. Aerials, fouls and clearances are indirect indicators for defending and are labelled as such."
     }
+  },
+  "analysis": {
+    "rank": "{rank}/{teams}",
+    "rankShort": "({rank})",
+    "noValue": "No record for this metric",
+    "yourClub": "Your club",
+    "seasonPicker": "Season",
+    "breadcrumb": "Breadcrumb",
+    "metrics": {
+      "set_piece_goals": {
+        "label": "Set-piece goals",
+        "short": "SP goals"
+      },
+      "set_piece_xg": {
+        "label": "Set-piece xG",
+        "short": "SP xG"
+      },
+      "set_piece_goal_share": {
+        "label": "Set-piece share (of goals)",
+        "short": "SP share"
+      },
+      "set_piece_goals_minus_xg": {
+        "label": "Goals minus xG",
+        "short": "G−xG"
+      },
+      "set_piece_goals_per_match": {
+        "label": "Set-piece goals per match",
+        "short": "Goals/match"
+      },
+      "set_pieces_per_match": {
+        "label": "Set pieces per match",
+        "short": "SP/match"
+      },
+      "corners_per_match": {
+        "label": "Corners per match",
+        "short": "Corners/match"
+      },
+      "goals_per_100_corners": {
+        "label": "Goals per 100 corners",
+        "short": "Goals/100 corners"
+      },
+      "first_contact_win_pct": {
+        "label": "First contact won % (attack)",
+        "short": "First contact"
+      },
+      "shots_per_set_piece": {
+        "label": "Shots per set piece",
+        "short": "Shots/SP"
+      },
+      "xg_per_set_piece": {
+        "label": "xG per set piece",
+        "short": "xG/SP"
+      },
+      "second_phase_xg_share": {
+        "label": "Second-phase xG share",
+        "short": "2nd phase"
+      },
+      "headed_goals": {
+        "label": "Headed goals",
+        "short": "Headers"
+      },
+      "direct_fk_goals": {
+        "label": "Direct free-kick goals",
+        "short": "Direct FK"
+      },
+      "set_piece_goals_against": {
+        "label": "Set-piece goals conceded",
+        "short": "SP conceded"
+      },
+      "first_contact_win_pct_def": {
+        "label": "First contact won % (defence)",
+        "short": "First contact (def.)"
+      },
+      "aerial_win_pct": {
+        "label": "Aerial duels won %",
+        "short": "Aerial %"
+      },
+      "aerials_won_per_match": {
+        "label": "Aerials won per match",
+        "short": "Aerials/match"
+      },
+      "clearances_per_match": {
+        "label": "Clearances per match",
+        "short": "Clearances/match"
+      },
+      "fouls_committed_per_match": {
+        "label": "Fouls committed per match",
+        "short": "Fouls/match"
+      },
+      "fouls_won_per_match": {
+        "label": "Fouls won per match",
+        "short": "Fouls won/match"
+      },
+      "fast_break_goals": {
+        "label": "Fast-break goals",
+        "short": "Fast breaks"
+      }
+    },
+    "badges": {
+      "source": {
+        "seed": "Source: seed",
+        "events": "Source: event data",
+        "import": "Source: club record",
+        "provider": "Source: provider"
+      },
+      "lowSample": "Small sample",
+      "indirect": "Indirect",
+      "approx": "Approximate"
+    },
+    "form": {
+      "label": "Recent matches (newest first)",
+      "empty": "No matches recorded this season.",
+      "detail": "{result}: {opponent} {venue}, {gf}-{ga}",
+      "home": "(home)",
+      "away": "(away)",
+      "result": {
+        "W": "Win",
+        "D": "Draw",
+        "L": "Loss"
+      },
+      "letter": {
+        "W": "W",
+        "D": "D",
+        "L": "L"
+      }
+    },
+    "bar": {
+      "min": "League low {value}",
+      "mean": "average {value}",
+      "max": "high {value}",
+      "club": "{code}: {value}",
+      "shrunk": "Shrunk estimate {value} (80% interval {low}–{high})"
+    },
+    "scatter": {
+      "title": "Set-piece xG and goals",
+      "description": "Each dot is a team; horizontal axis set-piece xG, vertical axis set-piece goals. Dashed line is goals = xG.",
+      "diagonal": "goals = xG",
+      "x": "Set-piece xG",
+      "y": "Set-piece goals",
+      "caption": "Teams above the dashed line scored more than their xG; the gap is not a persistent skill signal. The amber dot is your club."
+    },
+    "standings": {
+      "caption": "Standings after week {week}",
+      "pos": "#",
+      "team": "Team",
+      "played": "P",
+      "won": "W",
+      "drawn": "D",
+      "lost": "L",
+      "gf": "GF",
+      "ga": "GA",
+      "pts": "Pts",
+      "playedLong": "Played",
+      "wonLong": "Won",
+      "drawnLong": "Drawn",
+      "lostLong": "Lost",
+      "gfLong": "Goals for",
+      "gaLong": "Goals against",
+      "ptsLong": "Points"
+    },
+    "table": {
+      "team": "Team"
+    },
+    "league": {
+      "title": "League",
+      "subtitle": "Standings, set-piece tables and league benchmarks. Rank 1 is the highest value; ties share a rank.",
+      "noSeasonsTitle": "No seasons",
+      "noSeasons": "No licensed season found. An admin can load the seed data or check the data licence.",
+      "emptyTitle": "No metrics for this season",
+      "empty": "No team records or event data have been loaded for this season yet.",
+      "totals": "League totals",
+      "reference": "Benchmark: {competition} set-piece goals per match {value}",
+      "standings": "Standings (week {week})",
+      "setPieceTable": "Set-piece table",
+      "tableNote": "League rank in brackets. * marks a small sample (trials < 8 or matches < 5). Aerials are an indirect defensive indicator. Penalties are excluded."
+    },
+    "totals": {
+      "set_piece_goal_share": "Set-piece share",
+      "set_piece_goals": "Set-piece goals",
+      "goals": "Total goals",
+      "set_piece_goals_per_match": "Set-piece goals per match"
+    },
+    "opponents": {
+      "title": "Opponent analysis",
+      "subtitle": "Pick a team: profile bars span the league's lowest to highest value.",
+      "cardGoals": "SP goals {value} ({rank})",
+      "cardXg": "SP xG {value} ({rank})",
+      "asOfWeek": "{season} · as of week {week}",
+      "fullSeason": "{season} · full season",
+      "status": "Status",
+      "standing": "Position {position} · {pts} pts · {played} played (week {week})",
+      "noMetricsTitle": "No metrics for this team",
+      "noMetrics": "No record for this team in the selected season.",
+      "summary": "Summary",
+      "defenceNote": "Public data has no set-piece goals conceded; aerials, fouls and clearances are indirect indicators.",
+      "sequences": "Set-piece sequences",
+      "noSequencesTitle": "No sequences",
+      "noSequences": "No event data for this season. Sequences appear here once licensed event data or the club's imported matches are loaded."
+    },
+    "groups": {
+      "attack": "Attack",
+      "defence": "Defence",
+      "other": "Other"
+    },
+    "legend": {
+      "club": "{code} (your club)",
+      "mean": "League average"
+    },
+    "sequence": {
+      "match": "Opponent",
+      "minute": "Minute",
+      "type": "Type",
+      "zone": "Target zone",
+      "outcome": "Outcome",
+      "xg": "xG",
+      "week": "Week {week}",
+      "goal": "Goal"
+    },
+    "spType": {
+      "corner": "Corner",
+      "free_kick": "Free kick",
+      "throw_in": "Long throw"
+    },
+    "outcome": {
+      "goal": "Goal",
+      "shot_on_target": "Shot on target",
+      "shot_off_target": "Shot off target",
+      "shot_blocked": "Shot blocked",
+      "first_contact_no_shot": "First contact, no shot",
+      "cleared": "Cleared",
+      "possession_retained": "Possession retained",
+      "counter_conceded": "Counter conceded"
+    },
+    "overview": {
+      "asOfWeek": "{season} · as of week {week}",
+      "status": "Club status",
+      "noStanding": "No standings on record.",
+      "profileLink": "Open club profile",
+      "setPieces": "Set pieces · {season}",
+      "lastSeason": "Last season · {season}",
+      "upcoming": "Upcoming matches",
+      "noFixturesTitle": "No scheduled matches",
+      "noFixtures": "Upcoming matches appear here once fixtures are loaded.",
+      "dateTbd": "Date to be confirmed",
+      "nextHint": "Tap an opponent to open its set-piece profile. Ranks use this season's data.",
+      "recommendations": "Season recommendations",
+      "recommendationsTitle": "Recommendations arrive with match prep",
+      "recommendationsLater": "Rule-based recommendations and threat tags come with the recommendation engine (phase 4). For now, upcoming opponents' set-piece ranks are shown above."
+    }
   }
 }
