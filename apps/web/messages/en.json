@@ -125,5 +125,162 @@
     "title": "Sign in to Kurgu",
     "description": "Sign in with your club's identity provider.",
     "signIn": "Sign in"
+  },
+  "imports": {
+    "title": "Imports",
+    "description": "Upload your club's own tables (provider exports, your own records) as CSV or Excel. Map the columns, review the quality report and commit when there are no issues. Committed data is visible to your club only.",
+    "back": "Back to imports",
+    "adminLink": "CSV/Excel import",
+    "adminLinkDescription": "Load team statistics or event data from a file.",
+    "upload": {
+      "title": "Upload a new file",
+      "file": "File (CSV, TSV, XLSX; up to 20 MB)",
+      "kind": "Template",
+      "season": "Season",
+      "submit": "Upload and validate",
+      "noSeasons": "No season is visible to you. League data must be loaded first."
+    },
+    "kinds": {
+      "team_season_stats": "Team season statistics",
+      "events": "Event data (SPADL)"
+    },
+    "kindHelp": {
+      "team_season_stats": "One row per team. Required column: team. At least one metric column (goals, xg, set_piece_goals…).",
+      "events": "One row per event. Coordinates on 105 × 68 m in the acting team's attacking direction. Required: match_ref, match_date, home_team, away_team, period, time_s, team, type, result, start_x, start_y, end_x, end_y."
+    },
+    "list": {
+      "title": "Previous imports",
+      "empty": "No imports yet",
+      "emptyDescription": "Upload your first file with the form above.",
+      "file": "File",
+      "kind": "Template",
+      "status": "Status",
+      "created": "Uploaded"
+    },
+    "status": {
+      "uploaded": "Needs confirmation",
+      "validated": "Ready to commit",
+      "quarantined": "Quarantined",
+      "committed": "Committed",
+      "failed": "Failed"
+    },
+    "statusHelp": {
+      "uploaded": "Some team names did not match automatically. Pick the right team below and save.",
+      "validated": "No critical issues. You can commit the data.",
+      "quarantined": "There are critical issues; the data cannot be committed. Fix the mapping or fix the file and upload it again.",
+      "committed": "The data was written to your club's records.",
+      "failed": "The import failed."
+    },
+    "steps": {
+      "label": "Wizard steps",
+      "upload": "Upload",
+      "map": "Map",
+      "check": "Validate",
+      "commit": "Commit",
+      "done": "done",
+      "current": "current step"
+    },
+    "report": {
+      "title": "Quality report",
+      "rows": "{count} rows",
+      "critical": "{count} critical",
+      "warnings": "{count} warnings",
+      "none": "No issues found.",
+      "severity": "Severity",
+      "check": "Check",
+      "message": "Details",
+      "count": "Count",
+      "sampleRows": "Sample rows",
+      "severities": {
+        "critical": "Critical",
+        "warning": "Warning"
+      },
+      "checks": {
+        "required_column": "Required column",
+        "schema": "Value check",
+        "duplicates": "Duplicate rows",
+        "team_reference": "Team consistency",
+        "match_consistency": "Match consistency",
+        "time_order": "Time order",
+        "events_per_match": "Events per match",
+        "team_mapping": "Team mapping",
+        "empty": "Empty file"
+      }
+    },
+    "mapping": {
+      "title": "Column mapping",
+      "column": "Column in file",
+      "field": "Template field",
+      "sample": "Sample value",
+      "ignore": "Ignore",
+      "required": "required",
+      "missing": "Unmapped required fields: {fields}",
+      "teamsTitle": "Team mapping",
+      "teamsHelp": "Matches scoring below 85% need your confirmation.",
+      "team": "Name in file",
+      "match": "Team",
+      "score": "Similarity",
+      "notSelected": "Not selected",
+      "needsConfirmation": "Needs confirmation",
+      "auto": "Automatic",
+      "manual": "Chosen manually",
+      "save": "Save mapping and revalidate",
+      "saved": "Mapping saved and the file was revalidated.",
+      "suggestion": "Suggestion: {team}"
+    },
+    "commit": {
+      "title": "Commit",
+      "submit": "Commit data",
+      "blocked": "To commit, there must be no critical issues and every team must be confirmed.",
+      "result": "Result",
+      "resultKeys": {
+        "teams": "teams",
+        "values": "values",
+        "matches": "matches",
+        "replaced": "replaced matches",
+        "events": "events",
+        "set_pieces": "set-piece sequences"
+      },
+      "committedAt": "Committed at"
+    },
+    "errors": {
+      "no-file": "Choose a file.",
+      "unknown-season": "Season not found.",
+      "unsupported-file-type": "Only CSV, TSV and XLSX files can be uploaded.",
+      "file-too-large": "The file exceeds the 20 MB limit.",
+      "unreadable-file": "The file could not be read. Make sure it is UTF-8 encoded.",
+      "idempotency-key-reused": "This form was used for another file. Reload the page and try again.",
+      "import-not-ready": "The import is not ready to commit.",
+      "import-closed": "A committed import cannot be changed.",
+      "unknown-field": "Unknown template field.",
+      "duplicate-field": "A template field can be mapped to one column only.",
+      "unknown-team": "The selected team is not in this season.",
+      "network": "Could not reach the API. Try again.",
+      "default": "The action could not be completed ({code})."
+    }
+  },
+  "methodology": {
+    "title": "Methodology",
+    "definitions": {
+      "title": "Set-piece definition",
+      "body": "A set piece is a corner, a free kick, or a long throw from the attacking third into the box or covering at least 20 m. Penalties are excluded from set-piece metrics and reported separately. Phase one is the first 5 seconds after delivery or at most one extra pass; the total window is 20 seconds. Coordinates are on a 105 × 68 m pitch with the attacked goal at x = 105."
+    },
+    "sources": {
+      "title": "Data sources",
+      "body": "League tables and team statistics come from the seed file (seed:super_lig.json) and every number shows its source. No web scraping is used; only licensed providers, StatsBomb Open Data (for development and validation) and files the club imports itself."
+    },
+    "statsbomb": {
+      "title": "StatsBomb Open Data",
+      "body": "Set-piece extraction was validated against StatsBomb Open Data event data. The data is used under StatsBomb's open data licence and attribution terms and is not committed to the repository. Data: StatsBomb.",
+      "link": "StatsBomb Open Data (github.com/statsbomb/open-data)"
+    },
+    "imports": {
+      "title": "Imported data",
+      "body": "Files uploaded by the club go through quality checks. A file with critical issues is quarantined and never reaches the metrics. Committed data is visible only to the uploading club and its source is shown as \"import\"."
+    },
+    "limits": {
+      "title": "Limitations",
+      "body": "Rates and counts are shrunk for small samples; fewer than 8 attempts or 5 matches shows a \"Small sample\" badge. Aerials, fouls and clearances are indirect indicators for defending and are labelled as such."
+    }
   }
 }

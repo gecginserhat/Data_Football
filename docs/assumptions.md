@@ -64,3 +64,27 @@ Kaynak dosyalar: kök `CLAUDE.md`, `SPEC.md`, `BASLANGIC.md` (WSL sürümü) esa
 **A-23 · VARSAYIM · shadcn/ui.** Faz 0'da yalnız tasarım tokenları ve durum bileşenleri (`packages/ui`) yazıldı. shadcn/ui bileşenleri (dialog, select, table…) ilk ihtiyaç duyulduğu fazda eklenir.
 
 **A-20 · VARSAYIM · Portlar.** web 3000, api 8000, postgres 5432, redis 6379, minio 9000/9001, keycloak 8080, mailpit 8025. Hepsi `.env` üzerinden değiştirilebilir.
+
+## Faz 1
+
+**A-24 · VARSAYIM · Bölge tanımlarındaki boşluk.** SPEC §3.3 eşikleriyle x ∈ [97, 99,5) ve y' ∈ [31,5, 36,5] alanı (altı pasın hemen önü, merkez) hiçbir bölgeye girmez; ceza sahası içinde olduğu için `SH` de olamaz ve `OT` sayılır. Eşikler şartnameye sadık bırakıldı; kulüp analistleri isterse `zones.json` üzerinden `C6` alt sınırı 97'ye çekilebilir. Test vektörü bu davranışı sabitler.
+
+**A-25 · VARSAYIM · StatsBomb koordinat dönüşümü parçalı doğrusaldır.** SPEC §4 "120 × 80 → 105 × 68, y çevrilir" diyor. Düz ölçekleme ceza sahası çizgisini 88,5 m yerine 89,25 m'ye taşıdığı için bölge sınırlarında hata yapar. Dönüşüm saha çizgilerini (altı pas, penaltı noktası, ceza sahası, orta çizgi, direkler) kanonik karşılıklarına oturtan parçalı doğrusal eşlemedir (`kurgu_analytics.canonical.coords`); referans nokta testleriyle doğrulanır. kloppy'nin standart saha dönüşümüyle aynı fikirdir.
+
+**A-26 · VARSAYIM · `zones.json` konumu.** Dosya `packages/pitch/zones.json` içinde tek kopyadır. Python tarafı `KURGU_ZONES_PATH` değişkenini, yoksa repo kökündeki yolu okur. API imajı dosyayı kopyalar ve değişkeni ayarlar; geliştirme konteyneri klasörü bağlar.
+
+**A-27 · VARSAYIM · SPADL eşleyici (A-16'nın sonucu).** socceraction bağımlılık olarak eklenmedi; ince eşleyici yazıldı ve socceraction ile %100 tür uyumu ölçüldü (ADR-0003 Faz 1 notu). socceraction'dan bilinçli farklar: sentetik `dribble` aksiyonları eklenmez (StatsBomb `Carry` zaten `dribble` olur); sol/sağ ayak `foot_left`/`foot_right` olarak korunur (korner alt türü için gerekli).
+
+**A-28 · VARSAYIM · Nesne deposu.** Ham yükler `raw/<kiracı|shared>/<sağlayıcı>/<sha256>` anahtarıyla yazılır; aynı içerik aynı anahtara gider. Yerelde ve testlerde klasör deposu (`KURGU_STORAGE_BACKEND=local`), compose'da MinIO (`s3`) kullanılır.
+
+**A-29 · VARSAYIM · Yükleme işi sahipliği.** API'den başlatılan iş kaydı isteyen kiracıya aittir (yalnız o görür), yazılan lig verisi paylaşılır ve lisansla okunur. Komut satırından (`kurgu-ingest`) başlatılan iş paylaşılandır (`tenant_id` boş). İşi yalnızca `admin` rolü başlatabilir.
+
+**A-30 · KARAR (2026-09-30, Serhat) · Doğrulama ölçüsü.** `docs/validation/setpiece_extraction.md`: 149 maçta ham `play_pattern` uyumu %74,3, tanım farkları (kısa taç, 20 sn pencere dışı) uyumlu sayıldığında %99,5. StatsBomb etiketi possession boyunca süre sınırsız taşındığı için ham ölçü şartnamedeki tanımla ölçülemez. Karar: kabul ölçüsü tanım uyumlu uyumdur (≥ %95); ham uyum yan yana raporlanır.
+
+**A-31 · VARSAYIM · Şut sonucunun türetilmesi.** SPADL isabet bilgisi taşımaz. Sonuç sağlayıcıdan bağımsız türetilir: rakip kaleci kurtarışı izliyorsa isabetli, top kale çizgisine (x ≥ 104) ulaştıysa isabetsiz, ulaşmadıysa engellenmiş. StatsBomb sonucuyla uyum %94,1; ana karışıklık StatsBomb'un "Wayward" (topu kötü vurma) şutlarının engellenmiş sayılması.
+
+**A-32 · VARSAYIM · İçe aktarımda takımlar.** İçe aktarılan dosyadaki takım adları var olan takımlara eşlenir (önce sezonun takımları; sezonda kayıt yoksa görülebilen tüm takımlar). Uygulama rolü paylaşılan `teams` tablosuna yazamadığı için içe aktarım yeni takım oluşturmaz. Puanı 0,85'in altındaki öneriler yöneticinin onayını bekler. Sezon lisansla görünür olmalıdır; lisansı olmayan kulübün kendi sezonunu tanımlaması sonraki bir fazın işidir.
+
+**A-33 · VARSAYIM · İçe aktarılan olaylarda eksik alanlar.** Olay dosyasında vücut bölgesi yoksa SPADL `other` yazılır; bu durumda korner alt türü `other` olur. Oyuncu adları oyuncu tablosuna eşlenmez, olayın `extra.player` alanında durur. Maç skoru dosyadaki gollerden (başarılı şut, rakibin kendi kalesine golü) hesaplanır. Aynı kiracı aynı sezonda aynı `match_ref` ile yeniden içe aktarırsa eski maç ve dizileri silinip yenisi yazılır; işlem denetim kaydına girer.
+
+**A-34 · VARSAYIM · Rota düzeyi yükleniyor bileşeni kaldırıldı.** Next.js 15.5.27 üretim derlemesinde `(app)/loading.tsx` varken bir üst yoldan alt yola istemci tarafı geçiş (ör. `/admin` → `/admin/imports`, sunucu eylemi sonrası yönlendirme) RSC yanıtı 200 dönmesine rağmen ekrana uygulanmıyordu; geliştirme modunda sorun yok. Belirti, React Flight'taki bir hataya bağlanan [vercel/next.js#83386](https://github.com/vercel/next.js/issues/83386) ile örtüşüyor; 15.x hattında düzeltme yok. Rota düzeyi `loading.tsx` kaldırıldı; bileşen düzeyi yükleniyor durumları (`Skeleton`) yerinde duruyor. Next 16'ya geçiş şartnamedeki yığını değiştirdiği için ayrı bir karar konusu.

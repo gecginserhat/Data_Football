@@ -12,13 +12,19 @@ from kurgu_api.core.logging import configure_logging
 from kurgu_api.core.problems import install_problem_handlers
 from kurgu_api.health.router import router as health_router
 from kurgu_api.identity.router import router as identity_router
+from kurgu_api.imports.router import router as imports_router
+from kurgu_api.ingestion.router import router as ingestion_router
+from kurgu_api.league.router import router as league_router
 
 API_PREFIX = "/api/v1"
 
 
 @asynccontextmanager
-async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     yield
+    pool = getattr(app.state, "arq", None)
+    if pool is not None:
+        await pool.aclose()
     await dispose_engine()
 
 
@@ -43,6 +49,9 @@ def create_app() -> FastAPI:
     install_problem_handlers(app)
     app.include_router(health_router)
     app.include_router(identity_router, prefix=API_PREFIX)
+    app.include_router(league_router, prefix=API_PREFIX)
+    app.include_router(ingestion_router, prefix=API_PREFIX)
+    app.include_router(imports_router, prefix=API_PREFIX)
     return app
 
 

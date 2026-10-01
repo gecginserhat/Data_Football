@@ -125,5 +125,162 @@
     "title": "Kurgu'ya giriş",
     "description": "Kulübünüzün kimlik sağlayıcısıyla giriş yapın.",
     "signIn": "Giriş yap"
+  },
+  "imports": {
+    "title": "İçe aktarım",
+    "description": "Kulübünüzün elindeki tabloları (sağlayıcı dışa aktarımları, kendi kayıtlarınız) CSV ya da Excel olarak yükleyin. Sütunları eşleştirin, kalite raporunu inceleyin, sorun yoksa işleyin. İşlenen veri yalnızca kulübünüze görünür.",
+    "back": "İçe aktarımlara dön",
+    "adminLink": "CSV/Excel içe aktarım",
+    "adminLinkDescription": "Takım istatistiklerini ya da olay verisini dosyadan yükleyin.",
+    "upload": {
+      "title": "Yeni dosya yükle",
+      "file": "Dosya (CSV, TSV, XLSX; en fazla 20 MB)",
+      "kind": "Şablon",
+      "season": "Sezon",
+      "submit": "Yükle ve doğrula",
+      "noSeasons": "Görebileceğiniz bir sezon yok. Önce lig verisi yüklenmeli."
+    },
+    "kinds": {
+      "team_season_stats": "Takım sezon istatistikleri",
+      "events": "Olay verisi (SPADL)"
+    },
+    "kindHelp": {
+      "team_season_stats": "Takım başına bir satır. Zorunlu sütun: takım. En az bir metrik sütunu gerekir (goals, xg, set_piece_goals…).",
+      "events": "Olay başına bir satır. Koordinatlar 105 × 68 m, olayı yapan takımın hücum yönünde. Zorunlu: match_ref, match_date, home_team, away_team, period, time_s, team, type, result, start_x, start_y, end_x, end_y."
+    },
+    "list": {
+      "title": "Önceki içe aktarımlar",
+      "empty": "Henüz içe aktarım yok",
+      "emptyDescription": "Yukarıdaki formdan ilk dosyanızı yükleyin.",
+      "file": "Dosya",
+      "kind": "Şablon",
+      "status": "Durum",
+      "created": "Yüklendi"
+    },
+    "status": {
+      "uploaded": "Onay bekliyor",
+      "validated": "İşlenmeye hazır",
+      "quarantined": "Karantinada",
+      "committed": "İşlendi",
+      "failed": "Başarısız"
+    },
+    "statusHelp": {
+      "uploaded": "Bazı takım adları otomatik eşleşmedi. Aşağıdan doğru takımı seçip kaydedin.",
+      "validated": "Kritik sorun yok. Veriyi işleyebilirsiniz.",
+      "quarantined": "Kritik sorunlar var; veri işlenemez. Eşleştirmeyi düzeltin ya da dosyayı düzeltip yeniden yükleyin.",
+      "committed": "Veri kulübünüzün kayıtlarına yazıldı.",
+      "failed": "İçe aktarım başarısız oldu."
+    },
+    "steps": {
+      "label": "Sihirbaz adımları",
+      "upload": "Yükle",
+      "map": "Eşleştir",
+      "check": "Doğrula",
+      "commit": "İşle",
+      "done": "tamamlandı",
+      "current": "şu anki adım"
+    },
+    "report": {
+      "title": "Kalite raporu",
+      "rows": "{count} satır",
+      "critical": "{count} kritik",
+      "warnings": "{count} uyarı",
+      "none": "Sorun bulunmadı.",
+      "severity": "Önem",
+      "check": "Kontrol",
+      "message": "Açıklama",
+      "count": "Adet",
+      "sampleRows": "Örnek satırlar",
+      "severities": {
+        "critical": "Kritik",
+        "warning": "Uyarı"
+      },
+      "checks": {
+        "required_column": "Zorunlu sütun",
+        "schema": "Değer kontrolü",
+        "duplicates": "Yinelenen satır",
+        "team_reference": "Takım tutarlılığı",
+        "match_consistency": "Maç tutarlılığı",
+        "time_order": "Zaman sırası",
+        "events_per_match": "Maç başına olay",
+        "team_mapping": "Takım eşleştirme",
+        "empty": "Boş dosya"
+      }
+    },
+    "mapping": {
+      "title": "Sütun eşleştirme",
+      "column": "Dosyadaki sütun",
+      "field": "Şablon alanı",
+      "sample": "Örnek değer",
+      "ignore": "Yok say",
+      "required": "zorunlu",
+      "missing": "Eşlenmemiş zorunlu alanlar: {fields}",
+      "teamsTitle": "Takım eşleştirme",
+      "teamsHelp": "Puanı %85'in altındaki eşleşmeler onayınızı bekler.",
+      "team": "Dosyadaki ad",
+      "match": "Takım",
+      "score": "Benzerlik",
+      "notSelected": "Seçilmedi",
+      "needsConfirmation": "Onay bekliyor",
+      "auto": "Otomatik",
+      "manual": "Elle seçildi",
+      "save": "Eşleştirmeyi kaydet ve yeniden doğrula",
+      "saved": "Eşleştirme kaydedildi ve dosya yeniden doğrulandı.",
+      "suggestion": "Öneri: {team}"
+    },
+    "commit": {
+      "title": "İşle",
+      "submit": "Veriyi işle",
+      "blocked": "İşlemek için kritik sorun olmamalı ve tüm takımlar onaylanmalı.",
+      "result": "Sonuç",
+      "resultKeys": {
+        "teams": "takım",
+        "values": "değer",
+        "matches": "maç",
+        "replaced": "yenilenen maç",
+        "events": "olay",
+        "set_pieces": "duran top dizisi"
+      },
+      "committedAt": "İşlenme zamanı"
+    },
+    "errors": {
+      "no-file": "Bir dosya seçin.",
+      "unknown-season": "Sezon bulunamadı.",
+      "unsupported-file-type": "Yalnızca CSV, TSV ve XLSX dosyaları yüklenebilir.",
+      "file-too-large": "Dosya 20 MB sınırını aşıyor.",
+      "unreadable-file": "Dosya okunamadı. Karakter kodlamasının UTF-8 olduğundan emin olun.",
+      "idempotency-key-reused": "Bu form başka bir dosya için kullanıldı. Sayfayı yenileyip tekrar deneyin.",
+      "import-not-ready": "İçe aktarım işlenmeye hazır değil.",
+      "import-closed": "İşlenmiş içe aktarım değiştirilemez.",
+      "unknown-field": "Bilinmeyen şablon alanı.",
+      "duplicate-field": "Bir şablon alanı yalnızca bir sütuna eşlenebilir.",
+      "unknown-team": "Seçilen takım bu sezonda yok.",
+      "network": "API'ye ulaşılamadı. Tekrar deneyin.",
+      "default": "İşlem tamamlanamadı ({code})."
+    }
+  },
+  "methodology": {
+    "title": "Metodoloji",
+    "definitions": {
+      "title": "Duran top tanımı",
+      "body": "Duran top; korner, serbest vuruş ve hücum üçte birlik bölgesinden ceza sahasına ya da en az 20 m atılan uzun taçtır. Penaltılar duran top metriklerine girmez, ayrı raporlanır. Birinci faz teslimden sonraki ilk 5 saniye ya da en fazla bir ek pastır; toplam pencere 20 saniyedir. Koordinatlar 105 × 68 m sahada, hücum edilen kale x = 105 olacak biçimde tutulur."
+    },
+    "sources": {
+      "title": "Veri kaynakları",
+      "body": "Lig tabloları ve takım istatistikleri tohum dosyasından (seed:super_lig.json) gelir ve her sayının yanında kaynağı yazar. Web kazıma kullanılmaz; yalnızca lisanslı sağlayıcılar, StatsBomb Open Data (geliştirme ve doğrulama için) ve kulübün kendi içe aktardığı dosyalar kullanılır."
+    },
+    "statsbomb": {
+      "title": "StatsBomb Open Data",
+      "body": "Duran top çıkarımının doğrulaması StatsBomb Open Data olay verisiyle yapılmıştır. Veri StatsBomb'un açık veri lisansı ve atıf koşullarıyla kullanılır, repoya eklenmez. Veri: StatsBomb.",
+      "link": "StatsBomb Open Data (github.com/statsbomb/open-data)"
+    },
+    "imports": {
+      "title": "İçe aktarılan veri",
+      "body": "Kulübün yüklediği dosyalar kalite kontrolünden geçer. Kritik sorunu olan dosya karantinaya alınır ve metriklere girmez. İşlenen veri yalnızca yükleyen kulübe görünür ve kaynağı \"import\" olarak gösterilir."
+    },
+    "limits": {
+      "title": "Sınırlamalar",
+      "body": "Oranlar ve sayımlar küçük örneklemde büzülerek gösterilir; 8'den az deneme ya da 5'ten az maç varsa \"Az veri\" rozeti çıkar. Hava topu, faul ve uzaklaştırma savunma için dolaylı göstergedir ve öyle etiketlenir."
+    }
   }
 }

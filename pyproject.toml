@@ -46,7 +46,7 @@ explicit_package_bases = true
 exclude = ["alembic/versions"]
 
 [[tool.mypy.overrides]]
-module = ["arq.*", "asyncpg.*"]
+module = ["arq.*", "asyncpg.*", "boto3.*", "botocore.*", "pandas.*", "pandera.*", "openpyxl.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
@@ -72,6 +72,6 @@ layers = [
   "kurgu_analytics.recs",
   "kurgu_analytics.metrics",
   "kurgu_analytics.setpieces",
-  "kurgu_analytics.canonical",
   "kurgu_analytics.ingestion",
+  "kurgu_analytics.canonical",
 ]

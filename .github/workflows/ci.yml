@@ -111,6 +111,7 @@ jobs:
         run: |
           docker compose --env-file .env -f infra/docker-compose.yml -f infra/docker-compose.ci.yml up --build -d
           scripts/wait-for-stack.sh
+          docker compose --env-file .env -f infra/docker-compose.yml -f infra/docker-compose.ci.yml run --rm migrate kurgu-seed
         env:
           COMPOSE_FILES: -f infra/docker-compose.yml -f infra/docker-compose.ci.yml
       - run: pnpm install --frozen-lockfile

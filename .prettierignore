@@ -10,3 +10,4 @@ apps/api/
 analytics/
 infra/keycloak/
 packages/api-client/openapi.json
+.import_linter_cache/

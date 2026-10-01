@@ -15,6 +15,8 @@ const config: NextConfig = {
   output: "standalone",
   transpilePackages: ["@kurgu/ui", "@kurgu/pitch", "@kurgu/api-client"],
   poweredByHeader: false,
+  // İçe aktarım dosyaları sunucu eylemiyle API'ye iletilir (API sınırı 20 MB).
+  experimental: { serverActions: { bodySizeLimit: "21mb" } },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

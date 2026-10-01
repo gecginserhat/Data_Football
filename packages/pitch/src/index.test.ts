@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { PITCH, ZONES } from "./index";
+import vectors from "../zones.vectors.json";
+import { classifyZone, normalizeY, PITCH, ZONES } from "./index";
 
 describe("pitch geometry", () => {
   it("uses the canonical 105 x 68 pitch", () => {
@@ -16,5 +17,18 @@ describe("pitch geometry", () => {
 
   it("defines all seven delivery zones", () => {
     expect(ZONES.map((z) => z.code)).toEqual(["NP", "C6", "FP", "PS", "ED", "SH", "OT"]);
+  });
+});
+
+describe("classifyZone", () => {
+  const cases = vectors.cases as [number, number, number, string][];
+
+  it.each(cases)("(%f, %f) teslim y=%f → %s", (x, y, deliveryY, expected) => {
+    expect(classifyZone(x, y, deliveryY)).toBe(expected);
+  });
+
+  it("mirrors deliveries from the left side", () => {
+    expect(normalizeY(20, 1)).toBe(20);
+    expect(normalizeY(20, 67)).toBe(48);
   });
 });

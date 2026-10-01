@@ -6,7 +6,7 @@ UV := uv run
 -include .env
 export
 
-.PHONY: help doctor env install dev down logs ps migrate migrate-cycle seed openapi \
+.PHONY: help doctor env install dev down logs ps migrate migrate-cycle seed seed-report statsbomb-fetch statsbomb-load validate spadl-compare openapi \
         lint typecheck test test-py test-js e2e format
 
 help: ## Komutları listeler
@@ -42,8 +42,26 @@ migrate: ## Alembic upgrade head (compose içindeki veritabanına)
 migrate-cycle: ## upgrade → downgrade → upgrade döngüsü (CI ile aynı)
 	cd apps/api && $(UV) alembic upgrade head && $(UV) alembic downgrade base && $(UV) alembic upgrade head
 
-seed: ## Tohum verisini yükler (Faz 1'de dolar; şimdilik geliştirme kimlikleri)
-	$(COMPOSE) run --rm migrate kurgu-dev-identities
+seed: ## Tohum verisini yükler (geliştirme kimlikleri, lig verisi, lisanslar; idempotent)
+	$(COMPOSE) run --rm migrate kurgu-seed
+
+seed-report: ## Tohum bütünlük raporunu docs/validation/seed_integrity.md dosyasına yazar
+	$(UV) kurgu-seed --report docs/validation/seed_integrity.md
+
+statsbomb-fetch: ## StatsBomb Open Data doğrulama maçlarını data/statsbomb önbelleğine indirir (repoya girmez)
+	$(UV) python -m kurgu_analytics.ingestion.statsbomb data/statsbomb
+
+statsbomb-load: ## İndirilen StatsBomb maçlarını worker ile yükler (DK 2022, Euro 2024, Bundesliga 23/24)
+	$(COMPOSE) run --rm worker kurgu-ingest statsbomb_open --competition 43 --season 106
+	$(COMPOSE) run --rm worker kurgu-ingest statsbomb_open --competition 55 --season 282
+	$(COMPOSE) run --rm worker kurgu-ingest statsbomb_open --competition 9 --season 281
+
+validate: ## Duran top çıkarımı doğrulama raporunu üretir (docs/validation/setpiece_extraction.md)
+	$(UV) python -m kurgu_analytics.setpieces.validation data/statsbomb > docs/validation/setpiece_extraction.md
+
+spadl-compare: ## SPADL eşleyicisini socceraction ile karşılaştırır (geçici ortam; A-16)
+	uv run --isolated --no-project --python 3.12 --with socceraction==1.5.3 --with "multimethod<1.11" \
+		--with pydantic python scripts/compare_socceraction.py data/statsbomb 30 > docs/validation/spadl_socceraction.md
 
 openapi: ## OpenAPI şemasından TS istemcisini yeniden üretir
 	$(UV) kurgu-openapi packages/api-client/openapi.json
