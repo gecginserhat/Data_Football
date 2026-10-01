@@ -25,7 +25,14 @@ class Settings(BaseSettings):
     oidc_audience: str = "kurgu-api"
     # Doğrudan JWKS adresi verilirse keşif (discovery) atlanır; testlerde kullanılır.
     oidc_jwks_url: str | None = None
+    # MFA denetimi (ADR-0016, A-90): staging ve production'da her zaman açıktır.
     kurgu_require_mfa: bool = False
+    # Hız sınırı (A-89); yalnız yerel yük testlerinde kapatılır.
+    kurgu_rate_limit_enabled: bool = True
+    # Gözlem (ADR-0017): ikisi de isteğe bağlı.
+    # OpenTelemetry standart OTEL_* değişkenleriyle açılır.
+    kurgu_sentry_dsn: str | None = None
+    kurgu_metrics_token: str | None = None
 
     # Nesne deposu: ham yükler ve içe aktarılan dosyalar (SPEC §5.2). Yerelde MinIO (s3).
     kurgu_storage_backend: Literal["s3", "local"] = "local"
@@ -63,6 +70,15 @@ class Settings(BaseSettings):
     kurgu_data_keys: str | None = None
 
     cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
+
+    @property
+    def hardened(self) -> bool:
+        """Staging ve production: HSTS ve MFA zorunlu."""
+        return self.kurgu_env in ("staging", "production")
+
+    @property
+    def mfa_enforced(self) -> bool:
+        return self.kurgu_require_mfa or self.hardened
 
 
 @lru_cache

@@ -15,6 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from kurgu_api.core.audit import write_audit
 from kurgu_api.core.problems import ProblemError
+from kurgu_api.core.ratelimit import REPORTS, rate_limit
 from kurgu_api.identity.deps import PrincipalDep, SessionDep, require
 from kurgu_api.identity.roles import Permission
 from kurgu_api.ingestion.router import get_queue
@@ -82,7 +83,7 @@ async def _report(session: AsyncSession, report_id: uuid.UUID) -> Any:
     response_model=ReportOut,
     status_code=202,
     operation_id="createReport",
-    dependencies=READ,
+    dependencies=[*READ, Depends(rate_limit(REPORTS))],
 )
 async def create_report(
     session: SessionDep,

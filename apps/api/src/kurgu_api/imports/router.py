@@ -16,6 +16,7 @@ from pydantic import BaseModel, Field
 from sqlalchemy import text
 
 from kurgu_api.core.problems import ProblemError
+from kurgu_api.core.ratelimit import UPLOADS, rate_limit
 from kurgu_api.identity.deps import PrincipalDep, SessionDep, require
 from kurgu_api.identity.roles import Permission
 from kurgu_api.imports import service
@@ -154,7 +155,13 @@ def _analyze(
         raise ProblemError(422, "unreadable-file", f"File could not be read: {exc}") from exc
 
 
-@router.post("/imports", response_model=ImportOut, status_code=201, operation_id="createImport")
+@router.post(
+    "/imports",
+    response_model=ImportOut,
+    status_code=201,
+    operation_id="createImport",
+    dependencies=[Depends(rate_limit(UPLOADS))],
+)
 async def create_import(
     session: SessionDep,
     principal: PrincipalDep,

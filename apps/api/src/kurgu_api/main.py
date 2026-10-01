@@ -11,6 +11,7 @@ from kurgu_api.core.crypto import get_keyring
 from kurgu_api.core.db import dispose_engine
 from kurgu_api.core.logging import configure_logging
 from kurgu_api.core.problems import install_problem_handlers
+from kurgu_api.core.security import SecurityHeadersMiddleware
 from kurgu_api.health.router import router as health_router
 from kurgu_api.identity.router import router as identity_router
 from kurgu_api.imports.router import router as imports_router
@@ -57,7 +58,11 @@ def create_app() -> FastAPI:
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
-        expose_headers=["ETag"],
+        expose_headers=["ETag", "X-Request-ID", "Retry-After"],
+    )
+    # En dışta: CORS ve hata yanıtları dahil her yanıta başlık ekler.
+    app.add_middleware(
+        SecurityHeadersMiddleware, hsts=settings.hardened, docs_path=f"{API_PREFIX}/docs"
     )
     install_problem_handlers(app)
     app.include_router(health_router)
