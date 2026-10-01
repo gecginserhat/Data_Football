@@ -1,7 +1,7 @@
 # İlerleme
 
 **Durum:** Faz 0 tamam (PR #1). Faz 1 tamam, `faz-1-veri` dalında PR olarak incelemede (30.09.2026).
-**Sonraki adım:** Faz 2 (metrikler ve analiz ekranları) sürüyor; dal `faz-2-metrikler`.
+**Sonraki adım:** Faz 2 tamamlandı (PR #3). PR'lar birleşince Faz 3 (rutin kütüphanesi).
 
 Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce). Her commit öncesi `make lint typecheck test` temiz olmalı. Bir görev SPEC §19 DoD'yi karşılamadan işaretlenmez. Faz sonunda kabul kriterleri işaretlenir ve kısa rapor verilir.
 
@@ -177,8 +177,23 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 ### Kabul kriterleri (SPEC §19)
 - [x] Metrik modülü formülleri ve testleriyle hazır.
 - [x] Materialized view'ler yenileniyor.
-- [ ] Genel bakış, Lig ve Rakip analizi sayfaları tohum verisiyle doğru sayıları gösterir (2025/26 lig duran top payı %20,4; Trabzonspor 15 duran top golüyle 1.; Göztepe 15,4 duran top xG'si ile 1.).
-- [ ] Az veri rozeti ve kaynak rozetleri görünür.
+- [x] Genel bakış, Lig ve Rakip analizi sayfaları tohum verisiyle doğru sayıları gösterir (2025/26 lig duran top payı %20,4; Trabzonspor 15 duran top golüyle 1.; Göztepe 15,4 duran top xG'si ile 1.).
+- [x] Az veri rozeti ve kaynak rozetleri görünür.
+
+### Rapor
+- **Yapıldı:**
+  - Next 16'ya geçildi ve yükleniyor ekranı geri geldi (ADR-0006).
+  - Metrik modülü hazır: 22 metrik, beta-binom ve gamma-Poisson büzülmesi, lig sırası, az veri bayrağı.
+  - Metrik görünümleri eklendi; tohum ve sağlayıcı yüklemesinden sonra yenileniyor (ADR-0007).
+  - Lig uçları genişletildi; kıyaslar, takım dizileri ve fikstür uçları eklendi.
+  - Genel bakış, Lig ve Rakip analizi sayfaları hazır.
+  - Altın değerler hem API testlerinde hem e2e'de doğrulanıyor: %20,4 (166/812), TS 15 golle 1., GÖZ 15,4 xG ile 1.
+- **Sapmalar:**
+  - Lig kıyasları materialized view'de değil, istek anında hesaplanıyor; formüller Python'da tek yerde kalsın diye (ADR-0007).
+  - Ana sayfadaki öneri ve tehdit etiketleri Faz 4'e kaldı (A-38).
+- **Riskler:**
+  - Kulübün kendi kaydı paylaşılan değerin yerine geçiyor (A-36). İçe aktarımda yanlış bir dosya, kulübün gördüğü sıraları değiştirir. Kayıt, kaynak rozetiyle görünür kalıyor.
+  - Profil çubuğu ve tablo bileşenleri şimdilik uygulama içinde; `packages/ui`'ye taşınması Faz 3'te.
 
 ### Görevler
 
@@ -204,16 +219,16 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 - [x] `GET /fixtures?team=&from=`: yaklaşan maçlar (genel bakış için).
 
 **2.4 Arayüz**
-- [ ] Bileşenler: KPI kartı, ProfileBar, DataTable (yapışkan ilk sütun, sıralama), FormChips (G/B/M), TeamBadge, SourceBadge, SampleSizeBadge, "dolaylı" etiketi.
-- [ ] `/league`: puan durumu, duran top tablosu, xG–gol dağılım grafiği; sezon seçimi.
-- [ ] `/opponents` ve `/opponents/[teamId]`: takım listesi; profil çubukları (lig en düşük–en yüksek, lig ortalaması ve kendi kulübümüz işaretli), sıra, kaynak ve dolaylı etiketleri.
-- [ ] `/`: kulüp durumu, duran top KPI'ları ve sıraları, sıradaki ve yaklaşan maçlar (rakibin DT sırasıyla).
-- [ ] Her bileşende yükleniyor, boş, hata ve az veri durumları; `tr` ve `en` metinleri.
+- [x] Bileşenler: KPI kartı, ProfileBar, DataTable (yapışkan ilk sütun, sıralama), FormChips (G/B/M), TeamBadge, SourceBadge, SampleSizeBadge, "dolaylı" etiketi.
+- [x] `/league`: puan durumu, duran top tablosu, xG–gol dağılım grafiği; sezon seçimi.
+- [x] `/opponents` ve `/opponents/[teamId]`: takım listesi; profil çubukları (lig en düşük–en yüksek, lig ortalaması ve kendi kulübümüz işaretli), sıra, kaynak ve dolaylı etiketleri.
+- [x] `/`: kulüp durumu, duran top KPI'ları ve sıraları, sıradaki ve yaklaşan maçlar (rakibin DT sırasıyla).
+- [x] Her bileşende yükleniyor, boş, hata ve az veri durumları; `tr` ve `en` metinleri.
 
 **2.5 Doğrulama ve kapanış**
-- [ ] Altın kontroller (API ve e2e): %20,4 (166/812); TS 15 golle 1.; GÖZ 15,4 xG ile 1.
-- [ ] E2E ve axe; `docs/demo/faz2/` ekran görüntüleri; CLAUDE.md komutları güncel.
-- [ ] Kabul kriterleri işaretlendi, kısa rapor verildi.
+- [x] Altın kontroller (API ve e2e): %20,4 (166/812); TS 15 golle 1.; GÖZ 15,4 xG ile 1.
+- [x] E2E ve axe; `docs/demo/faz2/` ekran görüntüleri; CLAUDE.md komutları güncel.
+- [x] Kabul kriterleri işaretlendi, kısa rapor verildi.
 
 ---
 
