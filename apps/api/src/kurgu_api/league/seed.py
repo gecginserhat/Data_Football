@@ -35,6 +35,7 @@ from sqlalchemy.ext.asyncio import AsyncConnection, create_async_engine
 from kurgu_api.config import get_settings
 from kurgu_api.dev_identities import DEMO_TENANT_ID, SECOND_TENANT_ID, seed_dev_identities
 from kurgu_api.league.views import refresh_metric_views
+from kurgu_api.prep.defaults import load_default_rules, read_default_rules
 from kurgu_api.routines.templates import load_templates, read_templates
 
 PROVIDER = "seed"
@@ -55,6 +56,7 @@ class SeedResult:
     teams: dict[str, uuid.UUID] = field(default_factory=dict)
     seasons: dict[str, uuid.UUID] = field(default_factory=dict)
     templates: int = 0
+    rules: int = 0
 
 
 async def _map_id(conn: AsyncConnection, entity: str, provider_id: str) -> uuid.UUID | None:
@@ -362,6 +364,7 @@ async def run_seed(database_url: str | None = None, seed_dir: Path | None = None
     seed_dir = seed_dir or Path(settings.kurgu_seed_dir)
     seed, report = validate_files(seed_dir)
     templates = read_templates(seed_dir / "routine_templates.json")
+    rules = read_default_rules(seed_dir / "recommendation_rules.json")
     await seed_dev_identities(database_url)
     engine = create_async_engine(database_url or settings.migrations_database_url)
     try:
@@ -369,6 +372,7 @@ async def run_seed(database_url: str | None = None, seed_dir: Path | None = None
             result = await load_league(conn, seed)
             await link_tenants(conn, result.teams)
             result.templates = await load_templates(conn, templates)
+            result.rules = await load_default_rules(conn, rules)
             await refresh_metric_views(conn)
     finally:
         await engine.dispose()
@@ -376,25 +380,35 @@ async def run_seed(database_url: str | None = None, seed_dir: Path | None = None
     return result
 
 
-async def run_templates(database_url: str | None = None, seed_dir: Path | None = None) -> int:
-    """Yalnızca rutin şablonları; her ortamda çalışır (ürün içeriği, A-40)."""
+async def run_product_content(
+    database_url: str | None = None, seed_dir: Path | None = None
+) -> tuple[int, int]:
+    """Yalnızca ürün içeriği: rutin şablonları ve varsayılan kural seti (A-40, A-51).
+
+    Her ortamda çalışır; idempotenttir. (şablon sayısı, kural sayısı) döner.
+    """
     settings = get_settings()
-    templates = read_templates(
-        (seed_dir or Path(settings.kurgu_seed_dir)) / "routine_templates.json"
-    )
+    seed_dir = seed_dir or Path(settings.kurgu_seed_dir)
+    templates = read_templates(seed_dir / "routine_templates.json")
+    rules = read_default_rules(seed_dir / "recommendation_rules.json")
     engine = create_async_engine(database_url or settings.migrations_database_url)
     try:
         async with engine.begin() as conn:
-            return await load_templates(conn, templates)
+            return await load_templates(conn, templates), await load_default_rules(conn, rules)
     finally:
         await engine.dispose()
 
 
 def main() -> None:
-    """`kurgu-seed`: yükler; `--report DOSYA`: bütünlük raporu; `--templates`: yalnız şablonlar."""
+    """`kurgu-seed`: yükler; `--report DOSYA`: bütünlük raporu.
+
+    `--templates` (eşanlamlısı `--rules`): yalnız ürün içeriği, yani rutin şablonları ve
+    varsayılan kural seti.
+    """
     settings = get_settings()
-    if sys.argv[1:] == ["--templates"]:
-        print(f"routine templates loaded: {asyncio.run(run_templates())}")
+    if sys.argv[1:] in (["--templates"], ["--rules"]):
+        templates, rules = asyncio.run(run_product_content())
+        print(f"routine templates loaded: {templates}; default rules loaded: {rules}")
         return
     if len(sys.argv) == 3 and sys.argv[1] == "--report":
         seed = load_super_lig(Path(settings.kurgu_seed_dir) / "super_lig.json")
@@ -406,7 +420,7 @@ def main() -> None:
         print(f"warning [{warning.check}] {warning.message}")
     print(
         f"seed loaded: {len(result.teams)} teams, {len(result.seasons)} seasons,"
-        f" {result.templates} routine templates,"
+        f" {result.templates} routine templates, {result.rules} rules,"
         f" {len(result.report.warnings)} integrity warnings (see docs/validation/seed_integrity.md)"
     )
 
