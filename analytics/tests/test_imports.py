@@ -1,6 +1,7 @@
 """CSV/Excel içe aktarım: okuma, sütun eşleştirme, kalite kontrolleri (Faz 1.9)."""
 
 import io
+import zipfile
 
 import pandas as pd
 import pytest
@@ -36,6 +37,19 @@ def test_read_table_sniffs_delimiter_and_excel() -> None:
     assert read_table(buf.getvalue(), "x.xlsx").iloc[0].to_dict() == {"team": "A", "goals": "3"}
     with pytest.raises(UnreadableFileError):
         read_table(b"\xff\xfe\x00bad", "x.csv")
+
+
+def test_read_table_rejects_disguised_and_bomb_files() -> None:
+    with pytest.raises(UnreadableFileError, match="Excel dosyası değil"):
+        read_table(b"team,goals\nA,3\n", "x.xlsx")
+    with pytest.raises(UnreadableFileError, match="metin dosyası değil"):
+        read_table(b"MZ\x90\x00\x03\x00binary", "x.csv")
+    bomb = io.BytesIO()
+    with zipfile.ZipFile(bomb, "w", zipfile.ZIP_DEFLATED) as archive:
+        archive.writestr("xl/worksheets/sheet1.xml", b"0" * (101 * 1024 * 1024))
+    assert len(bomb.getvalue()) < 1024 * 1024
+    with pytest.raises(UnreadableFileError, match="çok büyük"):
+        read_table(bomb.getvalue(), "x.xlsx")
 
 
 def test_suggest_mapping_uses_aliases_and_ignores_unknown() -> None:

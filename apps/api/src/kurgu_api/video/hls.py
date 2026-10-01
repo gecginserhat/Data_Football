@@ -42,6 +42,12 @@ def hls_command(exe: str, source: Path, out_dir: Path) -> list[str]:
         "-hide_banner",
         "-nostdin",
         "-y",
+        # Girdi yalnız yerel dosya ve yalnız kabul edilen kapsayıcılar (A-98): oynatma listesi ya da
+        # ağ adresi içeren bir dosya ffmpeg'e başka kaynak okutamaz.
+        "-protocol_whitelist",
+        "file",
+        "-format_whitelist",
+        "mov,matroska",
         "-i",
         str(source),
         "-map",

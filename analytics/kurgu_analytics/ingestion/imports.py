@@ -18,6 +18,7 @@ import csv
 import io
 import re
 import unicodedata
+import zipfile
 from dataclasses import asdict, dataclass, field
 from difflib import SequenceMatcher
 from typing import Any, Literal
@@ -31,6 +32,9 @@ Kind = Literal["team_season_stats", "events"]
 Severity = Literal["critical", "warning"]
 
 MAX_ROWS = 200_000
+# Excel bir zip arşividir; açılmış boyut ve dosya sayısı sınırı sıkıştırma bombasını önler (A-98).
+MAX_XLSX_UNPACKED = 100 * 1024 * 1024
+MAX_XLSX_ENTRIES = 2_000
 MIN_EVENTS_PER_MATCH = 300
 MAX_EVENTS_PER_MATCH = 6000
 AUTO_MATCH_SCORE = 0.85
@@ -133,12 +137,30 @@ class UnreadableFileError(ValueError):
     pass
 
 
+def check_xlsx(content: bytes) -> None:
+    """Excel dosyasının gerçekten zip olduğunu ve açıldığında sınırları aşmadığını denetler."""
+    if not content.startswith(b"PK\x03\x04"):
+        raise UnreadableFileError("Excel dosyası değil")
+    try:
+        with zipfile.ZipFile(io.BytesIO(content)) as archive:
+            entries = archive.infolist()
+    except zipfile.BadZipFile as exc:
+        raise UnreadableFileError("Excel dosyası bozuk") from exc
+    if len(entries) > MAX_XLSX_ENTRIES:
+        raise UnreadableFileError("Excel dosyasında çok fazla parça var")
+    if sum(entry.file_size for entry in entries) > MAX_XLSX_UNPACKED:
+        raise UnreadableFileError("Excel dosyası açıldığında çok büyük")
+
+
 def read_table(content: bytes, filename: str) -> pd.DataFrame:
     """CSV (ayraç otomatik) ya da Excel (ilk sayfa) okur; tüm hücreler metin olarak gelir."""
     try:
         if filename.lower().endswith((".xlsx", ".xlsm")):
+            check_xlsx(content)
             frame = pd.read_excel(io.BytesIO(content), dtype=str, engine="openpyxl")
         else:
+            if b"\x00" in content[:65536]:
+                raise UnreadableFileError("metin dosyası değil")
             text = content.decode("utf-8-sig")
             dialect = csv.Sniffer().sniff(text[:4096], delimiters=",;\t")
             frame = pd.read_csv(io.StringIO(text), sep=dialect.delimiter, dtype=str)
