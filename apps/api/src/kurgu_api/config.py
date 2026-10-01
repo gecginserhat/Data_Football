@@ -58,6 +58,10 @@ class Settings(BaseSettings):
     kurgu_anthropic_api_key: str | None = None
     kurgu_llm_backend: Literal["anthropic", "fake"] = "anthropic"
 
+    # Alan şifrelemesi anahtarları (ADR-0014): virgülle ayrılmış `kid:base64` (32 bayt) listesi,
+    # ilki yeni kayıtları şifreler. Yalnız `.env`; geliştirme ve testte boşsa geliştirme anahtarı.
+    kurgu_data_keys: str | None = None
+
     cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
 
 

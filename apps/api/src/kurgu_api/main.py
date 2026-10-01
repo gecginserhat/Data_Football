@@ -7,6 +7,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from kurgu_api.config import get_settings
+from kurgu_api.core.crypto import get_keyring
 from kurgu_api.core.db import dispose_engine
 from kurgu_api.core.logging import configure_logging
 from kurgu_api.core.problems import install_problem_handlers
@@ -38,6 +39,8 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 def create_app() -> FastAPI:
     settings = get_settings()
     configure_logging(settings.kurgu_log_level)
+    # Şifreleme anahtarı yoksa (üretim) uygulama başlamaz (ADR-0014).
+    get_keyring()
     app = FastAPI(
         title="Kurgu API",
         version="0.1.0",
