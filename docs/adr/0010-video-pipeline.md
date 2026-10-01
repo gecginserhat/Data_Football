@@ -27,7 +27,7 @@ Kulüp başına sezonda yaklaşık 60 maç videosu ve video başına 2-4 GB bekl
   - Klip başlangıç ve bitişi video saniyesidir.
   - `set_piece_id` isteğe bağlıdır ve aynı maçın, aynı kiracının duran topunu göstermelidir.
   - Rutin istatistikleri klipleri listeler.
-- **Güvenlik.** Tür ve boyut sınırı (A-60), kiracı ön ekli anahtarlar (`video/<kiracı>/<varlık>/…`), imzalı adreslerin kısa ömrü ve her yazma işleminin denetim kaydı.
+- **Güvenlik.** Tür ve boyut sınırı (A-60), kiracı ön ekli anahtarlar (`<kiracı>/videos/<varlık>/source`, HLS `…/hls/`), imzalı adreslerin kısa ömrü ve her yazma işleminin denetim kaydı.
 
 ## Sonuçlar
 - **Artı:** Büyük dosyalar uygulama sunucularından geçmez; yükleme parçalı olduğu için kesintide yalnızca eksik parçalar yeniden gönderilir.

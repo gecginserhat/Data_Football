@@ -66,7 +66,7 @@ export function VideoWorkspace({
   const stopAt = useRef<number | null>(null);
   const [ready, setReady] = useState(false);
   const [manifest, setManifest] = useState(false);
-  const [playerError, setPlayerError] = useState(false);
+  const [playerError, setPlayerError] = useState<"codec" | "generic" | null>(null);
   const [start, setStart] = useState("");
   const [end, setEnd] = useState("");
   const [title, setTitle] = useState("");
@@ -89,13 +89,17 @@ export function VideoWorkspace({
       void import("hls.js").then(({ default: HlsJs }) => {
         if (cancelled) return;
         if (!HlsJs.isSupported()) {
-          setPlayerError(true);
+          setPlayerError("generic");
           return;
         }
         hls = new HlsJs();
         hls.on(HlsJs.Events.MANIFEST_PARSED, () => setManifest(true));
         hls.on(HlsJs.Events.ERROR, (_event, data) => {
-          if (data.fatal) setPlayerError(true);
+          if (!data.fatal) return;
+          const h264 =
+            typeof MediaSource !== "undefined" &&
+            MediaSource.isTypeSupported('video/mp4; codecs="avc1.42E01E"');
+          setPlayerError(h264 ? "generic" : "codec");
         });
         hls.loadSource(src);
         hls.attachMedia(video);
@@ -203,7 +207,7 @@ export function VideoWorkspace({
         />
         {playerError ? (
           <p role="alert" className="text-sm text-neg">
-            {t("errors.player")}
+            {t(playerError === "codec" ? "errors.codec" : "errors.player")}
           </p>
         ) : null}
         {canEdit ? (

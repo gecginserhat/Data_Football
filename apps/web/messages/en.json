@@ -1035,7 +1035,8 @@
       "generic": "The action could not be completed ({code}).",
       "part": "A part failed to upload. Check your connection and try again.",
       "range": "The end must be after the start.",
-      "player": "The video could not be played. Reload and try again."
+      "player": "The video could not be played. Reload and try again.",
+      "codec": "This browser cannot decode H.264 video. Open it in Chrome, Edge or Safari; clips can still be cut and linked."
     },
     "player": "Match video",
     "newClip": "New clip",

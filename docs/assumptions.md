@@ -164,3 +164,10 @@ Kabul edilen öneri plana madde ekler: hücum ve denge önerileri MD-3'e (sıkı
 **A-63 · VARSAYIM · Öneri geri bildirimi (A-54'ün devamı).** Oynanmış bir maçın hazırlık sayfasında, kabul edilen her öneri için maçtaki ilgili canlı kayıtlar gösterilir: hücum önerilerinde kulübün, savunma önerilerinde rakibin duran topları. Panelde "ilişki, neden değil" uyarısı bulunur; başarı puanı hesaplanmaz.
 
 **A-64 · VARSAYIM · Test videosu.** E2E testi için ffmpeg'in `testsrc` deseniyle üretilmiş 10 saniyelik sentetik bir video repoya eklenir. Gerçek maç görüntüsü kullanılmaz.
+
+**A-65 · VARSAYIM · E2E'de canlı kayıt ve video en sona.** Canlı kayıt duran top satırı yazar ve A-36 gereği kulübün o takım-sezon olay toplamlarını geçici olarak değiştirir. Bu yüzden `live` ve `video` E2E dosyaları ayrı bir Playwright projesinde (`pwa`, tablet) masaüstü ve tablet projelerinden sonra çalışır ve oluşturdukları kayıtları siler. Playwright'ın Chromium'unda H.264/AAC çözücü yok; video E2E testi HLS teslimini (oynatma listesi ve parça) her tarayıcıda, oynatmayı yalnız çözücü varsa doğrular.
+
+**A-66 · VARSAYIM · Maçın duran topları okuma iznidir.** `GET /fixtures/{id}/set-pieces` canlı kayıt izni yerine `read_analysis` ister; hazırlık sayfasındaki geri bildirim paneli (A-63) teknik direktör ve izleyici rollerine de görünür. Kayıt yazma uçları `live_tagging_video` izninde kalır.
+
+**A-67 · VARSAYIM · Video silme depoyu da temizler.** Videoyu silmek kliplerini (yabancı anahtarla) ve depodaki kaynak ile HLS dosyalarını siler. Yarım kalan yükleme iptal edilir. Silme denetim kaydına yazılır.
+

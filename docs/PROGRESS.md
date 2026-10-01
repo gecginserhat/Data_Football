@@ -1,7 +1,7 @@
 # İlerleme
 
-**Durum:** Faz 0-2 tamam ve `main`'e birleşti (PR #1-#3, 01.10.2026). Faz 3 (rutin kütüphanesi) tamam; `faz-3-rutinler` dalında, birleştirme onayı bekliyor.
-**Sonraki adım:** Faz 5 görevleri (aşağıda) `faz-5-canli` dalında.
+**Durum:** Faz 0-4 tamam ve `main`'e birleşti (PR #1-#5, 01.10.2026). Faz 5 (canlı kayıt ve video) tamam; `faz-5-canli` dalında, birleştirme onayı bekliyor.
+**Sonraki adım:** Faz 6 (raporlar ve LLM).
 
 Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce). Her commit öncesi `make lint typecheck test` temiz olmalı. Bir görev SPEC §19 DoD'yi karşılamadan işaretlenmez. Faz sonunda kabul kriterleri işaretlenir ve kısa rapor verilir.
 
@@ -329,34 +329,39 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 ## Faz 5: Canlı kayıt ve video
 
 ### Kabul kriterleri (SPEC §19)
-- [ ] PWA kurulabilir. Uçak modu E2E testi geçer. Çoklu cihaz senkronizasyonu çalışır.
-- [ ] Video yükleme → HLS → klip → duran topa bağlama → rutin istatistiğinde klip görünür.
+- [x] PWA kurulabilir. Uçak modu E2E testi geçer. Çoklu cihaz senkronizasyonu çalışır.
+- [x] Video yükleme → HLS → klip → duran topa bağlama → rutin istatistiğinde klip görünür.
+
+### Rapor
+- **Yapıldı:** Göç `0006_live_video`; senkronizasyon uçları (maç başına tek oturum, toplu ve idempotent gönderim, son yazan ve silme kazanır, `since` ile çekme); kayıt → `set_pieces` ve metrik görünümü yenileme; imzalı parçalı video yükleme (S3/MinIO ve HMAC imzalı yerel depo), worker'da ffmpeg ile HLS, oynatma listesi, klipler. Web: PWA (bildirim, simgeler, hizmet çalışanı), `/live` ve tablet öncelikli kayıt ekranı (Dexie kuyruğu, kısayollar, 10 sn geri al, maç saati, iki cihaz), `/video` (yükleme ilerlemesi, durum, hls.js oynatıcı, klip kesme ve duran topa bağlama), rutin sayfasında klipler, hazırlık sayfasında maçtan geri bildirim paneli. Python 409, web 40, pitch 61, ui 5 test; E2E 34 geçti, 2 atlandı. Uçak modu testinde 20 kayıt çevrimdışı yazılıyor, sayfa çevrimdışı yenileniyor, çevrimiçine dönünce sunucuda tam 20 kayıt var ve yeniden gönderim kopya üretmiyor.
+- **Sapmalar:** Çoklu cihaz bildirimi WebSocket yerine 5 sn çekmeyle (A-57). Hizmet çalışanı Serwist yerine elle yazıldı (ADR-0011). Tek tekil fikstür ucu eklendi (`GET /fixtures/{id}`). Maçın duran topları okuma izniyle açık (A-66). Kısayollarda SPEC'teki `1-6` yerine sekiz sonuç için `1-8` ve geri alma için `Z` (A-58).
+- **Riskler:** Canlı kayıt A-36 gereği o takım-sezonun olay toplamlarını kulübün kendi kaydına çevirir; tek maç kaydedilmiş bir takımın değerleri ilk maçlarda "Az veri" ile görünür. Playwright'ın Chromium'u H.264 çözemediği için oynatma E2E'de yalnız teslim düzeyinde doğrulanıyor (A-65); gerçek Chrome, Edge ve Safari'de oynar. MinIO CORS ayarı (`MINIO_API_CORS_ALLOW_ORIGIN`) bu ortamda değil, CI'daki compose'da sınanacak. Uzun maç videolarının dönüştürme süresi ölçülmedi; iş süre sınırı 4 saat.
 
 ### Görevler
 
 **5.1 Senkronizasyon (ADR-0004, A-56 … A-59)**
-- [ ] Göç `0006_live_video`: `live_tags.server_seq`, maç başına tek oturum, `video_assets`, `video_clips`. RLS, izinler, göç döngüsü.
-- [ ] `POST /tagging-sessions` (maç başına al ya da aç), `POST /tagging-sessions/{id}/sync` (toplu, idempotent, son yazan kazanır, silme kazanır), `GET /tagging-sessions/{id}/tags?since=`.
-- [ ] Kayıt → `set_pieces` (`source='live_tag'`); metrik görünümü yenileme işi.
-- [ ] Testler: idempotentlik, sıralama, mezar taşı, iki cihaz, izinler, kiracı izolasyonu.
+- [x] Göç `0006_live_video`: `live_tags.server_seq`, maç başına tek oturum, `video_assets`, `video_clips`. RLS, izinler, göç döngüsü.
+- [x] `POST /tagging-sessions` (maç başına al ya da aç), `POST /tagging-sessions/{id}/sync` (toplu, idempotent, son yazan kazanır, silme kazanır), `GET /tagging-sessions/{id}/tags?since=`.
+- [x] Kayıt → `set_pieces` (`source='live_tag'`); metrik görünümü yenileme işi.
+- [x] Testler: idempotentlik, sıralama, mezar taşı, iki cihaz, izinler, kiracı izolasyonu.
 
 **5.2 Video (ADR-0010, A-60 … A-62)**
-- [ ] Depo: imzalı çok parçalı yükleme (S3/MinIO) ve HMAC imzalı yerel adresler.
-- [ ] `POST /video/uploads`, `POST /video/assets/{id}/complete`, `GET /video/assets`, oynatma listesi, `GET/POST /clips`, `PATCH/DELETE /clips/{id}`.
-- [ ] Worker: ffmpeg ile HLS ve süre; durum makinesi.
-- [ ] Rutin istatistiğinde klipler.
-- [ ] Testler: imza, parça birleştirme, HLS üretimi (gerçek ffmpeg), klip doğrulaması.
+- [x] Depo: imzalı çok parçalı yükleme (S3/MinIO) ve HMAC imzalı yerel adresler.
+- [x] `POST /video/uploads`, `POST /video/assets/{id}/complete`, `GET /video/assets`, oynatma listesi, `GET/POST /clips`, `PATCH/DELETE /clips/{id}`.
+- [x] Worker: ffmpeg ile HLS ve süre; durum makinesi.
+- [x] Rutin istatistiğinde klipler.
+- [x] Testler: imza, parça birleştirme, HLS üretimi (gerçek ffmpeg), klip doğrulaması.
 
 **5.3 Arayüz**
-- [ ] PWA: manifest, simgeler, servis çalışanı (uygulama kabuğu ve `/live/*` önbelleği).
-- [ ] `/live` ve `/live/[fixtureId]`: büyük dokunma hedefleri (≥ 56 px), kısayollar, Dexie kuyruğu, çevrimiçi/çevrimdışı ve bekleyen sayısı, 10 sn geri al, maç saati, diğer cihazların kayıtları.
-- [ ] `/video`: yükleme (parçalı, ilerleme), dönüştürme durumu, oynatıcı (hls.js), klip kesme ve duran topa bağlama.
-- [ ] Rutin sayfasında klipler; hazırlık sayfasında öneri geri bildirimi (A-63).
+- [x] PWA: manifest, simgeler, servis çalışanı (uygulama kabuğu ve `/live/*` önbelleği).
+- [x] `/live` ve `/live/[fixtureId]`: büyük dokunma hedefleri (≥ 56 px), kısayollar, Dexie kuyruğu, çevrimiçi/çevrimdışı ve bekleyen sayısı, 10 sn geri al, maç saati, diğer cihazların kayıtları.
+- [x] `/video`: yükleme (parçalı, ilerleme), dönüştürme durumu, oynatıcı (hls.js), klip kesme ve duran topa bağlama.
+- [x] Rutin sayfasında klipler; hazırlık sayfasında öneri geri bildirimi (A-63).
 
 **5.4 Doğrulama ve kapanış**
-- [ ] E2E: uçak modunda 20 kayıt → çevrimiçi → sunucuda 20 kayıt, yineleme yok; iki cihaz senkronizasyonu; video yükleme → HLS → klip → duran top → rutin sayfasında klip; axe.
-- [ ] `docs/demo/faz5/` ekran görüntüleri; CLAUDE.md komutları güncel.
-- [ ] Kabul kriterleri işaretlendi, kısa rapor verildi.
+- [x] E2E: uçak modunda 20 kayıt → çevrimiçi → sunucuda 20 kayıt, yineleme yok; iki cihaz senkronizasyonu; video yükleme → HLS → klip → duran top → rutin sayfasında klip; axe.
+- [x] `docs/demo/faz5/` ekran görüntüleri; CLAUDE.md komutları güncel.
+- [x] Kabul kriterleri işaretlendi, kısa rapor verildi.
 
 ---
 

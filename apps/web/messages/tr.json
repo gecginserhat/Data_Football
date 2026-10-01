@@ -1035,7 +1035,8 @@
       "generic": "İşlem tamamlanamadı ({code}).",
       "part": "Bir parça yüklenemedi. Bağlantınızı kontrol edip yeniden deneyin.",
       "range": "Bitiş, başlangıçtan sonra olmalı.",
-      "player": "Video oynatılamadı. Sayfayı yenileyip yeniden deneyin."
+      "player": "Video oynatılamadı. Sayfayı yenileyip yeniden deneyin.",
+      "codec": "Bu tarayıcı H.264 videoyu çözemiyor. Chrome, Edge ya da Safari ile açın; klipler yine kesilip bağlanabilir."
     },
     "player": "Maç videosu",
     "newClip": "Yeni klip",
