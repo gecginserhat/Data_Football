@@ -258,6 +258,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/routines/{routine_id}/versions/{version}/export": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Export Version */
+        get: operations["exportRoutineVersion"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/seasons": {
         parameters: {
             query?: never;
@@ -2027,6 +2044,44 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["VersionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    exportRoutineVersion: {
+        parameters: {
+            query?: {
+                format?: string;
+                lang?: string;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                routine_id: string;
+                version: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Rutin sayfası (PDF, A4) ya da saha görseli (PNG) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/pdf": unknown;
+                    "image/png": unknown;
                 };
             };
             /** @description Validation Error */

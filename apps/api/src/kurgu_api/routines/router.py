@@ -7,13 +7,17 @@ kiracıya aittir (RLS). Her kayıt değişmez bir sürüm açar; silme yoktur, a
 import datetime as dt
 import json
 import math
+import unicodedata
 import uuid
 from typing import Annotated, Any
+from urllib.parse import quote
 
 import pandas as pd
 from fastapi import APIRouter, Depends, Query, Request, Response
+from fastapi.concurrency import run_in_threadpool
 from kurgu_analytics.metrics import routine_metrics
 from kurgu_analytics.reports.diagram import Diagram
+from kurgu_analytics.reports.routine_sheet import build_meta, render_pdf, render_png
 from sqlalchemy import text
 
 from kurgu_api.core.audit import write_audit
@@ -535,3 +539,64 @@ async def get_version(
     routine_id: uuid.UUID, version: int, request: Request, session: SessionDep
 ) -> Response:
     return etag_response(request, _version(await _version_row(session, routine_id, version)))
+
+
+EXPORT_TYPES = {"pdf": "application/pdf", "png": "image/png"}
+TR_ASCII = str.maketrans("ıİşŞğĞüÜöÖçÇ", "iIsSgGuUoOcC")
+
+
+def _filename(name: str, version: int, ext: str) -> str:
+    """ASCII dosya adı: `arka-direk-v3.pdf` (Türkçe harfler sadeleştirilir)."""
+    ascii_name = (
+        unicodedata.normalize("NFKD", name.translate(TR_ASCII)).encode("ascii", "ignore").decode()
+    )
+    slug = "-".join("".join(c if c.isalnum() else " " for c in ascii_name).lower().split())
+    return f"{slug or 'rutin'}-v{version}.{ext}"
+
+
+@router.get(
+    "/routines/{routine_id}/versions/{version}/export",
+    operation_id="exportRoutineVersion",
+    dependencies=read,
+    response_class=Response,
+    responses={
+        200: {
+            "content": {"application/pdf": {}, "image/png": {}},
+            "description": "Rutin sayfası (PDF, A4) ya da saha görseli (PNG)",
+        }
+    },
+)
+async def export_version(
+    routine_id: uuid.UUID,
+    version: int,
+    session: SessionDep,
+    principal: PrincipalDep,
+    export_format: Annotated[str, Query(alias="format", pattern="^(pdf|png)$")] = "pdf",
+    lang: Annotated[str, Query(pattern="^(tr|en)$")] = "tr",
+) -> Response:
+    routine = await _routine_row(session, routine_id)
+    row = await _version_row(session, routine_id, version)
+    diagram = Diagram.model_validate(_json(row.diagram))
+    assert principal.tenant is not None
+    meta = build_meta(
+        name=row.name,
+        sp_type=routine.sp_type,
+        side=row.side,
+        is_defensive=routine.is_defensive,
+        version=row.version,
+        saved_at=row.created_at.astimezone(dt.UTC),
+        saved_by=row.created_by_name,
+        club=principal.tenant.tenant_name,
+        notes=row.notes,
+        when_to_use=row.when_to_use,
+        lang=lang,
+    )
+    renderer = render_pdf if export_format == "pdf" else render_png
+    content = await run_in_threadpool(renderer, diagram, meta)
+    filename = _filename(row.name, row.version, export_format)
+    disposition = f"attachment; filename=\"{filename}\"; filename*=UTF-8''{quote(filename)}"
+    return Response(
+        content=content,
+        media_type=EXPORT_TYPES[export_format],
+        headers={"Content-Disposition": disposition, "Cache-Control": "private, max-age=300"},
+    )

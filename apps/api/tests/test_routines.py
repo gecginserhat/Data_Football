@@ -376,3 +376,32 @@ async def test_set_piece_cannot_point_to_another_tenants_routine(
             team,
             uuid.UUID(routine["id"]),
         )
+
+
+@pytest.mark.parametrize(
+    ("fmt", "magic", "ctype"),
+    [("pdf", b"%PDF", "application/pdf"), ("png", b"\x89PNG", "image/png")],
+)
+async def test_export(
+    client: Any, coach: dict[str, str], viewer: dict[str, str], fmt: str, magic: bytes, ctype: str
+) -> None:
+    routine = await _create(client, coach, name="Arka direğe geç koşu")
+    response = await client.get(
+        f"{URL}/{routine['id']}/versions/1/export", headers=viewer, params={"format": fmt}
+    )
+    assert response.status_code == 200
+    assert response.headers["content-type"] == ctype
+    assert response.content.startswith(magic)
+    assert f'filename="arka-direge-gec-kosu-v1.{fmt}"' in response.headers["content-disposition"]
+
+
+async def test_export_rejects_unknown_format_and_other_tenants(
+    client: Any, coach: dict[str, str], other: dict[str, str]
+) -> None:
+    routine = await _create(client, coach)
+    url = f"{URL}/{routine['id']}/versions/1/export"
+    assert (await client.get(url, headers=coach, params={"format": "svg"})).status_code == 422
+    assert (await client.get(url, headers=other)).status_code == 404
+    assert (
+        await client.get(f"{URL}/{routine['id']}/versions/5/export", headers=coach)
+    ).status_code == 404
