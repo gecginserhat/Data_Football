@@ -1,0 +1,36 @@
+{% macro masthead(r, kind) %}
+{% set f = r.fixture %}
+<header class="masthead">
+  <div>
+    <div class="kind">{{ kind }}</div>
+    <h1>{% if f.is_home %}{{ f.club.name }} – {{ f.opponent.name }}{% else %}{{ f.opponent.name }} – {{ f.club.name }}{% endif %}</h1>
+    <div class="sub">{% if f.week %}{{ f.week }}. hafta · {% endif %}{{ f.kickoff_at | local }} · {{ 'İç saha' if f.is_home else 'Deplasman' }} · {{ r.meta.season }}</div>
+  </div>
+  <div class="codes">
+    {% if f.is_home %}<span class="code club">{{ f.club.code }}</span><span class="code">{{ f.opponent.code }}</span>{% else %}<span class="code">{{ f.opponent.code }}</span><span class="code club">{{ f.club.code }}</span>{% endif %}
+  </div>
+</header>
+<p class="meta-line">Kaynak: {{ sources_text(r.meta) }}{% if r.meta.data_week %} · Veri {{ r.meta.data_week }}. haftaya kadar{% else %} · Tamamlanmış sezon{% endif %} · Üretim {{ r.meta.generated_at | local }}{% if r.meta.generated_by %} · {{ r.meta.generated_by }}{% endif %}{% if r.meta.demo %} <span class="badge demo">Örnek veri</span>{% endif %}</p>
+{% endmacro %}
+
+{% macro badges(m) %}
+{% if m.low_sample %} <span class="badge low">Az veri</span>{% endif %}
+{% if m.indirect %} <span class="badge">Dolaylı</span>{% endif %}
+{% if m.approx %} <span class="badge">Yaklaşık</span>{% endif %}
+{% endmacro %}
+
+{% macro recommendation(rec) %}
+<div class="card {{ rec.area }}">
+  <div class="head">
+    <span class="title">{{ rec.title }}</span>
+    <span class="small muted">{{ 'Hücum' if rec.area == 'attack' else 'Savunma' }} · Güven: {{ rec.confidence | confidence }} · {{ rec.status | status }}</span>
+  </div>
+  <div>{{ rec.why }}</div>
+  <div class="action"><strong>Ne yapılacak:</strong> {{ rec.action }}{% if rec.routine %} · Rutin: {{ rec.routine }}{% endif %}</div>
+  {% if rec.evidence %}
+  <div class="ev">Kanıt:
+    {% for e in rec.evidence %}{{ e.subject | subject }}: {{ e.metric | label }} {{ e.metric | metric(e.value) }}{% if e.rank %} ({{ e.rank }}.{% if e.teams %}/{{ e.teams }}{% endif %}){% endif %}{% if e.low_sample %} · Az veri{% endif %}{% if not loop.last %}; {% endif %}{% endfor %}
+  </div>
+  {% endif %}
+</div>
+{% endmacro %}

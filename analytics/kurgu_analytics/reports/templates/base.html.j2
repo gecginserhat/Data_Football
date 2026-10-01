@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>{{ title }}</title>
+<style>
+{{ font_css() }}
+@page { size: A4; margin: 14mm 13mm 16mm 13mm; }
+:root { --brand:#0E3B2E; --accent:#E3A008; --ink:#0F1B16; --ink2:#44524B; --ink3:#63706A; --line:#D5DDD8; --turf:#EAF2EC; --neg:#B42318; --pos:#1F7A4D; }
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; font-family: 'IBM Plex Sans', sans-serif; font-size: 9.5pt; color: var(--ink); line-height: 1.38; font-variant-numeric: tabular-nums; }
+h1, h2, h3 { font-family: 'IBM Plex Sans Condensed', 'IBM Plex Sans', sans-serif; font-weight: 600; margin: 0; }
+h1 { font-size: 19pt; line-height: 1.15; }
+h2 { font-size: 12.5pt; margin: 14pt 0 6pt; padding-bottom: 3pt; border-bottom: 1.5pt solid var(--brand); color: var(--brand); break-after: avoid; }
+h3 { font-size: 10.5pt; margin: 8pt 0 4pt; break-after: avoid; }
+p { margin: 0 0 4pt; }
+.masthead { background: var(--brand); color: #fff; padding: 10pt 12pt; border-radius: 4pt; display: flex; justify-content: space-between; align-items: flex-end; gap: 12pt; }
+.masthead .kind { font-size: 8.5pt; letter-spacing: .06em; text-transform: uppercase; color: #CFE3D8; }
+.masthead .sub { font-size: 9pt; color: #E5EFE9; margin-top: 3pt; }
+.masthead .codes { display: flex; gap: 4pt; }
+.code { display: inline-block; min-width: 26pt; padding: 2pt 5pt; border: 1pt solid currentColor; border-radius: 3pt; font-family: 'IBM Plex Sans Condensed', sans-serif; font-weight: 600; font-size: 9pt; text-align: center; }
+.code.club { background: var(--accent); border-color: var(--accent); color: var(--ink); }
+.meta-line { color: var(--ink3); font-size: 8pt; margin: 5pt 0 0; }
+.badge { display: inline-block; font-size: 7pt; font-weight: 600; padding: 0.5pt 4pt; border-radius: 6pt; border: 0.8pt solid var(--ink3); color: var(--ink2); white-space: nowrap; vertical-align: 1pt; }
+.badge.low { border-color: #B54708; color: #B54708; }
+.badge.demo { border-color: var(--neg); color: var(--neg); }
+.badge.llm { border-color: var(--brand); color: var(--brand); }
+table { width: 100%; border-collapse: collapse; margin: 0 0 6pt; }
+table.profile { table-layout: fixed; }
+th { text-align: left; font-size: 7.5pt; text-transform: uppercase; letter-spacing: .04em; color: var(--ink3); font-weight: 600; padding: 3pt 4pt; border-bottom: 1pt solid var(--line); }
+td { padding: 3pt 4pt; border-bottom: 0.6pt solid var(--line); vertical-align: top; }
+td.n, th.n { text-align: right; white-space: nowrap; }
+tr { break-inside: avoid; }
+.muted { color: var(--ink3); }
+.small { font-size: 8pt; }
+.grid { display: grid; gap: 6pt; }
+.kpis { grid-template-columns: repeat(4, 1fr); }
+.kpi { border: 1pt solid var(--line); border-radius: 4pt; padding: 6pt; }
+.kpi .v { font-family: 'IBM Plex Sans Condensed', sans-serif; font-weight: 600; font-size: 15pt; }
+.kpi .l { font-size: 7.5pt; color: var(--ink2); }
+.form { display: inline-flex; gap: 3pt; }
+.form span { width: 14pt; height: 14pt; display: inline-flex; align-items: center; justify-content: center; border-radius: 2pt; font-weight: 600; font-size: 8pt; color: #fff; }
+.form .W { background: var(--pos); } .form .D { background: #8A8F8C; } .form .L { background: var(--neg); }
+.card { border: 1pt solid var(--line); border-left: 3pt solid var(--brand); border-radius: 3pt; padding: 6pt 8pt; margin: 0 0 6pt; break-inside: avoid; }
+.card.defense { border-left-color: #B94C16; }
+.card .head { display: flex; justify-content: space-between; gap: 8pt; }
+.card .title { font-weight: 600; }
+.card .action { margin-top: 3pt; }
+.ev { margin-top: 3pt; font-size: 8pt; color: var(--ink2); }
+.two { display: grid; grid-template-columns: 1.1fr 1fr; gap: 12pt; align-items: start; }
+.heatmap { width: 100%; height: auto; border-radius: 3pt; }
+.clips { grid-template-columns: repeat(3, 1fr); }
+.clip { border: 1pt solid var(--line); border-radius: 3pt; padding: 5pt; display: flex; gap: 6pt; align-items: center; break-inside: avoid; }
+.clip svg { width: 62pt; height: 62pt; flex: none; }
+.brief { border: 1pt solid var(--brand); border-radius: 4pt; padding: 8pt; background: #F5F9F6; white-space: pre-line; }
+.routine { break-inside: avoid; display: grid; grid-template-columns: 210pt 1fr; gap: 10pt; margin: 0 0 10pt; padding-bottom: 8pt; border-bottom: 0.6pt solid var(--line); }
+.routine svg { width: 100%; height: auto; }
+.done { color: var(--pos); font-weight: 600; }
+.todo { color: var(--ink3); }
+.page-break { break-before: page; }
+ul { margin: 0; padding-left: 12pt; }
+li { margin: 0 0 2pt; }
+.empty { color: var(--ink3); font-style: italic; }
+</style>
+</head>
+<body>
+{% block body %}{% endblock %}
+</body>
+</html>
