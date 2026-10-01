@@ -33,6 +33,7 @@ Kurgu, profesyonel futbol kulüpleri için bir duran top analiz ve hazırlık pl
 - Maç hazırlığı: web `/prep`, `/prep/{fixtureId}` (öneriler, kabul/red, MD planı); kurallar `/admin/rules` (düzenleme, deneme, sürüm geçmişi). API `GET /fixtures/{id}/prep`, `POST /recommendations/{id}/decision`, `POST /rule-sets/dry-run`.
 - Rutinler: web `/routines` (kütüphane, şablonlar, editör, sürüm karşılaştırma); kart indirme `GET /routines/{id}/versions/{v}/export?format=pdf|png`.
 - Canlı kayıt: web `/live`, `/live/[fixtureId]` (çevrimdışı çalışır; PWA). Video: web `/video` (yükleme, HLS, klip). Worker HLS işi için ffmpeg `imageio-ffmpeg` paketinden gelir; `sudo` gerekmez.
+- Raporlar: web `/reports` (istek, ilerleme, arşiv, indirme) ve `/prep/{fixtureId}` (PDF düğmeleri, brifing paneli); LLM ayarı `/admin/llm`. API `POST /reports`, `GET /reports/{id}` (imzalı indirme adresi), `POST|GET /fixtures/{id}/briefing`, `GET|PUT /admin/llm-settings`. PDF worker'da Playwright Chromium ile üretilir (ADR-0012); yerelde tarayıcı yolu `KURGU_CHROMIUM_PATH`. Gerçek model yerine geliştirme ve testte `KURGU_LLM_BACKEND=fake` (ADR-0013).
 - E2E projeleri: `desktop`, `tablet` ve onlardan sonra çalışan `pwa` (canlı kayıt ve video; A-65). Tek başına: `pnpm --filter @kurgu/web exec playwright test --project=pwa --no-deps`.
 - CSV/Excel içe aktarım: web `/admin/imports` (yalnız yönetici); API `POST /imports`, `PUT /imports/{id}/mapping`, `POST /imports/{id}/commit`.
 - `make test` (`test-py`, `test-js`) · `make lint` · `make typecheck` · `make e2e`

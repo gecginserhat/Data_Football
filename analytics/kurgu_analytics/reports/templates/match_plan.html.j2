@@ -1,0 +1,84 @@
+{% extends "base.html.j2" %}
+{% from "_macros.html.j2" import masthead, recommendation %}
+{% block body %}
+{{ masthead(r, "Maç planı") }}
+
+{% set attack = r.recommendations | selectattr("area", "equalto", "attack") | list %}
+{% set defense = r.recommendations | selectattr("area", "equalto", "defense") | list %}
+
+<h2>Hücum planı</h2>
+{% if attack %}
+{% for rec in attack %}{{ recommendation(rec) }}{% endfor %}
+{% else %}
+<p class="empty">Kabul edilmiş hücum önerisi yok.</p>
+{% endif %}
+
+<h2>Savunma organizasyonu</h2>
+{% if defense %}
+{% for rec in defense %}{{ recommendation(rec) }}{% endfor %}
+{% else %}
+<p class="empty">Kabul edilmiş savunma önerisi yok.</p>
+{% endif %}
+
+<h2>Rutinler</h2>
+{% if r.routines %}
+{% for rt in r.routines %}
+<section class="routine">
+  <div>{{ rt.diagram | routine_svg }}</div>
+  <div>
+    <h3>{{ rt.name }}</h3>
+    <p class="small muted">{{ rt.sp_type | sp_type }}{% if rt.side %} · {{ rt.side | side }}{% endif %}{% if rt.is_defensive %} · savunma{% endif %} · sürüm {{ rt.version }}</p>
+    <strong class="small">Görevler</strong>
+    {% set roles = rt.diagram | roles %}
+    {% if roles %}
+    <ul class="small">{% for row in roles %}<li>{{ row }}</li>{% endfor %}</ul>
+    {% else %}<p class="empty small">Rol tanımlı değil.</p>{% endif %}
+    {% if rt.when_to_use %}<p class="small"><strong>Ne zaman:</strong> {{ rt.when_to_use }}</p>{% endif %}
+    {% if rt.notes %}<p class="small"><strong>Notlar:</strong> {{ rt.notes }}</p>{% endif %}
+  </div>
+</section>
+{% endfor %}
+{% else %}
+<p class="empty">Plana bağlı rutin yok.</p>
+{% endif %}
+
+<h2>MD planı</h2>
+{% if r.days %}
+<p class="small muted">İlerleme: {{ r.plan_done }}/{{ r.plan_total }} madde tamam.</p>
+<table>
+  <thead><tr><th>Gün</th><th>Madde</th><th>Sorumlu</th><th>Rutin</th><th>Durum</th></tr></thead>
+  <tbody>
+  {% for d in r.days %}
+    {% if d.items %}
+    {% for it in d.items %}
+    <tr>
+      {% if loop.first %}<td rowspan="{{ d.items | length }}"><strong>{{ d.md_code }}</strong><div class="small muted">{{ d.date | day }}</div><div class="small">{{ d.focus }}</div></td>{% endif %}
+      <td>{{ it.title }}{% if it.detail %}<div class="small muted">{{ it.detail }}</div>{% endif %}</td>
+      <td>{{ it.assignee or "–" }}</td>
+      <td>{{ it.routine or "–" }}</td>
+      <td class="{{ 'done' if it.done else 'todo' }}">{{ '✓ Tamam' if it.done else 'Bekliyor' }}</td>
+    </tr>
+    {% endfor %}
+    {% else %}
+    <tr><td><strong>{{ d.md_code }}</strong><div class="small muted">{{ d.date | day }}</div></td><td colspan="4" class="muted">{{ d.focus }} · madde yok</td></tr>
+    {% endif %}
+  {% endfor %}
+  </tbody>
+</table>
+
+<h2>Görev atamaları</h2>
+<p class="small muted">Oyuncu-rol atamaları markaj optimizasyonuyla gelecek; rutinlerdeki rol etiketleri yukarıda.</p>
+{% set people = {} %}
+{% for d in r.days %}{% for it in d.items %}{% set key = it.assignee or "Atanmamış" %}{% set _ = people.setdefault(key, []).append(d.md_code ~ " · " ~ it.title) %}{% endfor %}{% endfor %}
+<table>
+  <thead><tr><th>Sorumlu</th><th>Maddeler</th></tr></thead>
+  <tbody>
+  {% for person, items in people | dictsort %}
+  <tr><td>{{ person }}</td><td><ul class="small">{% for x in items %}<li>{{ x }}</li>{% endfor %}</ul></td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="empty">Bu fikstür için MD planı oluşturulmamış.</p>
+{% endif %}
+{% endblock %}

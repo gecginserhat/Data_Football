@@ -1,0 +1,120 @@
+{% extends "base.html.j2" %}
+{% from "_macros.html.j2" import masthead, badges, recommendation %}
+{% block body %}
+{{ masthead(r, "Rakip raporu") }}
+{% set opp = r.fixture.opponent %}
+{% set club = r.fixture.club %}
+{% set by = {} %}
+{% for m in r.metrics %}{% set _ = by.update({m.metric: m}) %}{% endfor %}
+
+<h2>Özet</h2>
+<p>
+  {% if r.standing %}{{ r.standing }}{% endif %}
+  {% if r.form %}<span class="form" aria-label="Son maçlar">{% for x in r.form %}<span class="{{ x }}">{{ x | form }}</span>{% endfor %}</span> <span class="small muted">(son maçlar, yeniden eskiye; G galibiyet, B beraberlik, M mağlubiyet)</span>{% endif %}
+</p>
+<div class="grid kpis">
+  {% for key in ["set_piece_goals", "set_piece_xg", "set_piece_goal_share", "set_piece_goals_minus_xg"] %}
+  {% set m = by.get(key) %}
+  <div class="kpi">
+    <div class="l">{{ key | label }}</div>
+    {% if m %}
+    <div class="v">{{ key | metric(m.value) }}</div>
+    <div class="small muted">Ligde {{ m.rank }}./{{ m.teams }}{% if m.club_value is not none %} · {{ club.code }}: {{ key | metric(m.club_value) }}{% endif %}{{ badges(m) }}</div>
+    {% else %}
+    <div class="v muted">–</div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+
+{% if r.briefing %}
+<h3>Brifing <span class="badge llm">Yapay zekâ ile üretildi · sayılar kayıtla eşleşti</span></h3>
+<div class="brief">{{ r.briefing.text }}</div>
+<p class="small muted">Üretim {{ r.briefing.created_at | local }}. Metindeki her sayı bu raporun verisinden gelir; yorumlar teknik ekip tarafından doğrulanmalıdır.</p>
+{% endif %}
+
+<h2>Profil{% if r.meta.profile_season %} · {{ r.meta.profile_season }}{% endif %}</h2>
+{% set split = r.meta.profile_season and r.meta.profile_season != r.meta.season %}
+{% if r.metrics %}
+{% if split %}<p class="small muted">Değer, sıra ve lig ortalaması {{ r.meta.profile_season }} sezonundandır; "{{ opp.code }} {{ r.meta.season }}" sütunu içinde bulunulan sezonu gösterir.</p>{% endif %}
+{% for group, title in group_labels.items() %}
+{% set rows = [] %}
+{% for m in r.metrics %}{% if metric_group(m.metric) == group %}{% set _ = rows.append(m) %}{% endif %}{% endfor %}
+{% if rows %}
+<h3>{{ title }}</h3>
+{% if group == "defence" %}<p class="small muted">Kamuya açık veride duran toptan yenilen gol yok; hava topu, faul ve uzaklaştırma dolaylı göstergedir.</p>{% endif %}
+<table class="profile">
+  <colgroup><col style="width:31%"><col style="width:11%"><col style="width:9%"><col style="width:11%">{% if split %}<col style="width:13%">{% endif %}<col style="width:11%"><col style="width:14%"></colgroup>
+  <thead><tr><th>Metrik</th><th class="n">{{ opp.code }}</th><th class="n">Sıra</th><th class="n">Lig ort.</th>{% if split %}<th class="n">{{ opp.code }} {{ r.meta.season }}</th>{% endif %}<th class="n">{{ club.code }}</th><th></th></tr></thead>
+  <tbody>
+  {% for m in rows %}
+  <tr>
+    <td>{{ m.metric | label }}</td>
+    <td class="n"><strong>{{ m.metric | metric(m.value) }}</strong></td>
+    <td class="n">{{ m.rank }}./{{ m.teams }}</td>
+    <td class="n">{% if m.league_mean is not none %}{{ m.metric | metric(m.league_mean) }}{% else %}–{% endif %}</td>
+    {% if split %}<td class="n">{% if m.current_value is not none %}{{ m.metric | metric(m.current_value) }}{% if m.current_rank %} ({{ m.current_rank }}.){% endif %}{% if m.current_low_sample %}<br><span class="badge low">Az veri</span>{% endif %}{% else %}–{% endif %}</td>{% endif %}
+    <td class="n">{% if m.club_value is not none %}{{ m.metric | metric(m.club_value) }}{% if m.club_rank %} ({{ m.club_rank }}.){% endif %}{% else %}–{% endif %}</td>
+    <td>{{ badges(m) }}</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+{% endfor %}
+<p class="small muted">Sıra: 1 = en yüksek değer; eşit değerler aynı sırayı alır. "Az veri": deneme sayısı 8'den ya da maç sayısı 5'ten az; değerler büzülmüş tahminle birlikte okunmalıdır.</p>
+{% else %}
+<p class="empty">Bu sezon için rakibin metrik kaydı yok.</p>
+{% endif %}
+
+<h2>Bulgular</h2>
+{% if findings %}
+<ul>
+  {% for f in findings %}
+  {% set m = f.row %}
+  <li>{{ m.metric | label }}: <strong>{{ m.metric | metric(m.value) }}</strong> · ligde {{ m.rank }}./{{ m.teams }} ({{ 'ilk üç' if f.edge == 'top' else 'son üç' }}){% if m.league_mean is not none %}, lig ortalaması {{ m.metric | metric(m.league_mean) }}{% endif %}{{ badges(m) }}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<p class="empty">Rakip hiçbir metrikte ligin ilk ya da son üç sırasında değil.</p>
+{% endif %}
+
+<h2>Öneriler</h2>
+{% if r.recommendations %}
+{% for rec in r.recommendations %}{{ recommendation(rec) }}{% endfor %}
+{% else %}
+<p class="empty">Bu fikstür için tetiklenen öneri yok.</p>
+{% endif %}
+
+<h2>Rakip duran toplarının hedef bölgeleri</h2>
+{% set total = r.zones | sum(attribute="count") %}
+{% if total %}
+<div class="two">
+  <div>{{ heatmap_svg(r.zones) }}</div>
+  <div>
+    <table>
+      <thead><tr><th>Bölge</th><th class="n">Dizi</th><th class="n">Pay</th></tr></thead>
+      <tbody>
+      {% set names = zone_names(r.zones | map(attribute="zone")) %}
+      {% for z in r.zones | sort(attribute="count", reverse=true) %}
+      <tr><td>{{ z.zone }} · {{ names[z.zone] }}</td><td class="n">{{ z.count }}</td><td class="n">%{{ (z.count / total * 100) | num(0) }}</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+    <p class="small muted">{{ total }} dizi bölgeli; toplam {{ r.set_pieces }} duran top. Kale üstte; çizim hücum eden takımın bakışıyla.</p>
+  </div>
+</div>
+{% else %}
+<p class="empty">Bölge verisi yok ({{ r.set_pieces }} duran top kaydı).</p>
+{% endif %}
+
+{% if r.clips %}
+<h2>Klipler</h2>
+<div class="grid clips">
+  {% for c in r.clips[:max_clips] %}
+  <div class="clip">{{ c.url | qr }}<div><strong>{{ c.title }}</strong><div class="small muted">{{ c.detail }}</div></div></div>
+  {% endfor %}
+</div>
+<p class="small muted">QR kodu klibi Kurgu'da açar (giriş gerekir).</p>
+{% endif %}
+{% endblock %}

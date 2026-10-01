@@ -6,14 +6,20 @@ import { useEffect, useState } from "react";
 import { formatClock, parseClock } from "@/lib/live/model";
 import { deleteVideo, updateVideo } from "@/lib/video-actions";
 
-/** Dönüştürme sürerken sayfayı birkaç saniyede bir yeniler. */
-export function StatusPoller({ active }: { active: boolean }) {
+/** İş sürerken (dönüştürme, rapor üretimi) sayfayı birkaç saniyede bir yeniler. */
+export function StatusPoller({
+  active,
+  intervalMs = 3000,
+}: {
+  active: boolean;
+  intervalMs?: number;
+}) {
   const router = useRouter();
   useEffect(() => {
     if (!active) return;
-    const id = window.setInterval(() => router.refresh(), 3000);
+    const id = window.setInterval(() => router.refresh(), intervalMs);
     return () => window.clearInterval(id);
-  }, [active, router]);
+  }, [active, intervalMs, router]);
   return null;
 }
 

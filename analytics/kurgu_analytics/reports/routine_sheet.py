@@ -376,6 +376,25 @@ def _own_roles(diagram: Diagram, lang: str) -> list[str]:
     return rows
 
 
+def own_roles(diagram: Diagram, lang: str = "tr") -> list[str]:
+    """Kulübün rol satırları: forma numarası, rol adı ve serbest metin oyuncu etiketi."""
+    return _own_roles(diagram, lang)
+
+
+def render_board_svg(diagram: Diagram, lang: str = "tr", width_in: float = 4.2) -> str:
+    """Başlıksız saha çizimi, satır içi SVG (çok sayfalı raporlar için, ADR-0012)."""
+    x_min = view_x_min(diagram)
+    board_w = PITCH_WIDTH + 2 * MARGIN
+    board_h = PITCH_LENGTH - x_min + 2 * MARGIN
+    fig = Figure(figsize=(width_in, width_in * board_h / board_w), facecolor="white")
+    ax = fig.add_axes((0, 0, 1, 1))
+    _draw_board(ax, diagram, x_min, font_scale=0.8, lang=lang)
+    buf = io.StringIO()
+    fig.savefig(buf, format="svg", metadata={"Date": None, "Creator": "Kurgu"})
+    svg = buf.getvalue()
+    return svg[svg.index("<svg") :]
+
+
 def render_png(diagram: Diagram, meta: SheetMeta, width_px: int = 1600) -> bytes:
     """Başlıklı saha görseli (PNG)."""
     x_min = view_x_min(diagram)

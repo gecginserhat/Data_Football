@@ -9,6 +9,12 @@ COPY pyproject.toml uv.lock ./
 COPY apps/api/pyproject.toml apps/api/pyproject.toml
 COPY analytics/pyproject.toml analytics/pyproject.toml
 RUN uv sync --frozen --no-dev --all-packages --no-install-workspace
+# PDF raporları için Chromium ve sistem kütüphaneleri (ADR-0012). Tarayıcı, root olmayan kullanıcının
+# da okuyabileceği ortak bir klasöre kurulur.
+ENV PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers
+RUN playwright install --with-deps --only-shell chromium \
+ && rm -rf /var/lib/apt/lists/* \
+ && chmod -R a+rX /opt/pw-browsers
 
 COPY apps/api apps/api
 COPY analytics analytics

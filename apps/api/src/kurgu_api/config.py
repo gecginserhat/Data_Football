@@ -47,6 +47,17 @@ class Settings(BaseSettings):
     # Tohum dosyalarının klasörü (`make seed`); konteynerde /app/seed.
     kurgu_seed_dir: str = "seed"
 
+    # Raporlardaki bağlantılar (klip QR kodları) web uygulamasının adresine gider (A-72).
+    kurgu_public_web_url: str = "http://localhost:3000"
+    # PDF için Chromium (ADR-0012). Boşsa Playwright'ın kurduğu tarayıcı kullanılır.
+    kurgu_chromium_path: str | None = None
+
+    # LLM brifingi (SPEC §15, ADR-0013). Model ve anahtar yalnız `.env` dosyasından okunur;
+    # kodda varsayılan model yoktur. `fake` geliştirme ve test içindir, üretimde reddedilir.
+    kurgu_llm_model: str | None = None
+    kurgu_anthropic_api_key: str | None = None
+    kurgu_llm_backend: Literal["anthropic", "fake"] = "anthropic"
+
     cors_origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
 
 

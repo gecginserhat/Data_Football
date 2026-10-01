@@ -24,6 +24,14 @@ export default async function Page() {
             </Link>
           </li>
         ) : null}
+        {imports ? (
+          <li>
+            <Link href="/admin/llm" className={card}>
+              <span className="font-condensed text-lg font-semibold">{t("llm.adminLink")}</span>
+              <span className="text-sm text-ink-2">{t("llm.adminLinkDescription")}</span>
+            </Link>
+          </li>
+        ) : null}
         {rules ? (
           <li>
             <Link href="/admin/rules" className={card}>

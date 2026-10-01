@@ -1,7 +1,7 @@
 # İlerleme
 
 **Durum:** Faz 0-4 tamam ve `main`'e birleşti (PR #1-#5, 01.10.2026). Faz 5 (canlı kayıt ve video) tamam; `faz-5-canli` dalında, birleştirme onayı bekliyor.
-**Sonraki adım:** Faz 6 (raporlar ve LLM).
+**Sonraki adım:** Faz 7 (spor bilimi ve markaj optimizasyonu).
 
 Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce). Her commit öncesi `make lint typecheck test` temiz olmalı. Bir görev SPEC §19 DoD'yi karşılamadan işaretlenmez. Faz sonunda kabul kriterleri işaretlenir ve kısa rapor verilir.
 
@@ -361,6 +361,49 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 **5.4 Doğrulama ve kapanış**
 - [x] E2E: uçak modunda 20 kayıt → çevrimiçi → sunucuda 20 kayıt, yineleme yok; iki cihaz senkronizasyonu; video yükleme → HLS → klip → duran top → rutin sayfasında klip; axe.
 - [x] `docs/demo/faz5/` ekran görüntüleri; CLAUDE.md komutları güncel.
+- [x] Kabul kriterleri işaretlendi, kısa rapor verildi.
+
+---
+
+## Faz 6: Raporlar ve LLM
+
+### Kabul kriterleri (SPEC §19)
+- [x] Rakip raporu ve maç planı PDF'leri 15 sn içinde üretilir.
+- [x] LLM brifingi sayı eşleştirme kontrolünden geçer; kontrol başarısız olursa kullanıcıya gösterilmez.
+
+### Rapor
+- **Yapıldı:** Göç `0007_reports_llm` (`reports`, `llm_runs`, RLS). Rapor isteği kuyruğa girer; worker HTML'i Jinja2 ile üretir, Chromium (Playwright) ile A4 PDF'e çevirir (JavaScript ve ağ kapalı, IBM Plex gömülü) ve nesne deposuna yazar. Rakip raporu 2 sayfa: özet, form, profil (önceki sezon, sıra, lig ortalaması ve bu sezon sütunu), bulgular, öneriler, bölge ısı haritası, klip QR kodları, kaynak ve veri tarihi. Maç planı: kabul edilen öneriler, savunma organizasyonu, rutin diyagramları, MD planı ve görev atamaları. LLM brifingi resmi Anthropic SDK'sıyla; girdi JSON'u, Türkçe sayı biçimlerini tanıyan eşleştirme, bir yeniden deneme, her denemenin `llm_runs` kaydı, kiracı başına aç/kapa ve aylık istek/token sınırı. Web: `/reports` (istek, ilerleme çubuğu, arşiv, her tıklamada yenilenen imzalı indirme), hazırlık sayfasında PDF düğmeleri ve brifing paneli, `/admin/llm`. Gerçek Samsunspor verisiyle PDF üretimi 0,7-2 sn; E2E'de istekten "hazır"a 5 sn altında.
+- **Sapmalar:** Oyuncu görev kartları Faz 7'ye kaldı (A-68). Maç planındaki görev atamaları plan sorumluları ve rutin rol etiketleri (A-69). Brifing eşzamanlı üretilir (A-75). Brifing izni matriste olmadığı için `edit_routines` rollerine açıldı (A-76).
+- **Riskler:** Sayı denetimi yazıyla yazılmış sayıları ve anlamsal hatayı (doğru sayı, yanlış takım) yakalamaz; istem rakam ister ve metin "sayılar kayıtla eşleşti" etiketiyle gösterilir (ADR-0013). Gerçek model bu ortamda çağrılmadı; testler sahte ve enjekte istemciyle. API imajına Chromium eklendi; imaj büyür ve `make dev` ilk derlemesi uzar. İmaj bu ortamda derlenmedi, CI'daki compose derlemesinde sınanır.
+
+### Görevler
+
+**6.1 Rapor altyapısı (ADR-0012, A-68 … A-72)**
+- [x] Göç `0007_reports_llm`: `reports`, `llm_runs`. RLS, izinler, göç döngüsü.
+- [x] `POST /reports {type, fixture_id}` (202, iş kuyruğu), `GET /reports`, `GET /reports/{id}` (ilerleme ve imzalı indirme adresi).
+- [x] Worker: HTML şablonu (Jinja2) → Chromium (Playwright) ile PDF → nesne deposu. Süre `duration_ms` olarak kaydedilir.
+- [x] Docker imajı Chromium içerir; yazı tipi IBM Plex (OFL) repoda.
+
+**6.2 Rapor içerikleri (SPEC §14)**
+- [x] Rakip raporu (2-4 sayfa): özet, profil (sıra ve lig ortalaması), bulgular, öneriler, bölge ısı haritası, varsa klip QR kodları, kaynak ve veri tarihi.
+- [x] Maç planı: kabul edilen öneriler ve rutinleri (diyagramlarıyla), savunma organizasyonu, görev atamaları (plan sorumluları), MD planı.
+- [x] Az veri, dolaylı ve örnek veri etiketleri PDF'te de görünür.
+
+**6.3 LLM brifingi (SPEC §15, ADR-0013, A-73 … A-76)**
+- [x] Girdi JSON'u (metrikler, tetiklenen öneriler, plan) ve sistem istemi.
+- [x] Sayı eşleştirme: çıktıdaki tüm sayılar girdide bulunmalı; eşleşmezse bir kez yeniden dene, yine olmazsa gösterme.
+- [x] `llm_runs` kaydı; kiracı başına aylık istek ve token sınırı; kiracı ayarından kapatma.
+- [x] `KURGU_LLM_MODEL` ve `KURGU_ANTHROPIC_API_KEY` yoksa özellik "yapılandırılmamış" görünür.
+
+**6.4 Arayüz**
+- [x] `/reports`: rapor oluşturma, ilerleme, arşiv ve indirme.
+- [x] Hazırlık sayfasında "PDF" düğmeleri ve brifing paneli.
+- [x] `/admin/llm`: LLM ayarı ve bu ayki kullanım.
+
+**6.5 Doğrulama ve kapanış**
+- [x] Testler: şablon içerikleri, sayı eşleştirme (Türkçe biçimler), bütçe, izinler, kiracı izolasyonu, PDF üretimi (gerçek Chromium).
+- [x] E2E: iki PDF 15 sn içinde hazır ve iniyor; brifing (sahte model) gösteriliyor; axe.
+- [x] `docs/demo/faz6/` ekran görüntüleri; CLAUDE.md komutları güncel.
 - [x] Kabul kriterleri işaretlendi, kısa rapor verildi.
 
 ---

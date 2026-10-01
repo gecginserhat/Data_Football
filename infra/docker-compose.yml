@@ -24,6 +24,12 @@ x-api-env: &api-env
   S3_BUCKET: ${S3_BUCKET:-kurgu}
   KURGU_STORAGE_BACKEND: s3
   KURGU_STATSBOMB_DIR: /app/data/statsbomb
+  # Rapor QR kodları web adresine gider (A-72).
+  KURGU_PUBLIC_WEB_URL: http://localhost:${WEB_PORT:-3000}
+  # LLM brifingi (ADR-0013): model ve anahtar yalnız .env dosyasından gelir.
+  KURGU_LLM_BACKEND: ${KURGU_LLM_BACKEND:-anthropic}
+  KURGU_LLM_MODEL: ${KURGU_LLM_MODEL:-}
+  KURGU_ANTHROPIC_API_KEY: ${KURGU_ANTHROPIC_API_KEY:-}
 
 services:
   postgres:

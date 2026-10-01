@@ -902,7 +902,26 @@
       "attack": "Attacking recommendations · {team} set pieces",
       "defense": "Defensive recommendations · {team} set pieces",
       "none": "No tagged set pieces for this team."
-    }
+    },
+    "briefing": {
+      "title": "AI briefing",
+      "generate": "Generate briefing",
+      "regenerate": "Regenerate",
+      "generating": "Generating…",
+      "label": "AI-generated · numbers matched the records ({count} numbers checked)",
+      "emptyTitle": "No briefing yet",
+      "empty": "The briefing turns the opponent profile, recommendations and weekly plan into a short text. Every number is matched against the records.",
+      "emptyRead": "No briefing has been generated for this match.",
+      "errors": {
+        "briefing-unverified": "Briefing could not be generated: its numbers did not match the records. The text was not shown.",
+        "briefing-error": "Briefing could not be generated: the model did not respond.",
+        "llm-disabled": "Briefings are turned off in club settings.",
+        "llm-budget-exceeded": "This month's briefing limit has been reached.",
+        "llm-not-configured": "No model is configured on the server.",
+        "generic": "Briefing could not be generated ({code})."
+      }
+    },
+    "reports": "Reports"
   },
   "rules": {
     "title": "Recommendation rules",
@@ -1064,5 +1083,66 @@
     "processing": "The video is being converted to HLS. This page refreshes on its own.",
     "routineClips": "Clips",
     "routineClipsEmpty": "No clips linked to set pieces tagged with this routine. Cut a clip in the video centre and link it."
+  },
+  "reports": {
+    "title": "Reports",
+    "subtitle": "Opponent report and match plan PDFs. Files are produced on the server; the download link is refreshed on every click.",
+    "new": "New report",
+    "archive": "Archive",
+    "fixture": "Match",
+    "week": "Week {week}",
+    "request": {
+      "opponent": "Opponent report (PDF)",
+      "match_plan": "Match plan (PDF)"
+    },
+    "requesting": "Requesting…",
+    "types": {
+      "opponent": "Opponent report",
+      "match_plan": "Match plan"
+    },
+    "status": {
+      "queued": "Queued",
+      "running": "Generating",
+      "ready": "Ready",
+      "failed": "Failed"
+    },
+    "progress": "Report generation progress",
+    "failed": "The report could not be generated. You can request it again.",
+    "pages": "{count, plural, one {# page} other {# pages}}",
+    "duration": "generated in {value}",
+    "asOf": "Data: {season}",
+    "asOfWeek": "Data: {season}, up to week {week}",
+    "download": "Download PDF",
+    "emptyTitle": "No reports yet",
+    "empty": "Requested opponent reports and match plans are listed here.",
+    "noFixturesTitle": "No matches found",
+    "noFixtures": "Your club needs a match in the current season to create a report.",
+    "errors": {
+      "generic": "The report could not be requested ({code})."
+    }
+  },
+  "llm": {
+    "title": "AI briefing",
+    "subtitle": "Briefings use recorded numbers only; text with an unmatched number is never shown.",
+    "breadcrumb": "Location",
+    "admin": "Admin",
+    "adminLink": "AI briefing",
+    "adminLinkDescription": "Turn the feature on or off and set monthly request and token limits.",
+    "usage": "Usage this month",
+    "requests": "Requests",
+    "tokens": "Tokens",
+    "period": "Period start: {start} (UTC). Every attempt, retries included, counts as a request.",
+    "settings": "Settings",
+    "enabled": "Briefing generation is on",
+    "monthlyRequests": "Monthly request limit",
+    "monthlyTokens": "Monthly token limit",
+    "help": "When a limit is reached, no new briefing is generated until the month ends.",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Settings saved.",
+    "notConfigured": "No model or API key is configured on the server. The system administrator must set KURGU_LLM_MODEL and KURGU_ANTHROPIC_API_KEY in the .env file.",
+    "errors": {
+      "generic": "Settings could not be saved ({code})."
+    }
   }
 }
