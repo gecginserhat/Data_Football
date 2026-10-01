@@ -8,10 +8,24 @@ import { MatchupTable } from "@/components/prep/MatchupTable";
 import { CreatePlan, PlanBoard } from "@/components/prep/PlanBoard";
 import { RecommendationCard } from "@/components/prep/RecommendationCard";
 import { ReportList, RequestReport } from "@/components/reports/ReportList";
+import { AssignmentsPanel } from "@/components/squad/AssignmentsPanel";
+import { MarkingPanel } from "@/components/squad/MarkingPanel";
 import { getPrep, prepAccess } from "@/lib/prep";
 import { getBriefing, listReports, reportsAccess } from "@/lib/reports";
+import { getRoutine } from "@/lib/routines";
+import { getAssignments, getMarking, squadAccess } from "@/lib/squad";
 
-type Search = { error?: string; briefing?: string; report?: string };
+type Search = {
+  error?: string;
+  briefing?: string;
+  report?: string;
+  marking?: string;
+  zonal?: string;
+  assign?: string;
+  routine?: string;
+};
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export default async function PrepFixturePage({
   params,
@@ -37,12 +51,18 @@ export default async function PrepFixturePage({
       </>
     );
   }
-  const [prep, briefing, reports, reportAccess] = await Promise.all([
-    getPrep(fixtureId),
-    getBriefing(fixtureId),
-    listReports(fixtureId),
-    reportsAccess(),
-  ]);
+  const zonalParam = search.zonal === undefined ? undefined : search.zonal.replace(/^none$/, "");
+  const [prep, briefing, reports, reportAccess, marking, assignments, squadPerms, picked] =
+    await Promise.all([
+      getPrep(fixtureId),
+      getBriefing(fixtureId),
+      listReports(fixtureId),
+      reportsAccess(),
+      getMarking(fixtureId, zonalParam),
+      getAssignments(fixtureId),
+      squadAccess(),
+      search.routine && UUID_RE.test(search.routine) ? getRoutine(search.routine) : null,
+    ]);
   if (prep.status !== "ok") {
     return (
       <>
@@ -172,6 +192,16 @@ export default async function PrepFixturePage({
         )}
       </Section>
 
+      <MarkingPanel
+        marking={marking}
+        fixtureId={fixture.id}
+        teamId={fixture.opponent.id}
+        canDecide={access.decide}
+        canEditSquad={squadPerms.edit}
+        zonalParam={zonalParam}
+        message={search.marking}
+      />
+
       <Section id="plan" title={t("plan.heading")}>
         {plan ? (
           <PlanBoard
@@ -185,6 +215,16 @@ export default async function PrepFixturePage({
           <CreatePlan fixtureId={fixture.id} canMark={access.mark} />
         )}
       </Section>
+
+      <AssignmentsPanel
+        assignments={assignments}
+        squad={marking.status === "ok" ? marking.data.squad : []}
+        routines={prep.data.routines}
+        picked={picked?.status === "ok" ? picked.data : null}
+        fixtureId={fixture.id}
+        canDecide={access.decide}
+        message={search.assign}
+      />
 
       <Section
         id="reports"

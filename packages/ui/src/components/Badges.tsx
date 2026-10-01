@@ -62,3 +62,20 @@ export function SampleSizeBadge({ n, matches, label }: SampleSizeBadgeProps) {
     </span>
   );
 }
+
+export interface DemoBadgeProps {
+  /** Rozet metni, ör. "Örnek veri". */
+  label: string;
+}
+
+/** `is_demo` işaretli kayıtların rozeti (CLAUDE.md: demo verisi "Örnek veri" ile gösterilir). */
+export function DemoBadge({ label }: DemoBadgeProps) {
+  return (
+    <span
+      className="inline-flex items-center rounded border border-dashed border-accent px-1.5 py-0.5 text-[11px] font-medium text-ink-2"
+      data-testid="demo-badge"
+    >
+      {label}
+    </span>
+  );
+}

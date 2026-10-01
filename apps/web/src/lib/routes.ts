@@ -49,7 +49,7 @@ export const ROUTES: AppRoute[] = [
   { key: "reports", href: "/reports", anyOf: ["read_analysis"] },
   { key: "performance", href: "/performance", anyOf: ["load_wellness"] },
   { key: "me", href: "/me", anyOf: [] },
-  { key: "admin", href: "/admin", anyOf: ["user_admin_audit", "rule_settings"] },
+  { key: "admin", href: "/admin", anyOf: ["user_admin_audit", "rule_settings", "edit_squad"] },
   { key: "methodology", href: "/methodology", anyOf: [] },
 ];
 

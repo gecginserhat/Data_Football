@@ -7,10 +7,12 @@ export {
   TeamBadge,
   SourceBadge,
   SampleSizeBadge,
+  DemoBadge,
   isLowSample,
   LOW_SAMPLE_MIN_N,
   LOW_SAMPLE_MIN_MATCHES,
   type TeamBadgeProps,
   type SourceBadgeProps,
   type SampleSizeBadgeProps,
+  type DemoBadgeProps,
 } from "./components/Badges";

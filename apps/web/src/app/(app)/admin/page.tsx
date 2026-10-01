@@ -4,13 +4,18 @@ import { getTranslations } from "next-intl/server";
 import { RoutePage } from "@/components/RoutePage";
 import { canImport } from "@/components/imports/guard";
 import { prepAccess } from "@/lib/prep";
+import { squadAccess } from "@/lib/squad";
 
 const card =
   "flex min-h-11 flex-col gap-1 rounded-lg border border-line bg-surface p-4 hover:border-pri focus-visible:outline-2 focus-visible:outline-focus";
 
 export default async function Page() {
-  const [imports, { rules }] = await Promise.all([canImport(), prepAccess()]);
-  if (!imports && !rules) return <RoutePage routeKey="admin" />;
+  const [imports, { rules }, { edit: squad }] = await Promise.all([
+    canImport(),
+    prepAccess(),
+    squadAccess(),
+  ]);
+  if (!imports && !rules && !squad) return <RoutePage routeKey="admin" />;
   const t = await getTranslations();
   return (
     <>
@@ -29,6 +34,14 @@ export default async function Page() {
             <Link href="/admin/llm" className={card}>
               <span className="font-condensed text-lg font-semibold">{t("llm.adminLink")}</span>
               <span className="text-sm text-ink-2">{t("llm.adminLinkDescription")}</span>
+            </Link>
+          </li>
+        ) : null}
+        {squad ? (
+          <li>
+            <Link href="/admin/squad" className={card}>
+              <span className="font-condensed text-lg font-semibold">{t("squad.adminLink")}</span>
+              <span className="text-sm text-ink-2">{t("squad.adminLinkDescription")}</span>
             </Link>
           </li>
         ) : null}
