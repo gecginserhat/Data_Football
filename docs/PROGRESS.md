@@ -1,7 +1,7 @@
 # İlerleme
 
 **Durum:** Faz 0 tamam (PR #1). Faz 1 tamam, `faz-1-veri` dalında PR olarak incelemede (30.09.2026).
-**Sonraki adım:** PR'lar birleşince Faz 2 (metrikler).
+**Sonraki adım:** Faz 2 (metrikler ve analiz ekranları) sürüyor; dal `faz-2-metrikler`.
 
 Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce). Her commit öncesi `make lint typecheck test` temiz olmalı. Bir görev SPEC §19 DoD'yi karşılamadan işaretlenmez. Faz sonunda kabul kriterleri işaretlenir ve kısa rapor verilir.
 
@@ -169,6 +169,51 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 **1.10 Faz kapanışı**
 - [x] `docs/demo/faz1/` ekran görüntüleri; CLAUDE.md komutları güncel.
 - [x] Kabul kriterleri işaretlendi, kısa rapor verildi.
+
+---
+
+## Faz 2: Metrikler ve analiz ekranları
+
+### Kabul kriterleri (SPEC §19)
+- [ ] Metrik modülü formülleri ve testleriyle hazır.
+- [ ] Materialized view'ler yenileniyor.
+- [ ] Genel bakış, Lig ve Rakip analizi sayfaları tohum verisiyle doğru sayıları gösterir (2025/26 lig duran top payı %20,4; Trabzonspor 15 duran top golüyle 1.; Göztepe 15,4 duran top xG'si ile 1.).
+- [ ] Az veri rozeti ve kaynak rozetleri görünür.
+
+### Görevler
+
+**2.0 Yığın**
+- [x] Next.js 16'ya geçiş, rota düzeyi yükleniyor ekranı geri geldi (ADR-0006, A-34 kapandı).
+
+**2.1 Metrik modülü (`analytics/kurgu_analytics/metrics/`)**
+- [ ] Katalog: kimlik, tür (sayım, oran, maç başı, fark), birim, "dolaylı" bayrağı, kaynak gereksinimi (SPEC §6.1).
+- [ ] Türetilmiş takım metrikleri: duran top payı, gol eksi xG, maç başı oranlar, ilk temas %, dizi başına şut ve xG, ikinci faz payı, 100 kornere gol, yenilen DT golü (yalnız olay verisi ya da kulüp kaydı).
+- [ ] Büzülme: beta-binom (momentler yöntemiyle önsel, sonsal ortalama, %80 aralık) ve gamma-Poisson (maç başı sayımlar).
+- [ ] Lig sırası (eşitler aynı sıra) ve yüzdelik; az veri bayrağı (n < 8 ya da maç < 5).
+- [ ] Docstring (formül, birim, kaynak), birim testler ve `hypothesis` değişmezleri (fazların toplamı, oranlar [0, 1], sıralama tutarlılığı).
+
+**2.2 Materialized view'ler**
+- [ ] `mv_team_setpiece_season` (olay verisinden takım-sezon ham toplamları) ve `mv_league_benchmarks` (lig toplamları). Yalnızca paylaşılan satırlar; lisans süzgeçli görünümle okunur. Formüller Python'da kalır (ADR-0007).
+- [ ] Yenileme işi (worker, `CONCURRENTLY`), yükleme ve tohumdan sonra tetiklenir; göç döngüsü testi.
+
+**2.3 API**
+- [ ] `GET /seasons/{id}/team-metrics`: ham değerlere ek olarak türetilmiş metrikler, sıra, yüzdelik, büzülmüş değer, az veri ve kaynak.
+- [ ] `GET /seasons/{id}/benchmarks`: metrik başına lig en düşük, en yüksek, ortalama; lig toplamları ve referans kıyaslar.
+- [ ] `GET /teams/{id}/profile`: aynı metrik değerleri, kıyaslar ve form (G/B/M).
+- [ ] `GET /teams/{id}/set-pieces?season=&type=`: takımın duran top dizileri (imleçli).
+- [ ] `GET /fixtures?team=&from=`: yaklaşan maçlar (genel bakış için).
+
+**2.4 Arayüz**
+- [ ] Bileşenler: KPI kartı, ProfileBar, DataTable (yapışkan ilk sütun, sıralama), FormChips (G/B/M), TeamBadge, SourceBadge, SampleSizeBadge, "dolaylı" etiketi.
+- [ ] `/league`: puan durumu, duran top tablosu, xG–gol dağılım grafiği; sezon seçimi.
+- [ ] `/opponents` ve `/opponents/[teamId]`: takım listesi; profil çubukları (lig en düşük–en yüksek, lig ortalaması ve kendi kulübümüz işaretli), sıra, kaynak ve dolaylı etiketleri.
+- [ ] `/`: kulüp durumu, duran top KPI'ları ve sıraları, sıradaki ve yaklaşan maçlar (rakibin DT sırasıyla).
+- [ ] Her bileşende yükleniyor, boş, hata ve az veri durumları; `tr` ve `en` metinleri.
+
+**2.5 Doğrulama ve kapanış**
+- [ ] Altın kontroller (API ve e2e): %20,4 (166/812); TS 15 golle 1.; GÖZ 15,4 xG ile 1.
+- [ ] E2E ve axe; `docs/demo/faz2/` ekran görüntüleri; CLAUDE.md komutları güncel.
+- [ ] Kabul kriterleri işaretlendi, kısa rapor verildi.
 
 ---
 

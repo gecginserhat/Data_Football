@@ -46,7 +46,7 @@ explicit_package_bases = true
 exclude = ["alembic/versions"]
 
 [[tool.mypy.overrides]]
-module = ["arq.*", "asyncpg.*", "boto3.*", "botocore.*", "pandas.*", "pandera.*", "openpyxl.*"]
+module = ["arq.*", "asyncpg.*", "boto3.*", "botocore.*", "pandas.*", "pandera.*", "openpyxl.*", "scipy.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
