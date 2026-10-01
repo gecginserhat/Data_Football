@@ -161,8 +161,8 @@ async def test_twenty_offline_tags_sync_once(
         "select count(*) from live_tags where session_id = $1", uuid.UUID(session_id)
     )
     pieces = await superuser.fetchval(
-        "select count(*) from set_pieces where match_id = $1 and source = 'live_tag'",
-        uuid.UUID(match_id),
+        "select count(*) from set_pieces where id = any($1) and source = 'live_tag'",
+        [uuid.UUID(c["id"]) for c in changes],
     )
     assert (count, pieces) == (20, 20)
     assert queue.jobs == [("refresh_metric_views_job",)]

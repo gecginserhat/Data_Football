@@ -34,6 +34,12 @@ class Settings(BaseSettings):
     s3_access_key: str | None = None
     s3_secret_key: str | None = None
     s3_bucket: str = "kurgu"
+    # Tarayıcının imzalı adreslerle eriştiği depo adresi (konteyner içi adresten farklı olabilir).
+    s3_public_endpoint_url: str | None = None
+    # Yerel depoda imzalı yükleme/okuma adresleri API'den verilir (ADR-0010).
+    kurgu_public_api_url: str = "http://localhost:8000"
+    # İmzalı yerel adreslerin HMAC anahtarı; üretimde zorunlu (yalnız `.env`).
+    kurgu_storage_signing_key: str | None = None
 
     # StatsBomb Open Data önbelleği (`make statsbomb-fetch`; assumptions A-06).
     kurgu_statsbomb_dir: str = "data/statsbomb"
