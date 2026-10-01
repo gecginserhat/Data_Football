@@ -2,6 +2,7 @@ import { ErrorState } from "@kurgu/ui";
 import { getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { AppShell } from "@/components/AppShell";
+import { ServiceWorker } from "@/components/ServiceWorker";
 import { ShellFooter } from "@/components/ShellFooter";
 import { getMe, permissionSet } from "@/lib/api";
 import { signOutAction } from "@/lib/actions";
@@ -44,6 +45,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
       userName={me.name ?? me.email ?? null}
       footer={<ShellFooter />}
     >
+      <ServiceWorker />
       {children}
     </AppShell>
   );

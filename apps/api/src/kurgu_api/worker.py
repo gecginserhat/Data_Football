@@ -2,16 +2,19 @@
 
 API ile aynı paketten çalışır (ADR-0001). Uzun işler (yükleme, MV yenileme, PDF, HLS)
 sonraki fazlarda buraya eklenir. Faz 1: sağlayıcı yükleme işi. Faz 2: metrik görünümü yenileme.
+Faz 5: video HLS dönüştürme.
 """
 
 from typing import Any, ClassVar
 
+from arq import func
 from arq.connections import RedisSettings
 
 from kurgu_api.config import get_settings
 from kurgu_api.core.db import get_engine
 from kurgu_api.ingestion.jobs import run_ingestion_job
 from kurgu_api.league.views import refresh_metric_views
+from kurgu_api.video.jobs import transcode_video_job
 
 
 async def ping(ctx: dict[str, Any], value: str = "pong") -> str:
@@ -27,7 +30,13 @@ async def refresh_metric_views_job(ctx: dict[str, Any]) -> str:
 
 
 class WorkerSettings:
-    functions: ClassVar[list[Any]] = [ping, run_ingestion_job, refresh_metric_views_job]
+    functions: ClassVar[list[Any]] = [
+        ping,
+        run_ingestion_job,
+        refresh_metric_views_job,
+        # Uzun maç videoları için ayrı süre sınırı (A-61).
+        func(transcode_video_job, timeout=4 * 3600, max_tries=1),
+    ]
     redis_settings = RedisSettings.from_dsn(get_settings().redis_url)
     max_jobs = 10
     job_timeout = 600

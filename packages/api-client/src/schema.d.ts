@@ -4,6 +4,45 @@
  */
 
 export interface paths {
+    "/api/v1/clips": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Clips
+         * @description Klipler; video, duran top, rutin ya da maça göre süzülebilir.
+         */
+        get: operations["listClips"];
+        put?: never;
+        /** Create Clip */
+        post: operations["createClip"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/clips/{clip_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Delete Clip */
+        delete: operations["deleteClip"];
+        options?: never;
+        head?: never;
+        /** Update Clip */
+        patch: operations["updateClip"];
+        trace?: never;
+    };
     "/api/v1/fixtures": {
         parameters: {
             query?: never;
@@ -17,6 +56,26 @@ export interface paths {
          *     (saati belli olmayan planlı maçlar dahil).
          */
         get: operations["listFixtures"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fixtures/{fixture_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Fixture
+         * @description Tek maç (canlı kayıt ve video ekranları için).
+         */
+        get: operations["getFixture"];
         put?: never;
         post?: never;
         delete?: never;
@@ -74,6 +133,26 @@ export interface paths {
          * @description Öneriler (kanıt ve güvenle), eşleşme notları, MD planı, sorumlu adayları (SPEC §13.2).
          */
         get: operations["getFixturePrep"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fixtures/{fixture_id}/set-pieces": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Fixture Set Pieces
+         * @description Maçın görünen duran topları, saate göre (klip bağlama ve kayıt listesi için).
+         */
+        get: operations["listFixtureSetPieces"];
         put?: never;
         post?: never;
         delete?: never;
@@ -533,6 +612,66 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/tagging-sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Open Session
+         * @description Maçın kayıt oturumunu döner; yoksa açar. Aynı maçı kaydeden cihazlar paylaşır (A-56).
+         */
+        post: operations["openTaggingSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tagging-sessions/{session_id}/sync": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Sync
+         * @description Toplu, idempotent senkronizasyon. Yanıtta sunucu sırası ve reddedilen kayıtlar (ADR-0004).
+         */
+        post: operations["syncTaggingSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/tagging-sessions/{session_id}/tags": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Tags
+         * @description `since` sırasından sonraki değişiklikler (mezar taşları dahil).
+         */
+        get: operations["listSessionTags"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/teams/{team_id}/profile": {
         parameters: {
             query?: never;
@@ -568,6 +707,105 @@ export interface paths {
         get: operations["listTeamSetPieces"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/video/assets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Assets */
+        get: operations["listVideoAssets"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/video/assets/{asset_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get Asset */
+        get: operations["getVideoAsset"];
+        put?: never;
+        post?: never;
+        /**
+         * Delete Asset
+         * @description Videoyu, kliplerini ve depodaki dosyalarını (kaynak ve HLS) siler.
+         */
+        delete: operations["deleteVideoAsset"];
+        options?: never;
+        head?: never;
+        /** Update Asset */
+        patch: operations["updateVideoAsset"];
+        trace?: never;
+    };
+    "/api/v1/video/assets/{asset_id}/complete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Complete Upload
+         * @description Parçaları birleştirir ve HLS dönüştürmeyi kuyruğa koyar. Tekrar çağrı zararsızdır.
+         */
+        post: operations["completeVideoUpload"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/video/assets/{asset_id}/playlist": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Playlist
+         * @description HLS oynatma listesi; parça satırları 10 dk geçerli imzalı adreslerle değiştirilir (A-61).
+         */
+        get: operations["getVideoPlaylist"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/video/uploads": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Create Upload
+         * @description Parçalı yükleme başlatır; parça başına imzalı PUT adresi döner (A-60).
+         */
+        post: operations["createVideoUpload"];
         delete?: never;
         options?: never;
         head?: never;
@@ -628,6 +866,50 @@ export interface components {
             /** Tenant Name */
             tenant_name: string;
         };
+        /** AssetOut */
+        AssetOut: {
+            /** Content Type */
+            content_type: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            created_by: components["schemas"]["UserRef"] | null;
+            /** Duration S */
+            duration_s: number | null;
+            /** Error */
+            error: string | null;
+            /** Filename */
+            filename: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Match Id */
+            match_id: string | null;
+            /** Offset S */
+            offset_s: number;
+            /** Size Bytes */
+            size_bytes: number;
+            /**
+             * Status
+             * @enum {string}
+             */
+            status: "uploading" | "processing" | "ready" | "failed";
+            /** Title */
+            title: string;
+        };
+        /** AssetPatch */
+        AssetPatch: {
+            /** Match Id */
+            match_id?: string | null;
+            /** Offset S */
+            offset_s?: number | null;
+            /** Title */
+            title?: string | null;
+        };
         /** BenchmarkOut */
         BenchmarkOut: {
             /** Max */
@@ -672,6 +954,107 @@ export interface components {
              */
             season_id: string;
         };
+        /** Change */
+        Change: {
+            /**
+             * Client Ts
+             * Format: date-time
+             */
+            client_ts: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /**
+             * Op
+             * @enum {string}
+             */
+            op: "upsert" | "delete";
+            /** Payload */
+            payload?: {
+                [key: string]: unknown;
+            } | null;
+        };
+        /** ClipCreate */
+        ClipCreate: {
+            /**
+             * Asset Id
+             * Format: uuid
+             */
+            asset_id: string;
+            /** End S */
+            end_s: number;
+            /** Set Piece Id */
+            set_piece_id?: string | null;
+            /** Start S */
+            start_s: number;
+            /**
+             * Title
+             * @default
+             */
+            title: string;
+        };
+        /** ClipOut */
+        ClipOut: {
+            /**
+             * Asset Id
+             * Format: uuid
+             */
+            asset_id: string;
+            /** Asset Title */
+            asset_title: string;
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /** End S */
+            end_s: number;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Match Id */
+            match_id: string | null;
+            set_piece: components["schemas"]["ClipSetPiece"] | null;
+            /** Start S */
+            start_s: number;
+            /** Title */
+            title: string;
+        };
+        /** ClipPatch */
+        ClipPatch: {
+            /** End S */
+            end_s?: number | null;
+            /** Set Piece Id */
+            set_piece_id?: string | null;
+            /** Start S */
+            start_s?: number | null;
+            /** Title */
+            title?: string | null;
+        };
+        /** ClipSetPiece */
+        ClipSetPiece: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Outcome */
+            outcome: string | null;
+            /** Period */
+            period: number;
+            /** Routine Id */
+            routine_id: string | null;
+            /** Sp Type */
+            sp_type: string;
+            /** Start Time S */
+            start_time_s: number;
+            /** Team Code */
+            team_code: string;
+        };
         /** CompetitionRef */
         CompetitionRef: {
             /** Code */
@@ -683,6 +1066,11 @@ export interface components {
             id: string;
             /** Name */
             name: string;
+        };
+        /** CompleteIn */
+        CompleteIn: {
+            /** Etags */
+            etags: string[];
         };
         /** ConditionOut */
         ConditionOut: {
@@ -1132,6 +1520,36 @@ export interface components {
             } | null;
         };
         /**
+         * MatchSetPieceOut
+         * @description Bir maçın görünen duran topları (sağlayıcı ve kulübün kendi kaydı); klip bağlamak için.
+         */
+        MatchSetPieceOut: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Outcome */
+            outcome: string | null;
+            /** Period */
+            period: number;
+            /** Routine Id */
+            routine_id: string | null;
+            /** Source */
+            source: string;
+            /** Sp Type */
+            sp_type: string;
+            /** Start Time S */
+            start_time_s: number;
+            /** Team Code */
+            team_code: string;
+            /**
+             * Team Id
+             * Format: uuid
+             */
+            team_id: string;
+        };
+        /**
          * MatchupRow
          * @description Eşleşme notu: aynı metrikte rakip ve kulüp, lig ortalamasıyla.
          */
@@ -1213,6 +1631,13 @@ export interface components {
             season: components["schemas"]["SeasonRef"] | null;
             /** Upcoming */
             upcoming: components["schemas"]["UpcomingThreats"][];
+        };
+        /** PartUrl */
+        PartUrl: {
+            /** Number */
+            number: number;
+            /** Url */
+            url: string;
         };
         /**
          * Permission
@@ -1432,6 +1857,16 @@ export interface components {
             source: string;
             /** Value */
             value: number;
+        };
+        /** Rejected */
+        Rejected: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Reason */
+            reason: string;
         };
         /**
          * Role
@@ -1698,6 +2133,36 @@ export interface components {
             /** Label */
             label: string;
         };
+        /** SessionCreate */
+        SessionCreate: {
+            /** Device Id */
+            device_id: string;
+            /**
+             * Match Id
+             * Format: uuid
+             */
+            match_id: string;
+        };
+        /** SessionOut */
+        SessionOut: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Last Seq */
+            last_seq: number;
+            /**
+             * Match Id
+             * Format: uuid
+             */
+            match_id: string;
+        };
         /** SetPieceOut */
         SetPieceOut: {
             /** First Contact Team Id */
@@ -1804,6 +2269,52 @@ export interface components {
             reprocess?: boolean | null;
             /** Season Id */
             season_id: number;
+        };
+        /** SyncIn */
+        SyncIn: {
+            /** Changes */
+            changes: components["schemas"]["Change"][];
+            /** Device Id */
+            device_id: string;
+        };
+        /** SyncOut */
+        SyncOut: {
+            /** Accepted */
+            accepted: string[];
+            /** Rejected */
+            rejected: components["schemas"]["Rejected"][];
+            /** Server Seq */
+            server_seq: number;
+        };
+        /** TagOut */
+        TagOut: {
+            /**
+             * Client Ts
+             * Format: date-time
+             */
+            client_ts: string;
+            /** Deleted */
+            deleted: boolean;
+            /** Device Id */
+            device_id: string;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Payload */
+            payload: {
+                [key: string]: unknown;
+            };
+            /** Server Seq */
+            server_seq: number;
+        };
+        /** TagsOut */
+        TagsOut: {
+            /** Server Seq */
+            server_seq: number;
+            /** Tags */
+            tags: components["schemas"]["TagOut"][];
         };
         /** TeamMatchOut */
         TeamMatchOut: {
@@ -1959,6 +2470,35 @@ export interface components {
             /** Threats */
             threats: components["schemas"]["ThreatOut"][];
         };
+        /** UploadCreate */
+        UploadCreate: {
+            /**
+             * Content Type
+             * @enum {string}
+             */
+            content_type: "video/mp4" | "video/quicktime" | "video/x-matroska" | "video/webm";
+            /** Filename */
+            filename: string;
+            /** Match Id */
+            match_id?: string | null;
+            /**
+             * Offset S
+             * @default 0
+             */
+            offset_s: number;
+            /** Size Bytes */
+            size_bytes: number;
+            /** Title */
+            title: string;
+        };
+        /** UploadOut */
+        UploadOut: {
+            asset: components["schemas"]["AssetOut"];
+            /** Part Size */
+            part_size: number;
+            /** Parts */
+            parts: components["schemas"]["PartUrl"][];
+        };
         /** UserRef */
         UserRef: {
             /**
@@ -2028,6 +2568,145 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    listClips: {
+        parameters: {
+            query?: {
+                asset_id?: string | null;
+                set_piece_id?: string | null;
+                routine_id?: string | null;
+                match_id?: string | null;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClipOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    createClip: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClipCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClipOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    deleteClip: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                clip_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    updateClip: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                clip_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ClipPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ClipOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     listFixtures: {
         parameters: {
             query?: {
@@ -2053,6 +2732,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FixturePage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getFixture: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                fixture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FixtureOut"];
                 };
             };
             /** @description Validation Error */
@@ -2160,6 +2872,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PrepOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listFixtureSetPieces: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                fixture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MatchSetPieceOut"][];
                 };
             };
             /** @description Validation Error */
@@ -3242,6 +3987,114 @@ export interface operations {
             };
         };
     };
+    openTaggingSession: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SessionCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    syncTaggingSession: {
+        parameters: {
+            query?: never;
+            header?: {
+                "Idempotency-Key"?: string | null;
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SyncIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SyncOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listSessionTags: {
+        parameters: {
+            query?: {
+                since?: number;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                session_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TagsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     getTeamProfile: {
         parameters: {
             query: {
@@ -3305,6 +4158,247 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SetPiecePage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listVideoAssets: {
+        parameters: {
+            query?: {
+                match_id?: string | null;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getVideoAsset: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                asset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    deleteVideoAsset: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                asset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    updateVideoAsset: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                asset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssetPatch"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    completeVideoUpload: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                asset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CompleteIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getVideoPlaylist: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                asset_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": unknown;
+                    "application/vnd.apple.mpegurl": unknown;
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    createVideoUpload: {
+        parameters: {
+            query?: never;
+            header?: {
+                "Idempotency-Key"?: string | null;
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadCreate"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadOut"];
                 };
             };
             /** @description Validation Error */

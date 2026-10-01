@@ -229,6 +229,12 @@ async def test_fixtures_upcoming_for_team(client: Any, seeded: None, clean: dict
     assert all(i["status"] == "scheduled" for i in items)
     assert response.json()["next_cursor"] is not None
 
+    one = await client.get(f"/api/v1/fixtures/{items[0]['id']}", headers=clean)
+    assert one.status_code == 200
+    assert one.json() == items[0]
+    missing = await client.get(f"/api/v1/fixtures/{uuid.uuid4()}", headers=clean)
+    assert missing.status_code == 404
+
 
 async def test_set_pieces_empty_without_event_data(
     client: Any, seeded: None, clean: dict[str, str]

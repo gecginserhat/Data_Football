@@ -32,6 +32,8 @@ Kurgu, profesyonel futbol kulüpleri için bir duran top analiz ve hazırlık pl
 - `make statsbomb-fetch` (StatsBomb Open Data'yı `data/statsbomb` önbelleğine indirir, repoya girmez) · `make statsbomb-load` (worker ile yükler) · `make validate` (duran top doğrulama raporu) · `make spadl-compare` (socceraction karşılaştırması).
 - Maç hazırlığı: web `/prep`, `/prep/{fixtureId}` (öneriler, kabul/red, MD planı); kurallar `/admin/rules` (düzenleme, deneme, sürüm geçmişi). API `GET /fixtures/{id}/prep`, `POST /recommendations/{id}/decision`, `POST /rule-sets/dry-run`.
 - Rutinler: web `/routines` (kütüphane, şablonlar, editör, sürüm karşılaştırma); kart indirme `GET /routines/{id}/versions/{v}/export?format=pdf|png`.
+- Canlı kayıt: web `/live`, `/live/[fixtureId]` (çevrimdışı çalışır; PWA). Video: web `/video` (yükleme, HLS, klip). Worker HLS işi için ffmpeg `imageio-ffmpeg` paketinden gelir; `sudo` gerekmez.
+- E2E projeleri: `desktop`, `tablet` ve onlardan sonra çalışan `pwa` (canlı kayıt ve video; A-65). Tek başına: `pnpm --filter @kurgu/web exec playwright test --project=pwa --no-deps`.
 - CSV/Excel içe aktarım: web `/admin/imports` (yalnız yönetici); API `POST /imports`, `PUT /imports/{id}/mapping`, `POST /imports/{id}/commit`.
 - `make test` (`test-py`, `test-js`) · `make lint` · `make typecheck` · `make e2e`
 - `make migrate`: Alembic upgrade. `make migrate-cycle`: upgrade → downgrade → upgrade.

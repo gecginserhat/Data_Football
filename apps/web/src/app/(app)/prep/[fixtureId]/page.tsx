@@ -2,6 +2,7 @@ import { EmptyState, TeamBadge } from "@kurgu/ui";
 import Link from "next/link";
 import { getFormatter, getTranslations } from "next-intl/server";
 import { NotLoaded, PageTitle, Section } from "@/components/analysis/States";
+import { FeedbackPanel } from "@/components/prep/FeedbackPanel";
 import { MatchupTable } from "@/components/prep/MatchupTable";
 import { CreatePlan, PlanBoard } from "@/components/prep/PlanBoard";
 import { RecommendationCard } from "@/components/prep/RecommendationCard";
@@ -147,6 +148,7 @@ export default async function PrepFixturePage({
         ) : null}
       </Section>
 
+      <FeedbackPanel fixture={fixture} recommendations={recommendations} />
       <Section id="matchup" title={t("matchup.title")}>
         {prep.data.matchup.length ? (
           <MatchupTable rows={prep.data.matchup} fixture={fixture} />
