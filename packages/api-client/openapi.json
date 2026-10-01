@@ -163,6 +163,128 @@
         "title": "CompetitionRef",
         "type": "object"
       },
+      "ConditionOut": {
+        "properties": {
+          "metric": {
+            "title": "Metric",
+            "type": "string"
+          },
+          "op": {
+            "title": "Op",
+            "type": "string"
+          },
+          "passed": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Passed"
+          },
+          "rank": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rank"
+          },
+          "subject": {
+            "title": "Subject",
+            "type": "string"
+          },
+          "teams": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Teams"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value"
+          }
+        },
+        "required": [
+          "subject",
+          "metric",
+          "op",
+          "threshold",
+          "value",
+          "rank",
+          "teams",
+          "passed"
+        ],
+        "title": "ConditionOut",
+        "type": "object"
+      },
+      "DecisionIn": {
+        "properties": {
+          "decision": {
+            "enum": [
+              "suggested",
+              "accepted",
+              "rejected"
+            ],
+            "title": "Decision",
+            "type": "string"
+          },
+          "fixture_id": {
+            "format": "uuid",
+            "title": "Fixture Id",
+            "type": "string"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "maxLength": 1000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          }
+        },
+        "required": [
+          "fixture_id",
+          "decision"
+        ],
+        "title": "DecisionIn",
+        "type": "object"
+      },
       "Diagram": {
         "additionalProperties": false,
         "description": "Bir rutin sürümünün çizimi.",
@@ -485,6 +607,298 @@
           "h"
         ],
         "title": "DiagramZone",
+        "type": "object"
+      },
+      "DryRunIn": {
+        "properties": {
+          "fixture_id": {
+            "format": "uuid",
+            "title": "Fixture Id",
+            "type": "string"
+          },
+          "rules": {
+            "anyOf": [
+              {
+                "items": {
+                  "additionalProperties": true,
+                  "type": "object"
+                },
+                "maxItems": 200,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rules"
+          }
+        },
+        "required": [
+          "fixture_id"
+        ],
+        "title": "DryRunIn",
+        "type": "object"
+      },
+      "DryRunOut": {
+        "properties": {
+          "fixture": {
+            "$ref": "#/components/schemas/PrepFixtureOut"
+          },
+          "results": {
+            "items": {
+              "$ref": "#/components/schemas/DryRunRule"
+            },
+            "title": "Results",
+            "type": "array"
+          }
+        },
+        "required": [
+          "fixture",
+          "results"
+        ],
+        "title": "DryRunOut",
+        "type": "object"
+      },
+      "DryRunRule": {
+        "properties": {
+          "area": {
+            "enum": [
+              "attack",
+              "defense",
+              "balance",
+              "season"
+            ],
+            "title": "Area",
+            "type": "string"
+          },
+          "conditions": {
+            "items": {
+              "$ref": "#/components/schemas/ConditionOut"
+            },
+            "title": "Conditions",
+            "type": "array"
+          },
+          "confidence": {
+            "anyOf": [
+              {
+                "enum": [
+                  "high",
+                  "medium",
+                  "low"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Confidence"
+          },
+          "enabled": {
+            "title": "Enabled",
+            "type": "boolean"
+          },
+          "priority": {
+            "title": "Priority",
+            "type": "integer"
+          },
+          "routine": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RoutineRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rule_id": {
+            "title": "Rule Id",
+            "type": "string"
+          },
+          "scope": {
+            "enum": [
+              "fixture",
+              "season"
+            ],
+            "title": "Scope",
+            "type": "string"
+          },
+          "shown": {
+            "title": "Shown",
+            "type": "boolean"
+          },
+          "status": {
+            "enum": [
+              "fired",
+              "not_met",
+              "missing_data",
+              "low_sample",
+              "disabled"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "strength": {
+            "title": "Strength",
+            "type": "number"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "why": {
+            "title": "Why",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rule_id",
+          "scope",
+          "area",
+          "priority",
+          "enabled",
+          "status",
+          "shown",
+          "confidence",
+          "strength",
+          "title",
+          "why",
+          "routine",
+          "conditions"
+        ],
+        "title": "DryRunRule",
+        "type": "object"
+      },
+      "EvidenceOut": {
+        "description": "Kanıt satırı (SPEC §7.1): metrik, değer, lig sırası, lig ortalaması, örneklem.",
+        "properties": {
+          "approx": {
+            "title": "Approx",
+            "type": "boolean"
+          },
+          "indirect": {
+            "title": "Indirect",
+            "type": "boolean"
+          },
+          "league_mean": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "League Mean"
+          },
+          "low_sample": {
+            "title": "Low Sample",
+            "type": "boolean"
+          },
+          "matches": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Matches"
+          },
+          "metric": {
+            "title": "Metric",
+            "type": "string"
+          },
+          "op": {
+            "title": "Op",
+            "type": "string"
+          },
+          "rank": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rank"
+          },
+          "source": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source"
+          },
+          "subject": {
+            "title": "Subject",
+            "type": "string"
+          },
+          "teams": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Teams"
+          },
+          "threshold": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Threshold"
+          },
+          "trials": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Trials"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          }
+        },
+        "required": [
+          "subject",
+          "metric",
+          "value",
+          "rank",
+          "teams",
+          "league_mean",
+          "matches",
+          "trials",
+          "low_sample",
+          "approx",
+          "indirect",
+          "source",
+          "op",
+          "threshold"
+        ],
+        "title": "EvidenceOut",
         "type": "object"
       },
       "FieldOut": {
@@ -1060,6 +1474,70 @@
         "title": "MappingUpdate",
         "type": "object"
       },
+      "MatchupRow": {
+        "description": "Eşleşme notu: aynı metrikte rakip ve kulüp, lig ortalamasıyla.",
+        "properties": {
+          "club": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SideValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "indirect": {
+            "title": "Indirect",
+            "type": "boolean"
+          },
+          "league_mean": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "League Mean"
+          },
+          "metric": {
+            "title": "Metric",
+            "type": "string"
+          },
+          "opponent": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SideValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "opponent_current": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SideValue"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "metric",
+          "indirect",
+          "opponent",
+          "opponent_current",
+          "club",
+          "league_mean"
+        ],
+        "title": "MatchupRow",
+        "type": "object"
+      },
       "MeOut": {
         "properties": {
           "active_tenant": {
@@ -1260,6 +1738,45 @@
         "title": "MetricValueOut",
         "type": "object"
       },
+      "OverviewRecsOut": {
+        "properties": {
+          "recommendations": {
+            "items": {
+              "$ref": "#/components/schemas/RecommendationOut"
+            },
+            "title": "Recommendations",
+            "type": "array"
+          },
+          "rule_set": {
+            "$ref": "#/components/schemas/RuleSetRef"
+          },
+          "season": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SeasonRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "upcoming": {
+            "items": {
+              "$ref": "#/components/schemas/UpcomingThreats"
+            },
+            "title": "Upcoming",
+            "type": "array"
+          }
+        },
+        "required": [
+          "season",
+          "rule_set",
+          "recommendations",
+          "upcoming"
+        ],
+        "title": "OverviewRecsOut",
+        "type": "object"
+      },
       "Permission": {
         "enum": [
           "read_analysis",
@@ -1275,6 +1792,495 @@
         ],
         "title": "Permission",
         "type": "string"
+      },
+      "PlanCreate": {
+        "properties": {
+          "template": {
+            "enum": [
+              "standard",
+              "congested"
+            ],
+            "title": "Template",
+            "type": "string"
+          }
+        },
+        "required": [
+          "template"
+        ],
+        "title": "PlanCreate",
+        "type": "object"
+      },
+      "PlanDay": {
+        "properties": {
+          "date": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Date"
+          },
+          "focus": {
+            "title": "Focus",
+            "type": "string"
+          },
+          "md_code": {
+            "enum": [
+              "MD-4",
+              "MD-3",
+              "MD-2",
+              "MD-1",
+              "MD",
+              "MD+1"
+            ],
+            "title": "Md Code",
+            "type": "string"
+          }
+        },
+        "required": [
+          "md_code",
+          "date",
+          "focus"
+        ],
+        "title": "PlanDay",
+        "type": "object"
+      },
+      "PlanItemCreate": {
+        "properties": {
+          "assignee_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignee Id"
+          },
+          "detail": {
+            "default": "",
+            "maxLength": 2000,
+            "title": "Detail",
+            "type": "string"
+          },
+          "md_code": {
+            "enum": [
+              "MD-4",
+              "MD-3",
+              "MD-2",
+              "MD-1",
+              "MD",
+              "MD+1"
+            ],
+            "title": "Md Code",
+            "type": "string"
+          },
+          "routine_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Routine Id"
+          },
+          "title": {
+            "maxLength": 200,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "md_code",
+          "title"
+        ],
+        "title": "PlanItemCreate",
+        "type": "object"
+      },
+      "PlanItemOut": {
+        "properties": {
+          "assignee": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "detail": {
+            "title": "Detail",
+            "type": "string"
+          },
+          "done_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Done At"
+          },
+          "done_by": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "md_code": {
+            "enum": [
+              "MD-4",
+              "MD-3",
+              "MD-2",
+              "MD-1",
+              "MD",
+              "MD+1"
+            ],
+            "title": "Md Code",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "integer"
+          },
+          "recommendation_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recommendation Id"
+          },
+          "routine": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RoutineRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "status": {
+            "enum": [
+              "todo",
+              "done"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "md_code",
+          "position",
+          "title",
+          "detail",
+          "status",
+          "assignee",
+          "done_by",
+          "done_at",
+          "recommendation_id",
+          "routine"
+        ],
+        "title": "PlanItemOut",
+        "type": "object"
+      },
+      "PlanItemPatch": {
+        "properties": {
+          "assignee_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assignee Id"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "maxLength": 2000,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          },
+          "md_code": {
+            "anyOf": [
+              {
+                "enum": [
+                  "MD-4",
+                  "MD-3",
+                  "MD-2",
+                  "MD-1",
+                  "MD",
+                  "MD+1"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Md Code"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "enum": [
+                  "todo",
+                  "done"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Status"
+          },
+          "title": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "minLength": 1,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          }
+        },
+        "title": "PlanItemPatch",
+        "type": "object"
+      },
+      "PlanOut": {
+        "properties": {
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/PlanDay"
+            },
+            "title": "Days",
+            "type": "array"
+          },
+          "done": {
+            "title": "Done",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/PlanItemOut"
+            },
+            "title": "Items",
+            "type": "array"
+          },
+          "template": {
+            "enum": [
+              "standard",
+              "congested"
+            ],
+            "title": "Template",
+            "type": "string"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "template",
+          "days",
+          "items",
+          "done",
+          "total"
+        ],
+        "title": "PlanOut",
+        "type": "object"
+      },
+      "PrepFixtureOut": {
+        "properties": {
+          "away": {
+            "$ref": "#/components/schemas/TeamRef"
+          },
+          "club": {
+            "$ref": "#/components/schemas/TeamRef"
+          },
+          "home": {
+            "$ref": "#/components/schemas/TeamRef"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_home": {
+            "title": "Is Home",
+            "type": "boolean"
+          },
+          "kickoff_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Kickoff At"
+          },
+          "opponent": {
+            "$ref": "#/components/schemas/TeamRef"
+          },
+          "previous_season": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/SeasonRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "season": {
+            "$ref": "#/components/schemas/SeasonRef"
+          },
+          "status": {
+            "title": "Status",
+            "type": "string"
+          },
+          "week": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Week"
+          }
+        },
+        "required": [
+          "id",
+          "week",
+          "kickoff_at",
+          "status",
+          "home",
+          "away",
+          "club",
+          "opponent",
+          "is_home",
+          "season",
+          "previous_season"
+        ],
+        "title": "PrepFixtureOut",
+        "type": "object"
+      },
+      "PrepOut": {
+        "properties": {
+          "assignees": {
+            "items": {
+              "$ref": "#/components/schemas/UserRef"
+            },
+            "title": "Assignees",
+            "type": "array"
+          },
+          "fixture": {
+            "$ref": "#/components/schemas/PrepFixtureOut"
+          },
+          "matchup": {
+            "items": {
+              "$ref": "#/components/schemas/MatchupRow"
+            },
+            "title": "Matchup",
+            "type": "array"
+          },
+          "plan": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/PlanOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "recommendations": {
+            "items": {
+              "$ref": "#/components/schemas/RecommendationOut"
+            },
+            "title": "Recommendations",
+            "type": "array"
+          },
+          "routines": {
+            "items": {
+              "$ref": "#/components/schemas/RoutineRef"
+            },
+            "title": "Routines",
+            "type": "array"
+          },
+          "rule_set": {
+            "$ref": "#/components/schemas/RuleSetRef"
+          }
+        },
+        "required": [
+          "fixture",
+          "rule_set",
+          "recommendations",
+          "matchup",
+          "plan",
+          "assignees",
+          "routines"
+        ],
+        "title": "PrepOut",
+        "type": "object"
       },
       "RateOut": {
         "description": "Oran ve beta-binom büzülmesi (SPEC §6.4).",
@@ -1336,6 +2342,152 @@
           "trials"
         ],
         "title": "RateOut",
+        "type": "object"
+      },
+      "RecommendationOut": {
+        "properties": {
+          "action": {
+            "title": "Action",
+            "type": "string"
+          },
+          "active": {
+            "title": "Active",
+            "type": "boolean"
+          },
+          "area": {
+            "enum": [
+              "attack",
+              "defense",
+              "balance",
+              "season"
+            ],
+            "title": "Area",
+            "type": "string"
+          },
+          "confidence": {
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence",
+            "type": "string"
+          },
+          "decided_at": {
+            "anyOf": [
+              {
+                "format": "date-time",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decided At"
+          },
+          "decided_by": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "evidence": {
+            "items": {
+              "$ref": "#/components/schemas/EvidenceOut"
+            },
+            "title": "Evidence",
+            "type": "array"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "priority": {
+            "title": "Priority",
+            "type": "integer"
+          },
+          "reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Reason"
+          },
+          "routine": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/RoutineRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rule_id": {
+            "title": "Rule Id",
+            "type": "string"
+          },
+          "rule_set_version": {
+            "title": "Rule Set Version",
+            "type": "integer"
+          },
+          "status": {
+            "enum": [
+              "suggested",
+              "accepted",
+              "rejected"
+            ],
+            "title": "Status",
+            "type": "string"
+          },
+          "template": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TemplateRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          },
+          "why": {
+            "title": "Why",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "rule_id",
+          "rule_set_version",
+          "area",
+          "priority",
+          "confidence",
+          "title",
+          "why",
+          "action",
+          "template",
+          "routine",
+          "evidence",
+          "status",
+          "reason",
+          "decided_by",
+          "decided_at",
+          "active"
+        ],
+        "title": "RecommendationOut",
         "type": "object"
       },
       "ReferenceOut": {
@@ -1596,6 +2748,25 @@
         "title": "RoutinePatch",
         "type": "object"
       },
+      "RoutineRef": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "RoutineRef",
+        "type": "object"
+      },
       "RoutineStatsOut": {
         "description": "Rutin performansı (SPEC §6.3). Rutine bağlı duran top dizilerinden (A-44).",
         "properties": {
@@ -1812,6 +2983,199 @@
         "title": "RoutineUpdate",
         "type": "object"
       },
+      "RuleSetOut": {
+        "properties": {
+          "is_default": {
+            "title": "Is Default",
+            "type": "boolean"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "published_at": {
+            "format": "date-time",
+            "title": "Published At",
+            "type": "string"
+          },
+          "published_by": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "rules": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "title": "Rules",
+            "type": "array"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "version",
+          "label",
+          "is_default",
+          "message",
+          "published_at",
+          "published_by",
+          "rules"
+        ],
+        "title": "RuleSetOut",
+        "type": "object"
+      },
+      "RuleSetRef": {
+        "properties": {
+          "is_default": {
+            "title": "Is Default",
+            "type": "boolean"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "version",
+          "label",
+          "is_default"
+        ],
+        "title": "RuleSetRef",
+        "type": "object"
+      },
+      "RuleSetUpdate": {
+        "properties": {
+          "base_version": {
+            "minimum": 0.0,
+            "title": "Base Version",
+            "type": "integer"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "maxLength": 200,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "rules": {
+            "items": {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            "maxItems": 200,
+            "title": "Rules",
+            "type": "array"
+          }
+        },
+        "required": [
+          "base_version",
+          "rules"
+        ],
+        "title": "RuleSetUpdate",
+        "type": "object"
+      },
+      "RuleSetVersionOut": {
+        "properties": {
+          "is_default": {
+            "title": "Is Default",
+            "type": "boolean"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "message": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Message"
+          },
+          "published_at": {
+            "format": "date-time",
+            "title": "Published At",
+            "type": "string"
+          },
+          "published_by": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "version",
+          "label",
+          "is_default",
+          "message",
+          "published_at",
+          "published_by"
+        ],
+        "title": "RuleSetVersionOut",
+        "type": "object"
+      },
       "SeasonOut": {
         "properties": {
           "code": {
@@ -1878,6 +3242,25 @@
           "next_cursor"
         ],
         "title": "SeasonPage",
+        "type": "object"
+      },
+      "SeasonRef": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "label": {
+            "title": "Label",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "label"
+        ],
+        "title": "SeasonRef",
         "type": "object"
       },
       "SetPieceOut": {
@@ -2050,6 +3433,39 @@
           "next_cursor"
         ],
         "title": "SetPiecePage",
+        "type": "object"
+      },
+      "SideValue": {
+        "properties": {
+          "approx": {
+            "title": "Approx",
+            "type": "boolean"
+          },
+          "low_sample": {
+            "title": "Low Sample",
+            "type": "boolean"
+          },
+          "rank": {
+            "title": "Rank",
+            "type": "integer"
+          },
+          "teams": {
+            "title": "Teams",
+            "type": "integer"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          }
+        },
+        "required": [
+          "value",
+          "rank",
+          "teams",
+          "low_sample",
+          "approx"
+        ],
+        "title": "SideValue",
         "type": "object"
       },
       "StandingRowOut": {
@@ -2560,6 +3976,74 @@
         "title": "TemplateOut",
         "type": "object"
       },
+      "TemplateRef": {
+        "properties": {
+          "id": {
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "TemplateRef",
+        "type": "object"
+      },
+      "ThreatOut": {
+        "properties": {
+          "confidence": {
+            "enum": [
+              "high",
+              "medium",
+              "low"
+            ],
+            "title": "Confidence",
+            "type": "string"
+          },
+          "rule_id": {
+            "title": "Rule Id",
+            "type": "string"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "rule_id",
+          "title",
+          "confidence"
+        ],
+        "title": "ThreatOut",
+        "type": "object"
+      },
+      "UpcomingThreats": {
+        "properties": {
+          "fixture_id": {
+            "format": "uuid",
+            "title": "Fixture Id",
+            "type": "string"
+          },
+          "threats": {
+            "items": {
+              "$ref": "#/components/schemas/ThreatOut"
+            },
+            "title": "Threats",
+            "type": "array"
+          }
+        },
+        "required": [
+          "fixture_id",
+          "threats"
+        ],
+        "title": "UpcomingThreats",
+        "type": "object"
+      },
       "UserRef": {
         "properties": {
           "id": {
@@ -2915,6 +4399,220 @@
         "summary": "List Fixtures",
         "tags": [
           "league"
+        ]
+      }
+    },
+    "/api/v1/fixtures/{fixture_id}/plan": {
+      "post": {
+        "description": "Şablondan MD planı (A-52). Plan zaten varsa 409. Kabul edilmiş öneriler eklenir.",
+        "operationId": "createFixturePlan",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fixture_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Fixture Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Plan",
+        "tags": [
+          "prep"
+        ]
+      }
+    },
+    "/api/v1/fixtures/{fixture_id}/plan/items": {
+      "post": {
+        "operationId": "addPlanItem",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fixture_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Fixture Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanItemCreate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Add Plan Item",
+        "tags": [
+          "prep"
+        ]
+      }
+    },
+    "/api/v1/fixtures/{fixture_id}/prep": {
+      "get": {
+        "description": "Öneriler (kanıt ve güvenle), eşleşme notları, MD planı, sorumlu adayları (SPEC §13.2).",
+        "operationId": "getFixturePrep",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fixture_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Fixture Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PrepOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Prep",
+        "tags": [
+          "prep"
         ]
       }
     },
@@ -3488,6 +5186,283 @@
         "summary": "Get Me",
         "tags": [
           "identity"
+        ]
+      }
+    },
+    "/api/v1/plan-items/{item_id}": {
+      "delete": {
+        "operationId": "deletePlanItem",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Plan Item",
+        "tags": [
+          "prep"
+        ]
+      },
+      "patch": {
+        "description": "Durum (tamamlandı / yapılacak), sorumlu, başlık, açıklama ya da gün.",
+        "operationId": "updatePlanItem",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "item_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Item Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanItemPatch"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Plan Item",
+        "tags": [
+          "prep"
+        ]
+      }
+    },
+    "/api/v1/prep/overview": {
+      "get": {
+        "description": "Sezon önerileri ve yaklaşan maçların tehdit etiketleri (SPEC §13.1, A-38).",
+        "operationId": "getPrepOverview",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "required": false,
+            "schema": {
+              "default": 5,
+              "title": "Limit",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverviewRecsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Prep Overview",
+        "tags": [
+          "prep"
+        ]
+      }
+    },
+    "/api/v1/recommendations/{recommendation_id}/decision": {
+      "post": {
+        "description": "Kabul, gerekçeli red ya da geri alma (A-50). Kabul plana madde ekler (A-52).",
+        "operationId": "decideRecommendation",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "recommendation_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Recommendation Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DecisionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecommendationOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Decide Recommendation",
+        "tags": [
+          "prep"
         ]
       }
     },
@@ -4262,6 +6237,247 @@
         "summary": "Export Version",
         "tags": [
           "routines"
+        ]
+      }
+    },
+    "/api/v1/rule-sets/current": {
+      "get": {
+        "description": "Kulübün güncel kural seti; kulüp henüz değiştirmediyse varsayılan set (A-51).",
+        "operationId": "getCurrentRuleSet",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuleSetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Current Rule Set",
+        "tags": [
+          "prep"
+        ]
+      },
+      "put": {
+        "description": "Yeni kulüp sürümü yayımlar. `base_version` güncel değilse 409; içerik aynıysa sürüm açmaz.",
+        "operationId": "updateCurrentRuleSet",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RuleSetUpdate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RuleSetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Rule Set",
+        "tags": [
+          "prep"
+        ]
+      }
+    },
+    "/api/v1/rule-sets/dry-run": {
+      "post": {
+        "description": "Bir fikstürde hangi kuralların tetiklendiği ve nedeni; taslak setle de çalışır, kaydetmez.",
+        "operationId": "dryRunRuleSet",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DryRunIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DryRunOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Dry Run",
+        "tags": [
+          "prep"
+        ]
+      }
+    },
+    "/api/v1/rule-sets/versions": {
+      "get": {
+        "operationId": "listRuleSetVersions",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/RuleSetVersionOut"
+                  },
+                  "title": "Response Listrulesetversions",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Rule Set Versions",
+        "tags": [
+          "prep"
         ]
       }
     },

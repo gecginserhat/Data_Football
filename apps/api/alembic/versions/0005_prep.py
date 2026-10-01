@@ -133,6 +133,11 @@ def upgrade() -> None:
 
     # Varsayılan set kiracısızdır; göç rolü (`kurgu-seed`) yazar, kiracılar okur (A-51).
     op.execute("alter table rule_sets enable row level security")
+    op.execute("alter table rule_sets force row level security")
+    op.execute(
+        "create policy owner_shared on rule_sets for all to kurgu_owner"
+        " using (tenant_id is null) with check (tenant_id is null)"
+    )
     op.execute(
         "create policy read_default_or_own on rule_sets for select"
         " using (tenant_id is null or tenant_id = kurgu_current_tenant())"
