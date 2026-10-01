@@ -6,7 +6,9 @@
   "exports": {
     ".": "./src/index.ts",
     "./zones.json": "./zones.json",
-    "./zones.vectors.json": "./zones.vectors.json"
+    "./zones.vectors.json": "./zones.vectors.json",
+    "./roles.json": "./roles.json",
+    "./diagram.vectors.json": "./diagram.vectors.json"
   },
   "scripts": {
     "lint": "eslint src",

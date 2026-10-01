@@ -76,3 +76,5 @@ export function classifyZone(x: number, y: number, deliveryY: number): ZoneCode 
   }
   return "OT";
 }
+
+export * from "./diagram";

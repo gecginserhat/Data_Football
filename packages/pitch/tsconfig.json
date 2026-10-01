@@ -1,5 +1,13 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": { "noEmit": true },
-  "include": ["src", "zones.json", "zones.vectors.json"]
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": [
+    "src",
+    "zones.json",
+    "zones.vectors.json",
+    "roles.json",
+    "diagram.vectors.json"
+  ]
 }

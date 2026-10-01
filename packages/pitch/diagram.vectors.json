@@ -1,0 +1,387 @@
+{
+ "note": "Ortak test vektörleri: TS (src/diagram.test.ts) ve Python (analytics/tests/test_diagram.py). Değerler kurgu_analytics.reports.diagram ile üretildi; elle düzenlemeyin.",
+ "control_points": [
+  {
+   "from": [
+    104.3,
+    1.6
+   ],
+   "to": [
+    100.6,
+    27.4
+   ],
+   "curve": 0.22,
+   "control": [
+    96.774,
+    13.686
+   ]
+  },
+  {
+   "from": [
+    87.0,
+    26.5
+   ],
+   "to": [
+    98.4,
+    27.0
+   ],
+   "curve": 0.1,
+   "control": [
+    92.65,
+    27.89
+   ]
+  },
+  {
+   "from": [
+    90,
+    34
+   ],
+   "to": [
+    100,
+    34
+   ],
+   "curve": -0.3,
+   "control": [
+    95.0,
+    31.0
+   ]
+  },
+  {
+   "from": [
+    95,
+    10
+   ],
+   "to": [
+    95,
+    10
+   ],
+   "curve": 0.5,
+   "control": [
+    95.0,
+    10.0
+   ]
+  },
+  {
+   "from": [
+    60,
+    0
+   ],
+   "to": [
+    105,
+    68
+   ],
+   "curve": 0.0,
+   "control": [
+    82.5,
+    34.0
+   ]
+  }
+ ],
+ "sample": {
+  "schema": 1,
+  "players": [
+   {
+    "id": "p1",
+    "team": "own",
+    "role": "taker",
+    "number": 1,
+    "label": null,
+    "x": 102.4,
+    "y": 3.7
+   },
+   {
+    "id": "p2",
+    "team": "own",
+    "role": "target",
+    "number": 9,
+    "label": "Uğurcan",
+    "x": 86.0,
+    "y": 40.0
+   },
+   {
+    "id": "p3",
+    "team": "opponent",
+    "role": "gk",
+    "number": null,
+    "label": null,
+    "x": 103.5,
+    "y": 34.0
+   }
+  ],
+  "lines": [
+   {
+    "id": "l1",
+    "kind": "ball_path",
+    "from": [
+     104.3,
+     1.6
+    ],
+    "to": [
+     100.6,
+     27.4
+    ],
+    "curve": 0.22,
+    "player_id": null
+   },
+   {
+    "id": "l2",
+    "kind": "run",
+    "from": [
+     86.0,
+     40.0
+    ],
+    "to": [
+     99.5,
+     38.0
+    ],
+    "curve": -0.1,
+    "player_id": "p2"
+   },
+   {
+    "id": "l3",
+    "kind": "screen",
+    "from": [
+     90.0,
+     30.0
+    ],
+    "to": [
+     93.0,
+     31.0
+    ],
+    "curve": 0.0,
+    "player_id": null
+   }
+  ],
+  "zones": [
+   {
+    "id": "z1",
+    "x": 97.0,
+    "y": 20.0,
+    "w": 8.0,
+    "h": 11.5,
+    "label": "NP"
+   }
+  ],
+  "ball": [
+   104.3,
+   1.6
+  ],
+  "frames": [
+   {
+    "id": "f1",
+    "positions": {
+     "p2": [
+      92.0,
+      39.0
+     ]
+    },
+    "ball": null,
+    "duration_ms": 1000
+   },
+   {
+    "id": "f2",
+    "positions": {
+     "p2": [
+      99.5,
+      38.0
+     ],
+     "p1": [
+      102.0,
+      4.0
+     ]
+    },
+    "ball": [
+     99.5,
+     38.0
+    ],
+    "duration_ms": 800
+   }
+  ]
+ },
+ "mirrored": {
+  "schema": 1,
+  "players": [
+   {
+    "id": "p1",
+    "team": "own",
+    "role": "taker",
+    "number": 1,
+    "label": null,
+    "x": 102.4,
+    "y": 64.3
+   },
+   {
+    "id": "p2",
+    "team": "own",
+    "role": "target",
+    "number": 9,
+    "label": "Uğurcan",
+    "x": 86.0,
+    "y": 28.0
+   },
+   {
+    "id": "p3",
+    "team": "opponent",
+    "role": "gk",
+    "number": null,
+    "label": null,
+    "x": 103.5,
+    "y": 34.0
+   }
+  ],
+  "lines": [
+   {
+    "id": "l1",
+    "kind": "ball_path",
+    "from": [
+     104.3,
+     66.4
+    ],
+    "to": [
+     100.6,
+     40.6
+    ],
+    "curve": -0.22,
+    "player_id": null
+   },
+   {
+    "id": "l2",
+    "kind": "run",
+    "from": [
+     86.0,
+     28.0
+    ],
+    "to": [
+     99.5,
+     30.0
+    ],
+    "curve": 0.1,
+    "player_id": "p2"
+   },
+   {
+    "id": "l3",
+    "kind": "screen",
+    "from": [
+     90.0,
+     38.0
+    ],
+    "to": [
+     93.0,
+     37.0
+    ],
+    "curve": 0.0,
+    "player_id": null
+   }
+  ],
+  "zones": [
+   {
+    "id": "z1",
+    "x": 97.0,
+    "y": 36.5,
+    "w": 8.0,
+    "h": 11.5,
+    "label": "NP"
+   }
+  ],
+  "ball": [
+   104.3,
+   66.4
+  ],
+  "frames": [
+   {
+    "id": "f1",
+    "positions": {
+     "p2": [
+      92.0,
+      29.0
+     ]
+    },
+    "ball": null,
+    "duration_ms": 1000
+   },
+   {
+    "id": "f2",
+    "positions": {
+     "p2": [
+      99.5,
+      30.0
+     ],
+     "p1": [
+      102.0,
+      64.0
+     ]
+    },
+    "ball": [
+     99.5,
+     30.0
+    ],
+    "duration_ms": 800
+   }
+  ]
+ },
+ "keyframes": [
+  {
+   "index": 0,
+   "positions": {
+    "p1": [
+     102.4,
+     3.7
+    ],
+    "p2": [
+     86.0,
+     40.0
+    ],
+    "p3": [
+     103.5,
+     34.0
+    ]
+   },
+   "ball": [
+    104.3,
+    1.6
+   ]
+  },
+  {
+   "index": 1,
+   "positions": {
+    "p1": [
+     102.4,
+     3.7
+    ],
+    "p2": [
+     92.0,
+     39.0
+    ],
+    "p3": [
+     103.5,
+     34.0
+    ]
+   },
+   "ball": [
+    104.3,
+    1.6
+   ]
+  },
+  {
+   "index": 2,
+   "positions": {
+    "p1": [
+     102.0,
+     4.0
+    ],
+    "p2": [
+     99.5,
+     38.0
+    ],
+    "p3": [
+     103.5,
+     34.0
+    ]
+   },
+   "ball": [
+    99.5,
+    38.0
+   ]
+  }
+ ]
+}
