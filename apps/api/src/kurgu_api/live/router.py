@@ -25,7 +25,9 @@ from kurgu_api.live.schemas import (
 from kurgu_api.live.service import apply_changes
 
 log = logging.getLogger(__name__)
-router = APIRouter(tags=["live"], dependencies=[Depends(require(Permission.LIVE_TAGGING_VIDEO))])
+router = APIRouter(tags=["live"])
+TAG = [Depends(require(Permission.LIVE_TAGGING_VIDEO))]
+READ = [Depends(require(Permission.READ_ANALYSIS))]
 
 SESSION_COLUMNS = "id, match_id, last_seq, server_received_at as created_at"
 OPEN_SQL = f"""
@@ -54,6 +56,7 @@ async def _visible_match(session: SessionDep, match_id: uuid.UUID) -> None:
     "/tagging-sessions",
     response_model=SessionOut,
     operation_id="openTaggingSession",
+    dependencies=TAG,
 )
 async def open_session(
     session: SessionDep, principal: PrincipalDep, body: SessionCreate
@@ -100,6 +103,7 @@ async def open_session(
     "/tagging-sessions/{session_id}/sync",
     response_model=SyncOut,
     operation_id="syncTaggingSession",
+    dependencies=TAG,
 )
 async def sync(
     session: SessionDep,
@@ -166,6 +170,7 @@ async def sync(
     "/tagging-sessions/{session_id}/tags",
     response_model=TagsOut,
     operation_id="listSessionTags",
+    dependencies=TAG,
 )
 async def list_tags(
     session: SessionDep,
@@ -195,6 +200,7 @@ async def list_tags(
     "/fixtures/{fixture_id}/set-pieces",
     response_model=list[MatchSetPieceOut],
     operation_id="listFixtureSetPieces",
+    dependencies=READ,
 )
 async def fixture_set_pieces(session: SessionDep, fixture_id: uuid.UUID) -> list[MatchSetPieceOut]:
     """Maçın görünen duran topları, saate göre (klip bağlama ve kayıt listesi için)."""

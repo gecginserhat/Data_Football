@@ -313,6 +313,9 @@ async def test_viewer_cannot_tag(
         "/api/v1/tagging-sessions", headers=viewer, json={"match_id": match_id, "device_id": "x"}
     )
     assert response.status_code == 403
+    # Maçın duran topları okuma iznidir (hazırlık sayfasındaki geri bildirim paneli, A-63).
+    pieces = await client.get(f"/api/v1/fixtures/{match_id}/set-pieces", headers=viewer)
+    assert pieces.status_code == 200
 
 
 async def test_sessions_and_tags_are_tenant_isolated(

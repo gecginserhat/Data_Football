@@ -177,9 +177,68 @@ test("the last tag can be undone within ten seconds", async ({ page }) => {
   await expect(page.getByTestId("live-undo")).toBeVisible();
   await page.keyboard.press("z");
   await expect(page.locator(`[data-tag-id="${tagId}"]`)).toHaveCount(0);
-  await expect(pending(page)).toHaveAttribute("data-count", "0", { timeout: 15_000 });
-  const tags = await serverTags(page);
-  const mine = tags.filter((t) => t.id === tagId);
   // Senkronizasyondan önce geri alındıysa yalnız mezar taşı gider; sonra alındıysa silinir.
-  expect(mine.every((t) => t.deleted)).toBe(true);
+  await expect
+    .poll(async () => (await serverTags(page)).find((t) => t.id === tagId)?.deleted, {
+      timeout: 20_000,
+    })
+    .toBe(true);
+});
+
+const FOULS = "Ceza sahası çevresinde faul kazanın";
+const CORNERS = "Korner savunması haftanın öncelikli çalışması";
+
+async function accept(page: Page, title: string) {
+  const card = page.getByTestId("recommendation").filter({ hasText: title });
+  const status = await card.getAttribute("data-status");
+  if (status === "accepted") return;
+  if (status === "rejected") {
+    if (!(await card.isVisible())) await page.getByText(/Reddedilen öneriler/).click();
+    await card.getByRole("button", { name: "Kararı geri al" }).click();
+    await expect(card).toHaveAttribute("data-status", "suggested");
+  }
+  await card.getByRole("button", { name: "Kabul et" }).click();
+  await expect(card).toHaveAttribute("data-status", "accepted");
+}
+
+test("prep page shows match tags next to accepted recommendations", async ({ page }) => {
+  await signIn(page, "sp-coach");
+  await openSamsunspor(page);
+  const fixtureId = page.url().split("/").pop();
+  const ids: string[] = [];
+  try {
+    for (const keys of [
+      ["f", "a", "1"],
+      ["c", "h", "6"],
+    ]) {
+      for (const key of keys) await page.keyboard.press(key);
+      ids.push(
+        (await page.getByTestId("live-tags").locator("li").first().getAttribute("data-tag-id"))!,
+      );
+    }
+    for (const id of ids) {
+      await expect(page.locator(`[data-tag-id="${id}"]`)).toHaveAttribute("data-pending", "0", {
+        timeout: 20_000,
+      });
+    }
+
+    await page.goto(`/prep/${fixtureId}`);
+    await accept(page, FOULS);
+    await accept(page, CORNERS);
+    const panel = page.getByTestId("feedback-panel");
+    await expect(panel).toContainText("ilişki gösterimidir, neden-sonuç değildir");
+    const attack = panel.locator('[data-area="attack"]');
+    await expect(attack).toContainText(FOULS);
+    await expect(attack).toContainText("Serbest vuruş");
+    await expect(attack).toContainText("Gol");
+    const defense = panel.locator('[data-area="defense"]');
+    await expect(defense).toContainText(CORNERS);
+    await expect(defense).toContainText("Uzaklaştırıldı");
+    await expectNoSeriousA11yViolations(page);
+    await shot(page, "prep-feedback");
+  } finally {
+    await page.goto(`/live/${fixtureId}`);
+    await expect(page.getByTestId("live-status")).toHaveAttribute("data-session", /[0-9a-f-]{36}/);
+    await cleanup(page, ids);
+  }
 });

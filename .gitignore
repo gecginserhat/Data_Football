@@ -32,3 +32,4 @@ data/
 .idea/
 .vscode/*
 !.vscode/extensions.json
+dump.rdb

@@ -5,6 +5,7 @@ import { NotLoaded, PageTitle } from "@/components/analysis/States";
 import { RoutineEditor } from "@/components/routines/RoutineEditor";
 import { RoutineStatsPanel } from "@/components/routines/RoutineStats";
 import { btn, btnPrimary, inputCls } from "@/components/routines/styles";
+import { RoutineClips } from "@/components/video/RoutineClips";
 import { restoreVersion, setArchived } from "@/lib/routine-actions";
 import type { EditorDoc } from "@/lib/routine-editor";
 import {
@@ -246,6 +247,7 @@ export default async function RoutinePage({
         </section>
         <div className="flex flex-col gap-4">
           <RoutineStatsPanel stats={r.stats} />
+          <RoutineClips routineId={id} />
           {access.edit ? (
             <form
               action={setArchived}
