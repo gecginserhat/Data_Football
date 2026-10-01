@@ -1,6 +1,27 @@
 {
   "components": {
     "schemas": {
+      "AccountLink": {
+        "properties": {
+          "user_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "User Id"
+          }
+        },
+        "required": [
+          "user_id"
+        ],
+        "title": "AccountLink",
+        "type": "object"
+      },
       "ActiveTenantOut": {
         "properties": {
           "permissions": {
@@ -25,6 +46,18 @@
             "title": "Roles",
             "type": "array"
           },
+          "squad_player_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Squad Player Id"
+          },
           "tenant_id": {
             "format": "uuid",
             "title": "Tenant Id",
@@ -42,6 +75,81 @@
           "permissions"
         ],
         "title": "ActiveTenantOut",
+        "type": "object"
+      },
+      "AerialOut": {
+        "description": "Hava skoru (0-1) ve skora giren bileşenler (A-81).",
+        "properties": {
+          "components": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Components",
+            "type": "array"
+          },
+          "value": {
+            "title": "Value",
+            "type": "number"
+          }
+        },
+        "required": [
+          "value",
+          "components"
+        ],
+        "title": "AerialOut",
+        "type": "object"
+      },
+      "AlertOut": {
+        "description": "Haftalık sıçrama ya da kafa vuruşu uyarısı: \"dikkat\" niteliğindedir, tanı değildir.",
+        "properties": {
+          "mean": {
+            "title": "Mean",
+            "type": "number"
+          },
+          "metric": {
+            "enum": [
+              "jumps",
+              "headers"
+            ],
+            "title": "Metric",
+            "type": "string"
+          },
+          "player": {
+            "$ref": "#/components/schemas/PlayerRef"
+          },
+          "sd": {
+            "title": "Sd",
+            "type": "number"
+          },
+          "threshold": {
+            "title": "Threshold",
+            "type": "number"
+          },
+          "total": {
+            "title": "Total",
+            "type": "integer"
+          },
+          "week": {
+            "format": "date",
+            "title": "Week",
+            "type": "string"
+          },
+          "weeks": {
+            "title": "Weeks",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "player",
+          "metric",
+          "week",
+          "total",
+          "mean",
+          "sd",
+          "threshold",
+          "weeks"
+        ],
+        "title": "AlertOut",
         "type": "object"
       },
       "AssetOut": {
@@ -190,6 +298,45 @@
           }
         },
         "title": "AssetPatch",
+        "type": "object"
+      },
+      "AssignmentsIn": {
+        "properties": {
+          "routine_id": {
+            "format": "uuid",
+            "title": "Routine Id",
+            "type": "string"
+          },
+          "slots": {
+            "items": {
+              "$ref": "#/components/schemas/SlotIn"
+            },
+            "maxItems": 30,
+            "title": "Slots",
+            "type": "array"
+          }
+        },
+        "required": [
+          "routine_id",
+          "slots"
+        ],
+        "title": "AssignmentsIn",
+        "type": "object"
+      },
+      "AssignmentsOut": {
+        "properties": {
+          "routines": {
+            "items": {
+              "$ref": "#/components/schemas/RoutineAssignmentOut"
+            },
+            "title": "Routines",
+            "type": "array"
+          }
+        },
+        "required": [
+          "routines"
+        ],
+        "title": "AssignmentsOut",
         "type": "object"
       },
       "BenchmarkOut": {
@@ -368,6 +515,117 @@
           "status"
         ],
         "title": "BriefingOut",
+        "type": "object"
+      },
+      "CardMarking": {
+        "properties": {
+          "target": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TargetOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "zonal": {
+            "title": "Zonal",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "target",
+          "zonal"
+        ],
+        "title": "CardMarking",
+        "type": "object"
+      },
+      "CardRoutine": {
+        "properties": {
+          "diagram": {
+            "$ref": "#/components/schemas/Diagram"
+          },
+          "diagram_player_id": {
+            "title": "Diagram Player Id",
+            "type": "string"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Number"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "routine_id": {
+            "format": "uuid",
+            "title": "Routine Id",
+            "type": "string"
+          },
+          "sp_type": {
+            "title": "Sp Type",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "routine_id",
+          "name",
+          "sp_type",
+          "version",
+          "diagram_player_id",
+          "role",
+          "number",
+          "label",
+          "diagram"
+        ],
+        "title": "CardRoutine",
+        "type": "object"
+      },
+      "CardsOut": {
+        "properties": {
+          "cards": {
+            "items": {
+              "$ref": "#/components/schemas/TaskCard"
+            },
+            "title": "Cards",
+            "type": "array"
+          },
+          "player": {
+            "$ref": "#/components/schemas/SquadPlayerOut"
+          }
+        },
+        "required": [
+          "player",
+          "cards"
+        ],
+        "title": "CardsOut",
         "type": "object"
       },
       "Change": {
@@ -764,6 +1022,59 @@
           "passed"
         ],
         "title": "ConditionOut",
+        "type": "object"
+      },
+      "DayPoint": {
+        "properties": {
+          "acute": {
+            "title": "Acute",
+            "type": "number"
+          },
+          "acwr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acwr"
+          },
+          "chronic": {
+            "title": "Chronic",
+            "type": "number"
+          },
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "load": {
+            "title": "Load",
+            "type": "number"
+          },
+          "z": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Z"
+          }
+        },
+        "required": [
+          "date",
+          "load",
+          "acute",
+          "chronic",
+          "acwr",
+          "z"
+        ],
+        "title": "DayPoint",
         "type": "object"
       },
       "DecisionIn": {
@@ -1639,6 +1950,37 @@
         "title": "HealthStatus",
         "type": "object"
       },
+      "HooperPoint": {
+        "properties": {
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "value": {
+            "title": "Value",
+            "type": "integer"
+          },
+          "z": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Z"
+          }
+        },
+        "required": [
+          "date",
+          "value",
+          "z"
+        ],
+        "title": "HooperPoint",
+        "type": "object"
+      },
       "ImportOut": {
         "properties": {
           "columns": {
@@ -2010,6 +2352,49 @@
         "title": "LlmUsage",
         "type": "object"
       },
+      "LoadIn": {
+        "properties": {
+          "headers": {
+            "default": 0,
+            "maximum": 500.0,
+            "minimum": 0.0,
+            "title": "Headers",
+            "type": "integer"
+          },
+          "jumps": {
+            "default": 0,
+            "maximum": 1000.0,
+            "minimum": 0.0,
+            "title": "Jumps",
+            "type": "integer"
+          },
+          "minutes": {
+            "maximum": 300.0,
+            "minimum": 0.0,
+            "title": "Minutes",
+            "type": "integer"
+          },
+          "rpe": {
+            "maximum": 10.0,
+            "minimum": 0.0,
+            "multipleOf": 0.5,
+            "title": "Rpe",
+            "type": "number"
+          },
+          "squad_player_id": {
+            "format": "uuid",
+            "title": "Squad Player Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "squad_player_id",
+          "rpe",
+          "minutes"
+        ],
+        "title": "LoadIn",
+        "type": "object"
+      },
       "MappingUpdate": {
         "properties": {
           "columns": {
@@ -2059,6 +2444,259 @@
           }
         },
         "title": "MappingUpdate",
+        "type": "object"
+      },
+      "MarkingIn": {
+        "properties": {
+          "assignments": {
+            "items": {
+              "$ref": "#/components/schemas/MarkingPair"
+            },
+            "maxItems": 30,
+            "title": "Assignments",
+            "type": "array"
+          },
+          "base_version": {
+            "minimum": 0.0,
+            "title": "Base Version",
+            "type": "integer"
+          },
+          "note": {
+            "anyOf": [
+              {
+                "maxLength": 400,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "zonal": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "maxItems": 11,
+            "title": "Zonal",
+            "type": "array"
+          }
+        },
+        "required": [
+          "base_version",
+          "assignments"
+        ],
+        "title": "MarkingIn",
+        "type": "object"
+      },
+      "MarkingOut": {
+        "properties": {
+          "fixture": {
+            "$ref": "#/components/schemas/PrepFixtureOut"
+          },
+          "saved": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/MarkingSaved"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "squad": {
+            "items": {
+              "$ref": "#/components/schemas/SquadPlayerOut"
+            },
+            "title": "Squad",
+            "type": "array"
+          },
+          "suggestion": {
+            "items": {
+              "$ref": "#/components/schemas/MarkingRow"
+            },
+            "title": "Suggestion",
+            "type": "array"
+          },
+          "targets": {
+            "items": {
+              "$ref": "#/components/schemas/TargetOut"
+            },
+            "title": "Targets",
+            "type": "array"
+          },
+          "versions": {
+            "title": "Versions",
+            "type": "integer"
+          },
+          "zonal": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Zonal",
+            "type": "array"
+          }
+        },
+        "required": [
+          "fixture",
+          "targets",
+          "squad",
+          "zonal",
+          "suggestion",
+          "saved",
+          "versions"
+        ],
+        "title": "MarkingOut",
+        "type": "object"
+      },
+      "MarkingPair": {
+        "properties": {
+          "marker_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Marker Id"
+          },
+          "target_id": {
+            "format": "uuid",
+            "title": "Target Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "target_id",
+          "marker_id"
+        ],
+        "title": "MarkingPair",
+        "type": "object"
+      },
+      "MarkingRow": {
+        "properties": {
+          "gap": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Gap"
+          },
+          "marker_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Marker Id"
+          },
+          "overridden": {
+            "title": "Overridden",
+            "type": "boolean"
+          },
+          "suggested_marker_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Suggested Marker Id"
+          },
+          "target_id": {
+            "format": "uuid",
+            "title": "Target Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "target_id",
+          "marker_id",
+          "suggested_marker_id",
+          "overridden",
+          "gap"
+        ],
+        "title": "MarkingRow",
+        "type": "object"
+      },
+      "MarkingSaved": {
+        "properties": {
+          "created_at": {
+            "format": "date-time",
+            "title": "Created At",
+            "type": "string"
+          },
+          "created_by": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/UserRef"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "note": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Note"
+          },
+          "overridden": {
+            "title": "Overridden",
+            "type": "integer"
+          },
+          "rows": {
+            "items": {
+              "$ref": "#/components/schemas/MarkingRow"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          },
+          "zonal": {
+            "items": {
+              "format": "uuid",
+              "type": "string"
+            },
+            "title": "Zonal",
+            "type": "array"
+          }
+        },
+        "required": [
+          "version",
+          "rows",
+          "zonal",
+          "overridden",
+          "note",
+          "created_at",
+          "created_by"
+        ],
+        "title": "MarkingSaved",
         "type": "object"
       },
       "MatchSetPieceOut": {
@@ -2396,6 +3034,71 @@
         "title": "MetricValueOut",
         "type": "object"
       },
+      "OverviewOut": {
+        "properties": {
+          "alerts": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/AlertOut"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Alerts"
+          },
+          "as_of": {
+            "format": "date",
+            "title": "As Of",
+            "type": "string"
+          },
+          "players": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/components/schemas/PlayerLoadRow"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Players"
+          },
+          "scope": {
+            "enum": [
+              "all",
+              "summary"
+            ],
+            "title": "Scope",
+            "type": "string"
+          },
+          "sessions": {
+            "items": {
+              "$ref": "#/components/schemas/TrainingSessionOut"
+            },
+            "title": "Sessions",
+            "type": "array"
+          },
+          "summary": {
+            "$ref": "#/components/schemas/TeamSummary"
+          }
+        },
+        "required": [
+          "as_of",
+          "scope",
+          "summary",
+          "players",
+          "alerts",
+          "sessions"
+        ],
+        "title": "OverviewOut",
+        "type": "object"
+      },
       "OverviewRecsOut": {
         "properties": {
           "recommendations": {
@@ -2464,7 +3167,8 @@
           "medical_notes",
           "rule_settings",
           "user_admin_audit",
-          "player_cards"
+          "player_cards",
+          "edit_squad"
         ],
         "title": "Permission",
         "type": "string"
@@ -2817,6 +3521,330 @@
           "total"
         ],
         "title": "PlanOut",
+        "type": "object"
+      },
+      "PlayerAccountOut": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "squad_player_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Squad Player Id"
+          },
+          "user_id": {
+            "format": "uuid",
+            "title": "User Id",
+            "type": "string"
+          }
+        },
+        "required": [
+          "user_id",
+          "name",
+          "squad_player_id"
+        ],
+        "title": "PlayerAccountOut",
+        "type": "object"
+      },
+      "PlayerLoadOut": {
+        "properties": {
+          "alerts": {
+            "items": {
+              "$ref": "#/components/schemas/AlertOut"
+            },
+            "title": "Alerts",
+            "type": "array"
+          },
+          "as_of": {
+            "format": "date",
+            "title": "As Of",
+            "type": "string"
+          },
+          "days": {
+            "items": {
+              "$ref": "#/components/schemas/DayPoint"
+            },
+            "title": "Days",
+            "type": "array"
+          },
+          "hooper": {
+            "items": {
+              "$ref": "#/components/schemas/HooperPoint"
+            },
+            "title": "Hooper",
+            "type": "array"
+          },
+          "low_data": {
+            "title": "Low Data",
+            "type": "boolean"
+          },
+          "player": {
+            "$ref": "#/components/schemas/PlayerRef"
+          },
+          "sessions": {
+            "items": {
+              "$ref": "#/components/schemas/PlayerSession"
+            },
+            "title": "Sessions",
+            "type": "array"
+          },
+          "weeks": {
+            "items": {
+              "$ref": "#/components/schemas/WeekPoint"
+            },
+            "title": "Weeks",
+            "type": "array"
+          },
+          "wellness": {
+            "items": {
+              "$ref": "#/components/schemas/WellnessOut"
+            },
+            "title": "Wellness",
+            "type": "array"
+          }
+        },
+        "required": [
+          "player",
+          "as_of",
+          "days",
+          "wellness",
+          "hooper",
+          "weeks",
+          "alerts",
+          "sessions",
+          "low_data"
+        ],
+        "title": "PlayerLoadOut",
+        "type": "object"
+      },
+      "PlayerLoadRow": {
+        "properties": {
+          "acute": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acute"
+          },
+          "acwr": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Acwr"
+          },
+          "chronic": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Chronic"
+          },
+          "days": {
+            "title": "Days",
+            "type": "integer"
+          },
+          "headers_week": {
+            "title": "Headers Week",
+            "type": "integer"
+          },
+          "hooper": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/HooperPoint"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "jumps_week": {
+            "title": "Jumps Week",
+            "type": "integer"
+          },
+          "last_session": {
+            "anyOf": [
+              {
+                "format": "date",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Session"
+          },
+          "load_7d": {
+            "title": "Load 7D",
+            "type": "number"
+          },
+          "low_data": {
+            "title": "Low Data",
+            "type": "boolean"
+          },
+          "player": {
+            "$ref": "#/components/schemas/PlayerRef"
+          },
+          "z": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Z"
+          }
+        },
+        "required": [
+          "player",
+          "last_session",
+          "load_7d",
+          "acute",
+          "chronic",
+          "acwr",
+          "z",
+          "hooper",
+          "jumps_week",
+          "headers_week",
+          "days",
+          "low_data"
+        ],
+        "title": "PlayerLoadRow",
+        "type": "object"
+      },
+      "PlayerRef": {
+        "properties": {
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_demo": {
+            "title": "Is Demo",
+            "type": "boolean"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "position": {
+            "title": "Position",
+            "type": "string"
+          },
+          "shirt_number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shirt Number"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "shirt_number",
+          "position",
+          "is_demo"
+        ],
+        "title": "PlayerRef",
+        "type": "object"
+      },
+      "PlayerSession": {
+        "properties": {
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "headers": {
+            "title": "Headers",
+            "type": "integer"
+          },
+          "jumps": {
+            "title": "Jumps",
+            "type": "integer"
+          },
+          "md_code": {
+            "anyOf": [
+              {
+                "enum": [
+                  "MD-4",
+                  "MD-3",
+                  "MD-2",
+                  "MD-1",
+                  "MD",
+                  "MD+1"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Md Code"
+          },
+          "minutes": {
+            "title": "Minutes",
+            "type": "integer"
+          },
+          "rpe": {
+            "title": "Rpe",
+            "type": "number"
+          },
+          "srpe": {
+            "title": "Srpe",
+            "type": "number"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "date",
+          "title",
+          "md_code",
+          "rpe",
+          "minutes",
+          "srpe",
+          "headers",
+          "jumps"
+        ],
+        "title": "PlayerSession",
         "type": "object"
       },
       "PrepFixtureOut": {
@@ -3447,6 +4475,67 @@
         ],
         "title": "Role",
         "type": "string"
+      },
+      "RoutineAssignmentOut": {
+        "properties": {
+          "assigned_version": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Assigned Version"
+          },
+          "diagram": {
+            "$ref": "#/components/schemas/Diagram"
+          },
+          "name": {
+            "title": "Name",
+            "type": "string"
+          },
+          "routine_id": {
+            "format": "uuid",
+            "title": "Routine Id",
+            "type": "string"
+          },
+          "slots": {
+            "items": {
+              "$ref": "#/components/schemas/SlotOut"
+            },
+            "title": "Slots",
+            "type": "array"
+          },
+          "sources": {
+            "items": {
+              "type": "string"
+            },
+            "title": "Sources",
+            "type": "array"
+          },
+          "sp_type": {
+            "title": "Sp Type",
+            "type": "string"
+          },
+          "version": {
+            "title": "Version",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "routine_id",
+          "name",
+          "sp_type",
+          "version",
+          "sources",
+          "slots",
+          "assigned_version",
+          "diagram"
+        ],
+        "title": "RoutineAssignmentOut",
+        "type": "object"
       },
       "RoutineCreate": {
         "properties": {
@@ -4196,6 +5285,68 @@
         "title": "SessionCreate",
         "type": "object"
       },
+      "SessionIn": {
+        "properties": {
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "fixture_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Fixture Id"
+          },
+          "loads": {
+            "items": {
+              "$ref": "#/components/schemas/LoadIn"
+            },
+            "maxItems": 40,
+            "minItems": 1,
+            "title": "Loads",
+            "type": "array"
+          },
+          "md_code": {
+            "anyOf": [
+              {
+                "enum": [
+                  "MD-4",
+                  "MD-3",
+                  "MD-2",
+                  "MD-1",
+                  "MD",
+                  "MD+1"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Md Code"
+          },
+          "title": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "date",
+          "title",
+          "loads"
+        ],
+        "title": "SessionIn",
+        "type": "object"
+      },
       "SessionOut": {
         "properties": {
           "created_at": {
@@ -4430,6 +5581,281 @@
           "approx"
         ],
         "title": "SideValue",
+        "type": "object"
+      },
+      "SlotIn": {
+        "properties": {
+          "diagram_player_id": {
+            "pattern": "^[A-Za-z0-9_-]{1,32}$",
+            "title": "Diagram Player Id",
+            "type": "string"
+          },
+          "squad_player_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Squad Player Id"
+          }
+        },
+        "required": [
+          "diagram_player_id",
+          "squad_player_id"
+        ],
+        "title": "SlotIn",
+        "type": "object"
+      },
+      "SlotOut": {
+        "properties": {
+          "diagram_player_id": {
+            "title": "Diagram Player Id",
+            "type": "string"
+          },
+          "label": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "number": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Number"
+          },
+          "role": {
+            "title": "Role",
+            "type": "string"
+          },
+          "squad_player_id": {
+            "anyOf": [
+              {
+                "format": "uuid",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Squad Player Id"
+          }
+        },
+        "required": [
+          "diagram_player_id",
+          "role",
+          "number",
+          "label",
+          "squad_player_id"
+        ],
+        "title": "SlotOut",
+        "type": "object"
+      },
+      "SquadPlayerIn": {
+        "properties": {
+          "active": {
+            "default": true,
+            "title": "Active",
+            "type": "boolean"
+          },
+          "aerial_win_pct": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Aerial Win Pct"
+          },
+          "height_cm": {
+            "anyOf": [
+              {
+                "maximum": 215.0,
+                "minimum": 150.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Height Cm"
+          },
+          "jump_score": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jump Score"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "position": {
+            "enum": [
+              "GK",
+              "DEF",
+              "MID",
+              "FWD"
+            ],
+            "title": "Position",
+            "type": "string"
+          },
+          "shirt_number": {
+            "anyOf": [
+              {
+                "maximum": 99.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shirt Number"
+          }
+        },
+        "required": [
+          "name",
+          "position"
+        ],
+        "title": "SquadPlayerIn",
+        "type": "object"
+      },
+      "SquadPlayerOut": {
+        "properties": {
+          "active": {
+            "default": true,
+            "title": "Active",
+            "type": "boolean"
+          },
+          "aerial": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AerialOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "aerial_win_pct": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Aerial Win Pct"
+          },
+          "has_account": {
+            "title": "Has Account",
+            "type": "boolean"
+          },
+          "height_cm": {
+            "anyOf": [
+              {
+                "maximum": 215.0,
+                "minimum": 150.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Height Cm"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_demo": {
+            "title": "Is Demo",
+            "type": "boolean"
+          },
+          "jump_score": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Jump Score"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "position": {
+            "enum": [
+              "GK",
+              "DEF",
+              "MID",
+              "FWD"
+            ],
+            "title": "Position",
+            "type": "string"
+          },
+          "shirt_number": {
+            "anyOf": [
+              {
+                "maximum": 99.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shirt Number"
+          }
+        },
+        "required": [
+          "name",
+          "position",
+          "id",
+          "is_demo",
+          "aerial",
+          "has_account"
+        ],
+        "title": "SquadPlayerOut",
         "type": "object"
       },
       "StandingRowOut": {
@@ -4672,6 +6098,212 @@
           "tags"
         ],
         "title": "TagsOut",
+        "type": "object"
+      },
+      "TargetIn": {
+        "properties": {
+          "aerial_win_pct": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Aerial Win Pct"
+          },
+          "height_cm": {
+            "anyOf": [
+              {
+                "maximum": 215.0,
+                "minimum": 150.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Height Cm"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "default": "",
+            "maxLength": 400,
+            "title": "Notes",
+            "type": "string"
+          },
+          "shirt_number": {
+            "anyOf": [
+              {
+                "maximum": 99.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shirt Number"
+          },
+          "sp_goals": {
+            "anyOf": [
+              {
+                "maximum": 50.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sp Goals"
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "title": "TargetIn",
+        "type": "object"
+      },
+      "TargetOut": {
+        "properties": {
+          "aerial_win_pct": {
+            "anyOf": [
+              {
+                "maximum": 1.0,
+                "minimum": 0.0,
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Aerial Win Pct"
+          },
+          "height_cm": {
+            "anyOf": [
+              {
+                "maximum": 215.0,
+                "minimum": 150.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Height Cm"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "name": {
+            "maxLength": 120,
+            "minLength": 1,
+            "title": "Name",
+            "type": "string"
+          },
+          "notes": {
+            "default": "",
+            "maxLength": 400,
+            "title": "Notes",
+            "type": "string"
+          },
+          "shirt_number": {
+            "anyOf": [
+              {
+                "maximum": 99.0,
+                "minimum": 1.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Shirt Number"
+          },
+          "sp_goals": {
+            "anyOf": [
+              {
+                "maximum": 50.0,
+                "minimum": 0.0,
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Sp Goals"
+          },
+          "team_id": {
+            "format": "uuid",
+            "title": "Team Id",
+            "type": "string"
+          },
+          "threat": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/AerialOut"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "updated_at": {
+            "format": "date-time",
+            "title": "Updated At",
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "id",
+          "team_id",
+          "threat",
+          "updated_at"
+        ],
+        "title": "TargetOut",
+        "type": "object"
+      },
+      "TaskCard": {
+        "properties": {
+          "fixture": {
+            "$ref": "#/components/schemas/PrepFixtureOut"
+          },
+          "marking": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/CardMarking"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "routines": {
+            "items": {
+              "$ref": "#/components/schemas/CardRoutine"
+            },
+            "title": "Routines",
+            "type": "array"
+          }
+        },
+        "required": [
+          "fixture",
+          "routines",
+          "marking"
+        ],
+        "title": "TaskCard",
         "type": "object"
       },
       "TeamMatchOut": {
@@ -4993,6 +6625,58 @@
         "title": "TeamRef",
         "type": "object"
       },
+      "TeamSummary": {
+        "properties": {
+          "mean_hooper_7d": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Hooper 7D"
+          },
+          "mean_load_7d": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Mean Load 7D"
+          },
+          "players": {
+            "title": "Players",
+            "type": "integer"
+          },
+          "players_with_data": {
+            "title": "Players With Data",
+            "type": "integer"
+          },
+          "sessions_7d": {
+            "title": "Sessions 7D",
+            "type": "integer"
+          },
+          "wellness_entries_7d": {
+            "title": "Wellness Entries 7D",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "players",
+          "players_with_data",
+          "sessions_7d",
+          "mean_load_7d",
+          "wellness_entries_7d",
+          "mean_hooper_7d"
+        ],
+        "title": "TeamSummary",
+        "type": "object"
+      },
       "TemplateOut": {
         "properties": {
           "diagram": {
@@ -5100,6 +6784,76 @@
           "confidence"
         ],
         "title": "ThreatOut",
+        "type": "object"
+      },
+      "TrainingSessionOut": {
+        "properties": {
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "headers": {
+            "title": "Headers",
+            "type": "integer"
+          },
+          "id": {
+            "format": "uuid",
+            "title": "Id",
+            "type": "string"
+          },
+          "is_demo": {
+            "title": "Is Demo",
+            "type": "boolean"
+          },
+          "jumps": {
+            "title": "Jumps",
+            "type": "integer"
+          },
+          "md_code": {
+            "anyOf": [
+              {
+                "enum": [
+                  "MD-4",
+                  "MD-3",
+                  "MD-2",
+                  "MD-1",
+                  "MD",
+                  "MD+1"
+                ],
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Md Code"
+          },
+          "mean_srpe": {
+            "title": "Mean Srpe",
+            "type": "number"
+          },
+          "players": {
+            "title": "Players",
+            "type": "integer"
+          },
+          "title": {
+            "title": "Title",
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "date",
+          "md_code",
+          "title",
+          "is_demo",
+          "players",
+          "mean_srpe",
+          "headers",
+          "jumps"
+        ],
+        "title": "TrainingSessionOut",
         "type": "object"
       },
       "UpcomingThreats": {
@@ -5399,6 +7153,123 @@
           "created_by"
         ],
         "title": "VersionSummary",
+        "type": "object"
+      },
+      "WeekPoint": {
+        "properties": {
+          "headers": {
+            "title": "Headers",
+            "type": "integer"
+          },
+          "jumps": {
+            "title": "Jumps",
+            "type": "integer"
+          },
+          "week": {
+            "format": "date",
+            "title": "Week",
+            "type": "string"
+          }
+        },
+        "required": [
+          "week",
+          "jumps",
+          "headers"
+        ],
+        "title": "WeekPoint",
+        "type": "object"
+      },
+      "WellnessIn": {
+        "properties": {
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "fatigue": {
+            "maximum": 7.0,
+            "minimum": 1.0,
+            "title": "Fatigue",
+            "type": "integer"
+          },
+          "sleep": {
+            "maximum": 7.0,
+            "minimum": 1.0,
+            "title": "Sleep",
+            "type": "integer"
+          },
+          "soreness": {
+            "maximum": 7.0,
+            "minimum": 1.0,
+            "title": "Soreness",
+            "type": "integer"
+          },
+          "squad_player_id": {
+            "format": "uuid",
+            "title": "Squad Player Id",
+            "type": "string"
+          },
+          "stress": {
+            "maximum": 7.0,
+            "minimum": 1.0,
+            "title": "Stress",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "squad_player_id",
+          "date",
+          "sleep",
+          "stress",
+          "fatigue",
+          "soreness"
+        ],
+        "title": "WellnessIn",
+        "type": "object"
+      },
+      "WellnessOut": {
+        "properties": {
+          "date": {
+            "format": "date",
+            "title": "Date",
+            "type": "string"
+          },
+          "fatigue": {
+            "title": "Fatigue",
+            "type": "integer"
+          },
+          "hooper": {
+            "title": "Hooper",
+            "type": "integer"
+          },
+          "sleep": {
+            "title": "Sleep",
+            "type": "integer"
+          },
+          "soreness": {
+            "title": "Soreness",
+            "type": "integer"
+          },
+          "squad_player_id": {
+            "format": "uuid",
+            "title": "Squad Player Id",
+            "type": "string"
+          },
+          "stress": {
+            "title": "Stress",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "squad_player_id",
+          "date",
+          "sleep",
+          "stress",
+          "fatigue",
+          "soreness",
+          "hooper"
+        ],
+        "title": "WellnessOut",
         "type": "object"
       }
     },
@@ -6069,6 +7940,144 @@
         ]
       }
     },
+    "/api/v1/fixtures/{fixture_id}/assignments": {
+      "get": {
+        "description": "Fikstürün rutinleri (kabul edilen öneri, plan maddesi ya da önceki atama) ve rolleri.",
+        "operationId": "getFixtureAssignments",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fixture_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Fixture Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssignmentsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Assignments",
+        "tags": [
+          "squad"
+        ]
+      },
+      "put": {
+        "description": "Bir rutinin rollerini kadro oyuncularına atar (A-87). Boş oyuncu atamayı kaldırır.",
+        "operationId": "saveFixtureAssignments",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fixture_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Fixture Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignmentsIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AssignmentsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Save Assignments",
+        "tags": [
+          "squad"
+        ]
+      }
+    },
     "/api/v1/fixtures/{fixture_id}/briefing": {
       "get": {
         "description": "Son doğrulanmış brifing; yoksa `status = none`.",
@@ -6194,6 +8203,160 @@
         "summary": "Generate Briefing",
         "tags": [
           "llm"
+        ]
+      }
+    },
+    "/api/v1/fixtures/{fixture_id}/marking": {
+      "get": {
+        "description": "Rakip hedefleri, kadro, Macar algoritması önerisi ve son kayıtlı eşleşme (ADR-0015).\n\n`zonal`: virgülle ayrılmış kadro kimlikleri; öneride sabit (alan savunması) tutulur. Verilmezse\nson kayıttaki alan oyuncuları kullanılır.",
+        "operationId": "getFixtureMarking",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fixture_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Fixture Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "zonal",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Zonal"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarkingOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Marking",
+        "tags": [
+          "squad"
+        ]
+      },
+      "put": {
+        "description": "Eşleşmeyi yeni sürüm olarak kaydeder; öneriden farklı satırlar \"elle değiştirildi\".",
+        "operationId": "saveFixtureMarking",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fixture_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Fixture Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MarkingIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MarkingOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Save Marking",
+        "tags": [
+          "squad"
         ]
       }
     },
@@ -6999,6 +9162,78 @@
         ]
       }
     },
+    "/api/v1/load/overview": {
+      "get": {
+        "description": "Takım yük tablosu ve uyarılar (`all`) ya da yalnız takım özeti (`summary`).",
+        "operationId": "getLoadOverview",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "until",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Until"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OverviewOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Load Overview",
+        "tags": [
+          "performance"
+        ]
+      }
+    },
     "/api/v1/me": {
       "get": {
         "operationId": "getMe",
@@ -7187,6 +9422,98 @@
         "summary": "Update Plan Item",
         "tags": [
           "prep"
+        ]
+      }
+    },
+    "/api/v1/players/{player_id}/load": {
+      "get": {
+        "description": "Oyuncunun günlük yük trendi, iyi oluşu, haftalık sıçrama ve kafa vuruşu, uyarıları.",
+        "operationId": "getPlayerLoad",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "player_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Player Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "until",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Until"
+            }
+          },
+          {
+            "in": "query",
+            "name": "days",
+            "required": false,
+            "schema": {
+              "default": 56,
+              "title": "Days",
+              "type": "integer"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerLoadOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Player Load",
+        "tags": [
+          "performance"
         ]
       }
     },
@@ -8882,6 +11209,560 @@
         ]
       }
     },
+    "/api/v1/sessions": {
+      "get": {
+        "description": "Seanslar ve takım ortalamaları (oyuncu ayrıntısı yok).",
+        "operationId": "listTrainingSessions",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "since",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Since"
+            }
+          },
+          {
+            "in": "query",
+            "name": "until",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "format": "date",
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Until"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TrainingSessionOut"
+                  },
+                  "title": "Response Listtrainingsessions",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Sessions",
+        "tags": [
+          "performance"
+        ]
+      },
+      "post": {
+        "description": "Seans ve oyuncu başına RPE, süre, kafa vuruşu ve sıçrama kaydı (A-83).",
+        "operationId": "createTrainingSession",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SessionIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TrainingSessionOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Session",
+        "tags": [
+          "performance"
+        ]
+      }
+    },
+    "/api/v1/squad": {
+      "get": {
+        "description": "Kulübün kadrosu ve hava kapasitesi (A-79, A-81).",
+        "operationId": "listSquad",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "include_inactive",
+            "required": false,
+            "schema": {
+              "default": false,
+              "title": "Include Inactive",
+              "type": "boolean"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/SquadPlayerOut"
+                  },
+                  "title": "Response Listsquad",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Squad",
+        "tags": [
+          "squad"
+        ]
+      },
+      "post": {
+        "operationId": "createSquadPlayer",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SquadPlayerIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SquadPlayerOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Squad Player",
+        "tags": [
+          "squad"
+        ]
+      }
+    },
+    "/api/v1/squad/accounts": {
+      "get": {
+        "description": "Oyuncu rolündeki üyeler ve bağlı oldukları kadro kaydı.",
+        "operationId": "listPlayerAccounts",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/PlayerAccountOut"
+                  },
+                  "title": "Response Listplayeraccounts",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Player Accounts",
+        "tags": [
+          "squad"
+        ]
+      }
+    },
+    "/api/v1/squad/{player_id}": {
+      "put": {
+        "description": "Oyuncuyu günceller; kadrodan çıkarmak için `active=false` (kayıtlar silinmez).",
+        "operationId": "updateSquadPlayer",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "player_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Player Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SquadPlayerIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SquadPlayerOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Squad Player",
+        "tags": [
+          "squad"
+        ]
+      }
+    },
+    "/api/v1/squad/{player_id}/account": {
+      "put": {
+        "description": "Oyuncu hesabını kadro kaydına bağlar (A-79). Kayıt başına en çok bir hesap.",
+        "operationId": "linkSquadAccount",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "player_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Player Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AccountLink"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Link Account",
+        "tags": [
+          "squad"
+        ]
+      }
+    },
+    "/api/v1/squad/{player_id}/cards": {
+      "get": {
+        "description": "Oyuncunun yaklaşan maçlardaki görev kartları: rutin rolü ve markaj görevi (A-87).",
+        "operationId": "getPlayerCards",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "player_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Player Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CardsOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Cards",
+        "tags": [
+          "squad"
+        ]
+      }
+    },
     "/api/v1/tagging-sessions": {
       "post": {
         "description": "Maçın kayıt oturumunu döner; yoksa açar. Aynı maçı kaydeden cihazlar paylaşır (A-56).",
@@ -9115,6 +11996,136 @@
         ]
       }
     },
+    "/api/v1/targets/{target_id}": {
+      "delete": {
+        "description": "Hedefi listeden çıkarır. Kayıtlı markaj sürümleri değişmez.",
+        "operationId": "deleteOpponentTarget",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "target_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Target Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Delete Target",
+        "tags": [
+          "squad"
+        ]
+      },
+      "put": {
+        "operationId": "updateOpponentTarget",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "target_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Target Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TargetIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TargetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Update Target",
+        "tags": [
+          "squad"
+        ]
+      }
+    },
     "/api/v1/teams/{team_id}/profile": {
       "get": {
         "description": "Takım profili: metrikler ve sıralar, lig kıyasları, kendi kulübümüzün değerleri, son puan\ndurumu satırı ve son 5 maçın formu.",
@@ -9317,6 +12328,146 @@
         "summary": "List Team Set Pieces",
         "tags": [
           "league"
+        ]
+      }
+    },
+    "/api/v1/teams/{team_id}/targets": {
+      "get": {
+        "operationId": "listOpponentTargets",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "team_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Team Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TargetOut"
+                  },
+                  "title": "Response Listopponenttargets",
+                  "type": "array"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "List Targets",
+        "tags": [
+          "squad"
+        ]
+      },
+      "post": {
+        "operationId": "createOpponentTarget",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "team_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Team Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TargetIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TargetOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Create Target",
+        "tags": [
+          "squad"
         ]
       }
     },
@@ -9805,6 +12956,71 @@
         "summary": "Create Upload",
         "tags": [
           "video"
+        ]
+      }
+    },
+    "/api/v1/wellness": {
+      "post": {
+        "description": "Günlük iyi oluş kaydı; aynı gün yeniden giriş üzerine yazar (A-83). Puanlar şifrelenir.",
+        "operationId": "saveWellness",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WellnessIn"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WellnessOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Save Wellness",
+        "tags": [
+          "performance"
         ]
       }
     },

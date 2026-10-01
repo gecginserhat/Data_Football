@@ -36,7 +36,7 @@ class SessionIn(BaseModel):
     loads: list[LoadIn] = Field(min_length=1, max_length=40)
 
 
-class SessionOut(BaseModel):
+class TrainingSessionOut(BaseModel):
     id: uuid.UUID
     date: dt.date
     md_code: MdCode | None
@@ -127,7 +127,7 @@ class OverviewOut(BaseModel):
     players: list[PlayerLoadRow] | None
     """Yalnız tam erişimde (`performance`, `medical`)."""
     alerts: list[AlertOut] | None
-    sessions: list[SessionOut]
+    sessions: list[TrainingSessionOut]
 
 
 class DayPoint(BaseModel):

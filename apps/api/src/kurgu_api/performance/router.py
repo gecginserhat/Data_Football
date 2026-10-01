@@ -27,7 +27,7 @@ from kurgu_api.performance.schemas import (
     PlayerLoadRow,
     PlayerSession,
     SessionIn,
-    SessionOut,
+    TrainingSessionOut,
     TeamSummary,
     WeekPoint,
     WellnessIn,
@@ -84,10 +84,10 @@ async def _audit_read(
     )
 
 
-async def _sessions(session: SessionDep, since: dt.date, until: dt.date) -> list[SessionOut]:
+async def _sessions(session: SessionDep, since: dt.date, until: dt.date) -> list[TrainingSessionOut]:
     rows = await session.execute(text(SESSIONS_SQL), {"since": since, "until": until, "limit": 20})
     return [
-        SessionOut(
+        TrainingSessionOut(
             id=r.id,
             date=r.date,
             md_code=r.md_code,
@@ -104,13 +104,13 @@ async def _sessions(session: SessionDep, since: dt.date, until: dt.date) -> list
 
 @router.post(
     "/sessions",
-    response_model=SessionOut,
+    response_model=TrainingSessionOut,
     status_code=201,
     operation_id="createTrainingSession",
 )
 async def create_session(
     session: SessionDep, principal: PrincipalDep, scope: ScopeDep, body: SessionIn
-) -> SessionOut:
+) -> TrainingSessionOut:
     """Seans ve oyuncu başına RPE, süre, kafa vuruşu ve sıçrama kaydı (A-83)."""
     _full(scope)
     ids = [load.squad_player_id for load in body.loads]
@@ -173,7 +173,7 @@ async def create_session(
 
 @router.get(
     "/sessions",
-    response_model=list[SessionOut],
+    response_model=list[TrainingSessionOut],
     operation_id="listTrainingSessions",
 )
 async def list_sessions(
@@ -181,7 +181,7 @@ async def list_sessions(
     scope: ScopeDep,
     since: dt.date | None = None,
     until: dt.date | None = None,
-) -> list[SessionOut]:
+) -> list[TrainingSessionOut]:
     """Seanslar ve takım ortalamaları (oyuncu ayrıntısı yok)."""
     if scope == "own":
         raise ProblemError(403, "forbidden", "Players can see only their own load")

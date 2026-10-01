@@ -136,6 +136,8 @@ class RoutineAssignmentOut(BaseModel):
     slots: list[SlotOut]
     assigned_version: int | None
     """Atamaların yapıldığı sürüm; güncel sürümden eskiyse arayüz uyarır."""
+    diagram: Diagram
+    """Güncel sürümün çizimi."""
 
 
 class AssignmentsOut(BaseModel):

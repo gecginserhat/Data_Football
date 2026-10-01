@@ -566,6 +566,7 @@ async def _assignments(session: SessionDep, fixture_id: uuid.UUID) -> Assignment
                     for p in _own_players(row.diagram)
                 ],
                 assigned_version=min(versions) if versions else None,
+                diagram=row.diagram,
             )
         )
     return AssignmentsOut(routines=out)
