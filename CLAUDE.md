@@ -28,8 +28,9 @@ Kurgu, profesyonel futbol kulüpleri için bir duran top analiz ve hazırlık pl
 ## Komutlar (bu listeyi güncel tut)
 - `make dev`: tüm servisleri ayağa kaldırır (göç ve geliştirme kimlikleri dahil). `make down`, `make logs`, `make ps`.
 - `make doctor`: araçları, satır sonu ayarını ve portları kontrol eder.
-- `make seed`: tohum verisini yükler (geliştirme kimlikleri, lig verisi, lisanslar; idempotent) ve metrik görünümlerini yeniler (ADR-0007). `make seed-report`: bütünlük raporunu yeniden üretir.
+- `make seed`: tohum verisini yükler (geliştirme kimlikleri, lig verisi, lisanslar; idempotent) ve metrik görünümlerini yeniler (ADR-0007). `make seed-report`: bütünlük raporunu yeniden üretir. `uv run kurgu-seed --templates`: yalnızca rutin şablonlarını yükler (her ortamda; A-40).
 - `make statsbomb-fetch` (StatsBomb Open Data'yı `data/statsbomb` önbelleğine indirir, repoya girmez) · `make statsbomb-load` (worker ile yükler) · `make validate` (duran top doğrulama raporu) · `make spadl-compare` (socceraction karşılaştırması).
+- Rutinler: web `/routines` (kütüphane, şablonlar, editör, sürüm karşılaştırma); kart indirme `GET /routines/{id}/versions/{v}/export?format=pdf|png`.
 - CSV/Excel içe aktarım: web `/admin/imports` (yalnız yönetici); API `POST /imports`, `PUT /imports/{id}/mapping`, `POST /imports/{id}/commit`.
 - `make test` (`test-py`, `test-js`) · `make lint` · `make typecheck` · `make e2e`
 - `make migrate`: Alembic upgrade. `make migrate-cycle`: upgrade → downgrade → upgrade.
