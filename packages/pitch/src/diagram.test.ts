@@ -12,9 +12,11 @@ import {
   mirrorSide,
   nextId,
   pointOnCurve,
+  curveThrough,
   roleLabel,
   ROLES,
   snap,
+  viewXMin,
 } from "./diagram";
 
 const sample = vectors.sample as unknown as Diagram;
@@ -138,5 +140,32 @@ describe("helpers", () => {
     expect(roleLabel("own", "taker", "en")).toBe("Taker");
     expect(roleLabel("own", "unknown_role", "tr")).toBe("unknown_role");
     expect(ROLES.opponent.some((r) => r.id === "gk")).toBe(true);
+  });
+});
+
+describe("curveThrough", () => {
+  it("inverts the curve midpoint", () => {
+    for (const curve of [-0.6, -0.2, 0, 0.15, 0.5]) {
+      const from: [number, number] = [104.3, 1.6];
+      const to: [number, number] = [100.6, 27.4];
+      const mid = pointOnCurve(from, to, curve, 0.5);
+      expect(curveThrough(from, to, mid)).toBeCloseTo(curve, 3);
+    }
+  });
+
+  it("is limited to [-1, 1] and zero for a degenerate line", () => {
+    expect(curveThrough([90, 30], [92, 30], [91, 60])).toBe(1);
+    expect(curveThrough([90, 30], [92, 30], [91, 0])).toBe(-1);
+    expect(curveThrough([90, 30], [90, 30], [91, 31])).toBe(0);
+  });
+});
+
+describe("viewXMin", () => {
+  it("starts at 70 for set pieces near the box and widens for deeper elements", () => {
+    expect(viewXMin(sample)).toBe(70);
+    const deep: Diagram = { ...sample, players: [{ ...sample.players[0]!, x: 60 }] };
+    expect(viewXMin(deep)).toBe(55);
+    expect(viewXMin(sample, { ...sample, players: [{ ...sample.players[0]!, x: 40 }] })).toBe(52.5);
+    expect(viewXMin(emptyDiagram())).toBe(70);
   });
 });

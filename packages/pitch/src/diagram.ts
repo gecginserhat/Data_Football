@@ -102,6 +102,22 @@ export function endTangent(from: Point, to: Point, curve: number): Point {
   return [dx / len, dy / len];
 }
 
+/**
+ * Eğrinin orta noktasını (t = 0,5) verilen noktaya taşıyan kavis: Bézier orta noktası
+ * = orta nokta + curve/2 × (−dy, dx), yani curve = 2 × ((p − orta) · (−dy, dx)) / L².
+ * Editördeki kavis tutamacı bunu kullanır; sonuç [−1, 1] aralığına sınırlanır.
+ */
+export function curveThrough(from: Point, to: Point, p: Point): number {
+  const dx = to[0] - from[0];
+  const dy = to[1] - from[1];
+  const len2 = dx * dx + dy * dy;
+  if (len2 < 1e-9) return 0;
+  const mx = (from[0] + to[0]) / 2;
+  const my = (from[1] + to[1]) / 2;
+  const curve = (2 * ((p[0] - mx) * -dy + (p[1] - my) * dx)) / len2;
+  return round(clamp(curve, -1, 1), 3);
+}
+
 export function mirrorPoint(p: Point): Point {
   return [p[0], round(PITCH_WIDTH - p[1], 4)];
 }
@@ -144,6 +160,22 @@ export function snap(v: number, step: number): number {
 
 export function clamp(v: number, min: number, max: number): number {
   return Math.min(max, Math.max(min, v));
+}
+
+/**
+ * Önizleme ve dışa aktarımda gösterilen sahanın alt sınırı: en az x = 70, daha geride öğe
+ * varsa 5 m payla yarım sahaya kadar. Python karşılığı `routine_sheet.view_x_min`.
+ */
+export function viewXMin(...diagrams: Diagram[]): number {
+  const xs: number[] = [];
+  for (const d of diagrams) {
+    for (const p of d.players) xs.push(p.x);
+    for (const l of d.lines) xs.push(l.from[0], l.to[0]);
+    for (const z of d.zones) xs.push(z.x);
+    for (const f of d.frames) for (const pos of Object.values(f.positions)) xs.push(pos[0]);
+  }
+  const lowest = xs.length ? Math.min(...xs) : PITCH_LENGTH;
+  return Math.max(HALF_PITCH_X_MIN, Math.min(70, Math.floor(lowest - 5)));
 }
 
 /** Noktayı editörün yarım sahasına sığdırır (A-45). */
