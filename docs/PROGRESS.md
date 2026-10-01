@@ -1,7 +1,7 @@
 # İlerleme
 
 **Durum:** Faz 0-2 tamam ve `main`'e birleşti (PR #1-#3, 01.10.2026). Faz 3 (rutin kütüphanesi) tamam; `faz-3-rutinler` dalında, birleştirme onayı bekliyor.
-**Sonraki adım:** Faz 5 (maç içi kayıt ve video). Faz 3 (PR #4) ve Faz 4 PR'ı birleştirme onayı bekliyor.
+**Sonraki adım:** Faz 5 görevleri (aşağıda) `faz-5-canli` dalında.
 
 Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce). Her commit öncesi `make lint typecheck test` temiz olmalı. Bir görev SPEC §19 DoD'yi karşılamadan işaretlenmez. Faz sonunda kabul kriterleri işaretlenir ve kısa rapor verilir.
 
@@ -325,6 +325,38 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 - [x] E2E: SAM–TS 7. hafta hazırlığında iki kabul önerisi → kabul (plana madde eklenir) → gerekçeli red → plan şablonu, sorumlu ve tamamlama → ilerleme; kural eşiği değiştir → deneme modu; axe.
 - [x] `docs/demo/faz4/` ekran görüntüleri; CLAUDE.md komutları güncel.
 - [x] Kabul kriterleri işaretlendi, kısa rapor verildi.
+
+## Faz 5: Canlı kayıt ve video
+
+### Kabul kriterleri (SPEC §19)
+- [ ] PWA kurulabilir. Uçak modu E2E testi geçer. Çoklu cihaz senkronizasyonu çalışır.
+- [ ] Video yükleme → HLS → klip → duran topa bağlama → rutin istatistiğinde klip görünür.
+
+### Görevler
+
+**5.1 Senkronizasyon (ADR-0004, A-56 … A-59)**
+- [ ] Göç `0006_live_video`: `live_tags.server_seq`, maç başına tek oturum, `video_assets`, `video_clips`. RLS, izinler, göç döngüsü.
+- [ ] `POST /tagging-sessions` (maç başına al ya da aç), `POST /tagging-sessions/{id}/sync` (toplu, idempotent, son yazan kazanır, silme kazanır), `GET /tagging-sessions/{id}/tags?since=`.
+- [ ] Kayıt → `set_pieces` (`source='live_tag'`); metrik görünümü yenileme işi.
+- [ ] Testler: idempotentlik, sıralama, mezar taşı, iki cihaz, izinler, kiracı izolasyonu.
+
+**5.2 Video (ADR-0010, A-60 … A-62)**
+- [ ] Depo: imzalı çok parçalı yükleme (S3/MinIO) ve HMAC imzalı yerel adresler.
+- [ ] `POST /video/uploads`, `POST /video/assets/{id}/complete`, `GET /video/assets`, oynatma listesi, `GET/POST /clips`, `PATCH/DELETE /clips/{id}`.
+- [ ] Worker: ffmpeg ile HLS ve süre; durum makinesi.
+- [ ] Rutin istatistiğinde klipler.
+- [ ] Testler: imza, parça birleştirme, HLS üretimi (gerçek ffmpeg), klip doğrulaması.
+
+**5.3 Arayüz**
+- [ ] PWA: manifest, simgeler, servis çalışanı (uygulama kabuğu ve `/live/*` önbelleği).
+- [ ] `/live` ve `/live/[fixtureId]`: büyük dokunma hedefleri (≥ 56 px), kısayollar, Dexie kuyruğu, çevrimiçi/çevrimdışı ve bekleyen sayısı, 10 sn geri al, maç saati, diğer cihazların kayıtları.
+- [ ] `/video`: yükleme (parçalı, ilerleme), dönüştürme durumu, oynatıcı (hls.js), klip kesme ve duran topa bağlama.
+- [ ] Rutin sayfasında klipler; hazırlık sayfasında öneri geri bildirimi (A-63).
+
+**5.4 Doğrulama ve kapanış**
+- [ ] E2E: uçak modunda 20 kayıt → çevrimiçi → sunucuda 20 kayıt, yineleme yok; iki cihaz senkronizasyonu; video yükleme → HLS → klip → duran top → rutin sayfasında klip; axe.
+- [ ] `docs/demo/faz5/` ekran görüntüleri; CLAUDE.md komutları güncel.
+- [ ] Kabul kriterleri işaretlendi, kısa rapor verildi.
 
 ---
 

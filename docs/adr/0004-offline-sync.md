@@ -1,6 +1,6 @@
 # ADR-0004: Canlı kayıt için çevrimdışı öncelikli senkronizasyon
 
-- **Durum:** Önerildi · 30.09.2026 (uygulama Faz 5)
+- **Durum:** Kabul edildi · 01.10.2026 (Faz 5; bildirim WebSocket yerine çekmeyle, A-57)
 - **İlgili:** SPEC §11 "Çevrimdışı senkronizasyon protokolü", §13.2 "Canlı kayıt", §16 E2E akış 2
 
 ## Bağlam

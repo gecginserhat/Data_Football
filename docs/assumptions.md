@@ -144,3 +144,23 @@ Kabul edilen öneri plana madde ekler: hücum ve denge önerileri MD-3'e (sıkı
 **A-54 · VARSAYIM · Öneri geri beslemesi Faz 5'te.** SPEC §7.1'deki "maçtan sonra öneriyle ilişkili duran top sonuçları", maç içi kayda (Faz 5) bağlı. Faz 4'te karar geçmişi tutulur; sonuç paneli, "ilişki, neden değil" uyarısıyla birlikte Faz 5'te eklenir.
 
 **A-55 · VARSAYIM · Genel bakış önerileri tek uçtan.** SPEC §11'deki `GET /recommendations/season` yerine `GET /prep/overview` kullanılır. Tek çağrı hem sezon önerilerini hem yaklaşan maçların tehdit etiketlerini (en çok iki savunma önerisi) ve fikstür bilgisini döner; `/prep` listesi de aynı ucu okur. Sezon önerileri karar almaz, yalnızca gösterilir.
+
+## Faz 5
+
+**A-56 · VARSAYIM · Maç başına tek kayıt oturumu.** Bir kulüpte bir maç için tek `tagging_session` vardır; aynı maçı kaydeden tüm cihazlar ona katılır. `POST /tagging-sessions {match_id}` oturum yoksa açar, varsa var olanı döner. Böylece çoklu cihaz senkronizasyonu tek bir sıra numarası (`server_seq`) üzerinden yürür.
+
+**A-57 · VARSAYIM · Çoklu cihaz bildirimi WebSocket yerine çekmeyle.** SPEC §11 `WS /ws/tagging/{id}` diyor. Erişim token'ı tarayıcıya verilmediği için (ADR-0005) tarayıcı API'ye doğrudan WebSocket açamaz. Bu fazda istemci çevrimiçiyken 5 saniyede bir `since=server_seq` ile değişiklikleri web sunucusu üzerinden çeker. Protokol ADR-0004'teki gibidir; ileride WebSocket eklenirse yalnızca bildirim katmanı değişir.
+
+**A-58 · VARSAYIM · Canlı kayıt alanları ve kısayollar.** Bir kayıt şunları taşır: tür (`C` korner, `F` serbest vuruş, `T` uzun taç), kullanan takım (`H` ev sahibi, `A` deplasman), sonuç, isteğe bağlı rutin (`R`), isteğe bağlı ilk temas (hücum ya da savunma takımı), devre ve maç saati (saniye). SPEC §3.2 sekiz sonuç tanımlar; kısayollar `1-8`: gol, isabetli şut, isabetsiz şut, engellenen şut, ilk temas şutsuz, uzaklaştırma, top kontrolde kaldı, kontra yendi. Sonuca basmak kaydı tamamlar (tür ve takım bir sonraki kayıt için seçili kalır), yani bir kayıt en fazla üç dokunuştur. Rutin yalnızca kulübün kendi duran toplarında seçilebilir.
+
+**A-59 · VARSAYIM · Canlı kaydın duran top satırına dönüşmesi.** Senkronize kayıt, aynı kimlikle `set_pieces` satırı olur (`source='live_tag'`). Şut sayısı sonuçtan türetilir (gol ve şut sonuçları 1). Canlı kayıtta xG yoktur ve 0 yazılır; arayüz bunu "xG yok" diye gösterir. Silinen kayıt (mezar taşı) duran top satırını da siler. Senkronizasyondan sonra metrik görünümlerinin yenilenmesi worker kuyruğuna alınır.
+
+**A-60 · VARSAYIM · Video yükleme.** Tarayıcı dosyayı parçalar halinde doğrudan depoya yükler: S3/MinIO'da imzalı çok parçalı yükleme, yerel depoda API'nin HMAC ile imzaladığı kısa ömürlü yükleme adresleri (geliştirme ve test). Sınırlar: en çok 8 GB, parça 16 MB, türler `video/mp4`, `video/quicktime`, `video/x-matroska`, `video/webm`. Video bir maça bağlanır; `offset_s` maç saatinin videodaki başlangıcıdır ve elle girilir.
+
+**A-61 · VARSAYIM · HLS dönüştürme.** Worker videoyu tek kalitede (720p, H.264/AAC, 6 sn parça) HLS'ye çevirir. ffmpeg, `imageio-ffmpeg` paketinin içindeki derlenmiş ikiliyle gelir; böylece WSL'de ya da CI'da `sudo apt` gerekmez. Çoklu kalite (ABR) sonraya bırakıldı. Oynatma listesi web sunucusu üzerinden verilir ve parçalar 10 dakikalık imzalı adreslerle okunur.
+
+**A-62 · VARSAYIM · Klip ve duran top bağı.** Bağ `video_clips.set_piece_id` alanındadır; `set_pieces.video_clip_id` kullanılmaz. Bir duran topun birden fazla klibi olabilir. Rutin sayfası, o rutinle kaydedilmiş duran topların kliplerini listeler.
+
+**A-63 · VARSAYIM · Öneri geri bildirimi (A-54'ün devamı).** Oynanmış bir maçın hazırlık sayfasında, kabul edilen her öneri için maçtaki ilgili canlı kayıtlar gösterilir: hücum önerilerinde kulübün, savunma önerilerinde rakibin duran topları. Panelde "ilişki, neden değil" uyarısı bulunur; başarı puanı hesaplanmaz.
+
+**A-64 · VARSAYIM · Test videosu.** E2E testi için ffmpeg'in `testsrc` deseniyle üretilmiş 10 saniyelik sentetik bir video repoya eklenir. Gerçek maç görüntüsü kullanılmaz.
