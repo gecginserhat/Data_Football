@@ -466,19 +466,33 @@ async def list_fixtures(
     if after:
         ids = [str(r.id) for r in rows]
         rows = rows[ids.index(after[0]) + 1 :] if after[0] in ids else []
-    items = [
-        FixtureOut(
-            id=r.id,
-            season_id=r.season_id,
-            week=r.week,
-            kickoff_at=r.kickoff_at,
-            status=r.status,
-            home=TeamRef(id=r.home_id, code=r.home_code, name=r.home_name),
-            away=TeamRef(id=r.away_id, code=r.away_code, name=r.away_name),
-            home_score=r.home_score,
-            away_score=r.away_score,
-        )
-        for r in rows[:limit]
-    ]
+    items = [_fixture_out(r) for r in rows[:limit]]
     next_cursor = encode_cursor([str(items[-1].id)]) if len(rows) > limit else None
     return etag_response(request, FixturePage(items=items, next_cursor=next_cursor))
+
+
+def _fixture_out(r: Any) -> FixtureOut:
+    return FixtureOut(
+        id=r.id,
+        season_id=r.season_id,
+        week=r.week,
+        kickoff_at=r.kickoff_at,
+        status=r.status,
+        home=TeamRef(id=r.home_id, code=r.home_code, name=r.home_name),
+        away=TeamRef(id=r.away_id, code=r.away_code, name=r.away_name),
+        home_score=r.home_score,
+        away_score=r.away_score,
+    )
+
+
+@router.get("/fixtures/{fixture_id}", response_model=FixtureOut, operation_id="getFixture")
+async def get_fixture(session: SessionDep, fixture_id: uuid.UUID) -> FixtureOut:
+    """Tek maç (canlı kayıt ve video ekranları için)."""
+    row = (
+        await session.execute(
+            text(FIXTURES_SQL.format(filters=" and m.id = :id")), {"id": fixture_id, "limit": 1}
+        )
+    ).one_or_none()
+    if row is None:
+        raise ProblemError(404, "not-found", "Fixture not found")
+    return _fixture_out(row)

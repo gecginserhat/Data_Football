@@ -64,6 +64,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/fixtures/{fixture_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Fixture
+         * @description Tek maç (canlı kayıt ve video ekranları için).
+         */
+        get: operations["getFixture"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/fixtures/{fixture_id}/plan": {
         parameters: {
             query?: never;
@@ -2712,6 +2732,39 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["FixturePage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getFixture: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                fixture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["FixtureOut"];
                 };
             };
             /** @description Validation Error */

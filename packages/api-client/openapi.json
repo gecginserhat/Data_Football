@@ -5517,6 +5517,71 @@
         ]
       }
     },
+    "/api/v1/fixtures/{fixture_id}": {
+      "get": {
+        "description": "Tek maç (canlı kayıt ve video ekranları için).",
+        "operationId": "getFixture",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "fixture_id",
+            "required": true,
+            "schema": {
+              "format": "uuid",
+              "title": "Fixture Id",
+              "type": "string"
+            }
+          },
+          {
+            "in": "header",
+            "name": "X-Kurgu-Tenant",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Kurgu-Tenant"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FixtureOut"
+                }
+              }
+            },
+            "description": "Successful Response"
+          },
+          "422": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            },
+            "description": "Validation Error"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "summary": "Get Fixture",
+        "tags": [
+          "league"
+        ]
+      }
+    },
     "/api/v1/fixtures/{fixture_id}/plan": {
       "post": {
         "description": "Şablondan MD planı (A-52). Plan zaten varsa 409. Kabul edilmiş öneriler eklenir.",
