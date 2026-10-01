@@ -4,9 +4,10 @@ import { getFormatter, getTranslations } from "next-intl/server";
 import { NotLoaded, PageTitle, Section } from "@/components/analysis/States";
 import { HooperChart, LoadChart, WeeklyChart } from "@/components/performance/Charts";
 import { WellnessForm } from "@/components/performance/WellnessForm";
+import { PrivacySection } from "@/components/privacy/PrivacySection";
 import { getPlayerLoad, loadScope, todayIso } from "@/lib/performance";
 
-type Search = { error?: string; saved?: string };
+type Search = { error?: string; saved?: string; privacyError?: string; privacySaved?: string };
 
 /** Oyuncu yük ayrıntısı: günlük sRPE ve EWMA, Hooper, haftalık sıçrama ve kafa vuruşu (§8.2). */
 export default async function PlayerLoadPage({
@@ -153,6 +154,15 @@ export default async function PlayerLoadPage({
             returnTo="player"
           />
         </Section>
+      ) : null}
+
+      {scope === "all" ? (
+        <PrivacySection
+          playerId={p.id}
+          returnTo="player"
+          error={search.privacyError}
+          saved={search.privacySaved}
+        />
       ) : null}
 
       <Section id="player-sessions" title={t("sessions.title")}>

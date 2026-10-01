@@ -1322,7 +1322,8 @@
       "forbidden": "You don't have permission for this.",
       "unknown-player": "Player not found in the squad.",
       "duplicate-player": "A player appears twice in the session.",
-      "future-date": "Wellness cannot be entered for a future date."
+      "future-date": "Wellness cannot be entered for a future date.",
+      "consent-required": "This player has no wellness consent. Record consent first."
     },
     "saved": {
       "session": "Session saved.",
@@ -1456,5 +1457,101 @@
       "noLoad": "No sessions recorded.",
       "noWellness": "No wellness entries."
     }
+  },
+  "privacy": {
+    "title": "Personal data (KVKK)",
+    "subtitle": "Data region: {region}. Inventory, retention and data subject requests.",
+    "breadcrumb": "Location",
+    "admin": "Admin",
+    "adminLink": "Personal data (KVKK)",
+    "adminLinkDescription": "Data inventory, retention periods, erasure requests.",
+    "pending": "Saving…",
+    "demo": "Sample data",
+    "errors": {
+      "generic": "Could not complete ({code}).",
+      "invalid": "Check the form fields.",
+      "network": "Could not reach the server. Try again.",
+      "forbidden": "You are not allowed to do this.",
+      "not-found": "Record not found.",
+      "consent-exists": "This player already has valid consent.",
+      "consent-text-outdated": "The consent text changed. Reload and read the new text.",
+      "invalid-method": "You cannot use this consent method.",
+      "request-exists": "An open request already exists for this player.",
+      "request-closed": "The request is already decided.",
+      "tenant-required": "No club selected."
+    },
+    "saved": {
+      "consent": "Consent recorded.",
+      "withdrawn": "Consent withdrawn. No new wellness entries will be accepted.",
+      "request": "Erasure request sent to the admin.",
+      "approved": "Request approved; the player's personal data was erased.",
+      "rejected": "Request rejected.",
+      "retention": "Retention periods saved."
+    },
+    "consent": {
+      "title": "Explicit consent",
+      "active": "Explicit consent for wellness data is on file",
+      "none": "No explicit consent",
+      "activeDetail": "{method}, {date}, text version {version}.",
+      "noneDetail": "Wellness (Hooper) scores are not recorded without consent. Training load is still recorded.",
+      "method": {
+        "self": "Given by the player",
+        "paper": "Signed paper form"
+      },
+      "reference": "Form reference",
+      "referencePlaceholder": "For example file no",
+      "readText": "Read the consent text (version {version})",
+      "give": "I have read it and consent",
+      "recordPaper": "Record signed consent",
+      "withdraw": "Withdraw consent",
+      "withdrawNote": "Withdrawing does not delete past records; use the request below for erasure."
+    },
+    "rights": {
+      "title": "Data subject rights",
+      "description": "Download a copy of the player's personal data held by the club, or request its erasure.",
+      "export": "Download a copy (JSON)",
+      "reason": "Reason (optional)",
+      "erasure": "Request erasure",
+      "erasureNote": "The club admin reviews the request. If approved, wellness, load and task records are deleted and the name is anonymised.",
+      "erasureOpen": "Erasure request from {date} is awaiting admin approval."
+    },
+    "requests": {
+      "title": "Data subject requests",
+      "emptyTitle": "No requests",
+      "empty": "Player erasure requests appear here.",
+      "erasure": "Erasure request",
+      "created": "Opened on {date}",
+      "note": "Note",
+      "approve": "Approve and erase",
+      "reject": "Reject",
+      "approveNote": "Approval cannot be undone. Wellness, load, consent and task records are deleted; the name becomes \"Deleted player\".",
+      "status": {
+        "open": "Open",
+        "completed": "Completed",
+        "rejected": "Rejected"
+      }
+    },
+    "retention": {
+      "title": "Retention periods",
+      "wellness_days": "Wellness (days)",
+      "loads_days": "Training load (days)",
+      "audit_days": "Audit log (days)",
+      "save": "Save",
+      "note": "Expired records are deleted nightly; each run is written to the audit log."
+    },
+    "inventory": {
+      "title": "Personal data inventory",
+      "description": "Personal data Kurgu processes, with purposes, legal bases and retention.",
+      "item": "Data",
+      "fields": "Fields",
+      "purpose": "Purpose and subjects",
+      "basis": "Legal basis",
+      "retention": "Retention",
+      "special": "Special category",
+      "encrypted": "Encrypted",
+      "days": "{days} days",
+      "legal": "Legal bases are assumptions and must be confirmed by the club's counsel (A-92)."
+    },
+    "section": "Privacy"
   }
 }

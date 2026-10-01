@@ -3,13 +3,14 @@ import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { NotLoaded } from "@/components/analysis/States";
 import { WellnessForm } from "@/components/performance/WellnessForm";
+import { PrivacySection } from "@/components/privacy/PrivacySection";
 import { TaskCards } from "@/components/squad/TaskCards";
 import { getMe } from "@/lib/api";
 import { selectTenant } from "@/lib/actions";
 import { todayIso } from "@/lib/performance";
 import { getCards, squadAccess } from "@/lib/squad";
 
-type Search = { error?: string; saved?: string };
+type Search = { error?: string; saved?: string; privacyError?: string; privacySaved?: string };
 
 export default async function MePage({ searchParams }: { searchParams: Promise<Search> }) {
   const search = await searchParams;
@@ -76,7 +77,9 @@ export default async function MePage({ searchParams }: { searchParams: Promise<S
               role="alert"
               className="mb-4 rounded-md border border-neg px-3 py-2 text-sm text-neg"
             >
-              {t("performance.errors.generic", { code: search.error })}
+              {t.has(`performance.errors.${search.error}`)
+                ? t(`performance.errors.${search.error}`)
+                : t("performance.errors.generic", { code: search.error })}
             </p>
           ) : null}
           {search.saved === "wellness" ? (
@@ -93,6 +96,15 @@ export default async function MePage({ searchParams }: { searchParams: Promise<S
             returnTo="me"
           />
         </section>
+      ) : null}
+
+      {access.playerId ? (
+        <PrivacySection
+          playerId={access.playerId}
+          returnTo="me"
+          error={search.privacyError}
+          saved={search.privacySaved}
+        />
       ) : null}
 
       <section aria-labelledby="memberships">

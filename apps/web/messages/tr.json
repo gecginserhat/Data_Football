@@ -1322,7 +1322,8 @@
       "forbidden": "Bu işlem için yetkiniz yok.",
       "unknown-player": "Oyuncu kadroda bulunamadı.",
       "duplicate-player": "Oyuncu seansta iki kez var.",
-      "future-date": "İleri tarihli iyi oluş girilemez."
+      "future-date": "İleri tarihli iyi oluş girilemez.",
+      "consent-required": "Bu oyuncu için iyi oluş rızası yok. Önce rızayı kaydedin."
     },
     "saved": {
       "session": "Seans kaydedildi.",
@@ -1456,5 +1457,101 @@
       "noLoad": "Seans kaydı yok.",
       "noWellness": "İyi oluş kaydı yok."
     }
+  },
+  "privacy": {
+    "title": "Kişisel veriler (KVKK)",
+    "subtitle": "Veri bölgesi: {region}. Envanter, saklama süreleri ve veri sahibi talepleri.",
+    "breadcrumb": "Konum",
+    "admin": "Yönetim",
+    "adminLink": "Kişisel veriler (KVKK)",
+    "adminLinkDescription": "Veri envanteri, saklama süreleri, silme talepleri.",
+    "pending": "Kaydediliyor…",
+    "demo": "Örnek veri",
+    "errors": {
+      "generic": "İşlem yapılamadı ({code}).",
+      "invalid": "Form alanlarını kontrol edin.",
+      "network": "Sunucuya ulaşılamadı. Tekrar deneyin.",
+      "forbidden": "Bu işlem için yetkiniz yok.",
+      "not-found": "Kayıt bulunamadı.",
+      "consent-exists": "Bu oyuncu için zaten geçerli bir rıza var.",
+      "consent-text-outdated": "Rıza metni güncellendi. Sayfayı yenileyip yeni metni okuyun.",
+      "invalid-method": "Bu rıza yöntemini kullanamazsınız.",
+      "request-exists": "Bu oyuncu için açık bir talep zaten var.",
+      "request-closed": "Talep zaten sonuçlandırılmış.",
+      "tenant-required": "Kulüp seçili değil."
+    },
+    "saved": {
+      "consent": "Rıza kaydedildi.",
+      "withdrawn": "Rıza geri çekildi. Yeni iyi oluş kaydı alınmayacak.",
+      "request": "Silme talebi yöneticiye iletildi.",
+      "approved": "Talep onaylandı; oyuncunun kişisel verileri silindi.",
+      "rejected": "Talep reddedildi.",
+      "retention": "Saklama süreleri kaydedildi."
+    },
+    "consent": {
+      "title": "Açık rıza",
+      "active": "İyi oluş verisi için açık rıza var",
+      "none": "Açık rıza yok",
+      "activeDetail": "{method}, {date}, metin sürümü {version}.",
+      "noneDetail": "Rıza olmadan iyi oluş (Hooper) puanı kaydedilmez. Antrenman yükü kaydı sürer.",
+      "method": {
+        "self": "Oyuncunun kendisi verdi",
+        "paper": "Islak imzalı form"
+      },
+      "reference": "Form referansı",
+      "referencePlaceholder": "Örneğin dosya no",
+      "readText": "Rıza metnini oku (sürüm {version})",
+      "give": "Okudum, rıza veriyorum",
+      "recordPaper": "Islak imzalı rızayı kaydet",
+      "withdraw": "Rızayı geri çek",
+      "withdrawNote": "Geri çekmek geçmiş kayıtları silmez; silme için aşağıdaki talebi kullanın."
+    },
+    "rights": {
+      "title": "Veri sahibi hakları",
+      "description": "Oyuncunun kulüpteki kişisel verilerinin kopyasını indirebilir ya da silinmesini isteyebilirsiniz.",
+      "export": "Verilerin kopyasını indir (JSON)",
+      "reason": "Gerekçe (isteğe bağlı)",
+      "erasure": "Silme talebi gönder",
+      "erasureNote": "Talebi kulüp yöneticisi değerlendirir. Onaylanırsa iyi oluş, yük ve görev kayıtları silinir; oyuncu adı anonimleşir.",
+      "erasureOpen": "{date} tarihli silme talebi yönetici onayı bekliyor."
+    },
+    "requests": {
+      "title": "Veri sahibi talepleri",
+      "emptyTitle": "Talep yok",
+      "empty": "Oyuncuların silme talepleri burada görünür.",
+      "erasure": "Silme talebi",
+      "created": "{date} tarihinde açıldı",
+      "note": "Not",
+      "approve": "Onayla ve sil",
+      "reject": "Reddet",
+      "approveNote": "Onay geri alınamaz. Oyuncunun iyi oluş, yük, rıza ve görev kayıtları silinir; adı \"Silinmiş oyuncu\" olur.",
+      "status": {
+        "open": "Açık",
+        "completed": "Tamamlandı",
+        "rejected": "Reddedildi"
+      }
+    },
+    "retention": {
+      "title": "Saklama süreleri",
+      "wellness_days": "İyi oluş (gün)",
+      "loads_days": "Antrenman yükü (gün)",
+      "audit_days": "Denetim kaydı (gün)",
+      "save": "Kaydet",
+      "note": "Süresi dolan kayıtlar her gece silinir; her çalışma denetim kaydına yazılır."
+    },
+    "inventory": {
+      "title": "Kişisel veri envanteri",
+      "description": "Kurgu'nun işlediği kişisel veriler, amaçları, hukuki dayanakları ve saklama süreleri.",
+      "item": "Veri",
+      "fields": "Alanlar",
+      "purpose": "Amaç ve ilgili kişiler",
+      "basis": "Hukuki dayanak",
+      "retention": "Saklama",
+      "special": "Özel nitelikli",
+      "encrypted": "Şifreli",
+      "days": "{days} gün",
+      "legal": "Hukuki dayanaklar varsayımdır ve kulübün hukuk danışmanınca doğrulanmalıdır (A-92)."
+    },
+    "section": "Gizlilik"
   }
 }

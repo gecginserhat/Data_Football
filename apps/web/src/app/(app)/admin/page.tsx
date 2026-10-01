@@ -45,6 +45,14 @@ export default async function Page() {
             </Link>
           </li>
         ) : null}
+        {imports ? (
+          <li>
+            <Link href="/admin/privacy" className={card}>
+              <span className="font-condensed text-lg font-semibold">{t("privacy.adminLink")}</span>
+              <span className="text-sm text-ink-2">{t("privacy.adminLinkDescription")}</span>
+            </Link>
+          </li>
+        ) : null}
         {rules ? (
           <li>
             <Link href="/admin/rules" className={card}>
