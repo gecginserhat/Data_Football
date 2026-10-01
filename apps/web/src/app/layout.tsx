@@ -15,6 +15,9 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { default: t("name"), template: `%s · ${t("name")}` },
     description: t("tagline"),
+    applicationName: t("name"),
+    appleWebApp: { capable: true, title: t("name"), statusBarStyle: "default" },
+    icons: { icon: "/icons/icon.svg", apple: "/icons/apple-touch-icon.png" },
   };
 }
 
