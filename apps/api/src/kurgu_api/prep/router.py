@@ -18,7 +18,7 @@ from kurgu_api.core.http import etag_response
 from kurgu_api.core.problems import ProblemError
 from kurgu_api.identity.deps import PrincipalDep, SessionDep, require
 from kurgu_api.identity.roles import Permission
-from kurgu_api.prep.facts import club_team_id, load_fixture
+from kurgu_api.prep.facts import MetricsCache, club_team_id, load_fixture
 from kurgu_api.prep.plans import ACCEPT_DAY, ITEMS
 from kurgu_api.prep.schemas import (
     ConditionOut,
@@ -531,9 +531,10 @@ async def prep_overview(
     season_recs: list[RecommendationOut] = []
     season = None
     upcoming: list[UpcomingThreats] = []
+    cache = MetricsCache()
     for index, fixture_id in enumerate(upcoming_ids):
         fixture = await load_fixture(session, fixture_id)
-        ev = await evaluate_fixture(session, fixture, rule_set)
+        ev = await evaluate_fixture(session, fixture, rule_set, cache=cache)
         threats = [
             ThreatOut(rule_id=r.rule.id, title=r.title, confidence=r.confidence or "low")
             for r in ev.shown
@@ -544,7 +545,9 @@ async def prep_overview(
         )
         if index == 0:
             season = fixture.out.season
-            season_ev = await evaluate_fixture(session, fixture, rule_set, scope="season")
+            season_ev = await evaluate_fixture(
+                session, fixture, rule_set, scope="season", cache=cache
+            )
             season_recs = [
                 live_recommendation(season_ev, _tenant(principal), r) for r in season_ev.shown
             ]

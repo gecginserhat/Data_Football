@@ -167,9 +167,12 @@ async def evaluate_fixture(
     *,
     include_disabled: bool = False,
     scope: str = "fixture",
+    cache: MetricsCache | None = None,
 ) -> Evaluation:
+    """Kuralları fikstürün olgularıyla değerlendirir. Aynı istekte birden çok fikstür
+    değerlendiriliyorsa sezon metrikleri `cache` ile bir kez hesaplanır."""
     rule_set = rule_set or await current_rule_set(session)
-    cache = MetricsCache()
+    cache = cache or MetricsCache()
     facts, routines = await fixture_facts(session, fixture, cache)
     results = evaluate(
         rule_set.rules,

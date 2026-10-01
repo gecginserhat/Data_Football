@@ -170,7 +170,12 @@ export default async function PrivacyAdminPage({
 
       <Section id="inventory" title={t("inventory.title")}>
         <p className="mb-3 max-w-prose text-sm text-ink-2">{t("inventory.description")}</p>
-        <div className="overflow-x-auto rounded-lg border border-line bg-surface">
+        <div
+          className="overflow-x-auto rounded-lg border border-line bg-surface"
+          role="region"
+          aria-label={t("inventory.title")}
+          tabIndex={0}
+        >
           <table className="w-full min-w-[48rem] text-left text-sm" data-testid="privacy-inventory">
             <thead className="border-b border-line text-xs text-ink-3">
               <tr>

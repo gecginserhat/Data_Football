@@ -92,3 +92,25 @@ def test_sentry_events_are_scrubbed_of_personal_data() -> None:
     assert cleaned["request"]["headers"]["X-Tenant-Id"] == "[filtered]"
     assert cleaned["request"]["headers"]["Accept"] == "json"
     assert "user" not in cleaned
+
+
+def test_frame_memo_reuses_results_only_for_identical_tables() -> None:
+    import pandas as pd
+    from kurgu_api.core.memo import FrameMemo
+
+    calls: list[int] = []
+
+    def double(frame: pd.DataFrame) -> pd.DataFrame:
+        calls.append(len(frame))
+        return frame * 2
+
+    memo = FrameMemo(double, size=2)
+    first = memo(pd.DataFrame({"a": [1, 2]}))
+    first.loc[0, "a"] = 99  # çağıranın değişikliği önbelleğe sızmaz
+    assert memo(pd.DataFrame({"a": [1, 2]}))["a"].tolist() == [2, 4]
+    assert len(calls) == 1
+    assert memo(pd.DataFrame({"a": [1, 3]}))["a"].tolist() == [2, 6]
+    assert memo(pd.DataFrame({"b": [1, 2]}))["b"].tolist() == [2, 4]
+    assert len(calls) == 3
+    memo(pd.DataFrame({"a": [1, 2]}))  # en eski girdi düştü, yeniden hesaplanır
+    assert len(calls) == 4

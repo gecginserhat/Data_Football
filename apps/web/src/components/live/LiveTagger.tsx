@@ -158,7 +158,7 @@ export function LiveTagger({ fixtureId, home, away, ownSide, routines }: Props) 
   const teams: Record<Side, Team> = { home, away };
 
   const commit = useCallback(
-    async (outcome: Outcome) => {
+    async (outcome: Outcome, tappedAt = performance.now()) => {
       if (!device) return;
       const routine = ownTeam && routineId ? routineId : null;
       const tag = await addTag(
@@ -175,6 +175,8 @@ export function LiveTagger({ fixtureId, home, away, ownSide, routines }: Props) 
         },
         device,
       );
+      // Dokunuştan yerel kayda süre; bütçe ≤ 50 ms (SPEC §17, docs/validation/performance.md).
+      performance.measure("kurgu:live-record", { start: tappedAt, end: performance.now() });
       setLastOwn({ id: tag.id, at: Date.now() });
       setRoutineId("");
       setContact(null);
@@ -466,7 +468,7 @@ export function LiveTagger({ fixtureId, home, away, ownSide, routines }: Props) 
                   type="button"
                   data-outcome={outcome}
                   disabled={!device}
-                  onClick={() => void commit(outcome)}
+                  onClick={(event) => void commit(outcome, event.timeStamp)}
                   className={cn(
                     "flex min-h-16 flex-col items-center justify-center rounded-md border-2 px-2 text-center font-medium",
                     outcome === "goal"

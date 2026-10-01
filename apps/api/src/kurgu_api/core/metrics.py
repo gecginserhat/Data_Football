@@ -5,12 +5,13 @@ tutulur (`kurgu:metrics:jobs`, alanlar `<iş>:ok`, `<iş>:failed`, `<iş>:second
 """
 
 import functools
+import os
 import re
 import time
 from collections.abc import Awaitable, Callable, Iterable
 from typing import Any
 
-from prometheus_client import CollectorRegistry, Counter, Histogram, generate_latest
+from prometheus_client import CollectorRegistry, Counter, Histogram, generate_latest, multiprocess
 from redis.asyncio import Redis
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
@@ -106,9 +107,18 @@ def _escape(value: str) -> str:
     return value.replace("\\", "\\\\").replace('"', '\\"')
 
 
+def _request_registry() -> CollectorRegistry:
+    """Birden çok uvicorn işçisinde sayaçlar `PROMETHEUS_MULTIPROC_DIR` altında toplanır."""
+    if not os.environ.get("PROMETHEUS_MULTIPROC_DIR"):
+        return REGISTRY
+    registry = CollectorRegistry()
+    multiprocess.MultiProcessCollector(registry)  # type: ignore[no-untyped-call]
+    return registry
+
+
 async def render(redis: Redis) -> str:
     """İstek metrikleri ile kuyruk ve iş metriklerini Prometheus metin biçiminde döner."""
-    lines = [generate_latest(REGISTRY).decode()]
+    lines = [generate_latest(_request_registry()).decode()]
     depth = await redis.zcard(QUEUE_KEY)
     lines += [
         "# HELP kurgu_queue_depth Kuyrukta bekleyen iş sayısı",
