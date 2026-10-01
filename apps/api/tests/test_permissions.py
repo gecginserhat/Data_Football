@@ -1,4 +1,4 @@
-"""SPEC §12.1 rol × izin matrisinin tablo testi."""
+"""SPEC §12.1 rol × izin matrisinin tablo testi (`edit_squad` satırı A-79)."""
 
 import pytest
 from kurgu_api.identity.roles import Permission, Role, permissions_for, scope_for
@@ -28,6 +28,7 @@ EXPECTED: dict[Permission, list[str | None]] = {
     P.RULE_SETTINGS:          [Y, Y, None, None, None, None, None, None],
     P.USER_ADMIN_AUDIT:       [Y, None, None, None, None, None, None, None],
     P.PLAYER_CARDS:           [Y, Y, Y, Y, None, None, OWN, None],
+    P.EDIT_SQUAD:             [Y, Y, Y, None, Y, None, None, None],
 }  # fmt: skip
 
 CASES = [

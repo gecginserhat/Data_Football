@@ -18,6 +18,7 @@ async def get_me(principal: PrincipalDep) -> MeOut:
             tenant_name=principal.tenant.tenant_name,
             roles=sorted(principal.roles),
             permissions=permissions_for(principal.roles),
+            squad_player_id=principal.tenant.player_id,
         )
     return MeOut(
         user_id=principal.user_id,

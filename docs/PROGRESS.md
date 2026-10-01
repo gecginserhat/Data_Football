@@ -1,7 +1,7 @@
 # İlerleme
 
 **Durum:** Faz 0-4 tamam ve `main`'e birleşti (PR #1-#5, 01.10.2026). Faz 5 (canlı kayıt ve video) tamam; `faz-5-canli` dalında, birleştirme onayı bekliyor.
-**Sonraki adım:** Faz 7 (spor bilimi ve markaj optimizasyonu).
+**Sonraki adım:** Faz 8 (sertleştirme).
 
 Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce). Her commit öncesi `make lint typecheck test` temiz olmalı. Bir görev SPEC §19 DoD'yi karşılamadan işaretlenmez. Faz sonunda kabul kriterleri işaretlenir ve kısa rapor verilir.
 
@@ -404,6 +404,45 @@ Kurallar: Her görev küçük bir commit'tir (Conventional Commits, İngilizce).
 - [x] Testler: şablon içerikleri, sayı eşleştirme (Türkçe biçimler), bütçe, izinler, kiracı izolasyonu, PDF üretimi (gerçek Chromium).
 - [x] E2E: iki PDF 15 sn içinde hazır ve iniyor; brifing (sahte model) gösteriliyor; axe.
 - [x] `docs/demo/faz6/` ekran görüntüleri; CLAUDE.md komutları güncel.
+- [x] Kabul kriterleri işaretlendi, kısa rapor verildi.
+
+## Faz 7: Spor bilimi ve markaj optimizasyonu
+
+### Kabul kriterleri (SPEC §19)
+- [x] sRPE, Hooper ve EWMA hesaplamaları testli.
+- [x] Sıçrama ve kafa yükü uyarıları çalışır.
+- [x] Rol izinleri doğrulanır.
+- [x] Macar algoritması önerisi elle düzeltilebilir ve kaydedilir.
+
+### Rapor
+- **Yapıldı:** Göç `0008_squad_load_marking` (yedi tablo, RLS, göç döngüsü). Kulüp kadrosu ve rakip hedef oyuncuları elle girilir (`/admin/squad`, hazırlık sayfası). Saf metrikler: sRPE, Hooper, akut ve kronik EWMA, ACWR (yalnız bağlam), z-skorları, haftalık sıçrama ve kafa uyarısı (kişisel ortalama + 2 SD), hava skoru ve Macar algoritmasıyla markaj. Hooper puanları AES-256-GCM zarf şifrelemesiyle saklanır, her okuma ve yazma denetim kaydına girer; anahtarlar `KURGU_DATA_KEYS`, üretimde anahtarsız başlamaz. Kapsamlar: performans ve sağlık tam, yönetici takım özeti, oyuncu yalnız kendi verisi, diğer roller 403. Markaj önerisi elle düzeltilir, sürümlü kaydedilir (eşzamanlı kayıtta 409). Rutin rolleri kadroya atanır, oyuncu `/me` sayfasında görev kartını görür. Web: `/performance`, `/performance/players/[id]`, hazırlık sayfasında markaj ve rol atama bölümleri. Geliştirme kimliklerinde 16 oyunculuk örnek kadro ve 42 günlük örnek yük (`is_demo`, "Örnek veri" rozeti).
+- **Sapmalar:** SPEC §12.1 matrisine `edit_squad` satırı eklendi (A-79). Rakip hedefleri kulüp kaydıdır, lisanslı oyuncu verisi yok (A-80). Cihaz entegrasyonu, dosyadan yük içe aktarımı ve görev kartı PDF'i bu fazda yok (A-83, A-87).
+- **Riskler:** Hava skoru elle girilen boy, oran ve sıçrama skoruna dayanır; bileşeni olmayan oyuncu atamaya girmez. Anahtar döndürme için yeniden şifreleme komutu yok; eski anahtarlar `KURGU_DATA_KEYS` içinde tutulmalı (ADR-0014). Uyarı eşiği en az 4 haftalık geçmiş ister; yeni oyuncuda uyarı çıkmaz.
+
+### Görevler
+
+**7.1 Kadro ve rakip hedefleri (A-79, A-80)**
+- [x] Göç `0008_squad_load_marking`: `squad_players`, `opponent_targets`, `training_sessions`, `session_loads`, `wellness_entries`, `marking_plans`, `routine_assignments`. RLS, göç döngüsü.
+- [x] Kadro ve rakip hedef uçları; `/admin/squad`; geliştirme kimliklerinde örnek kadro (`is_demo`).
+
+**7.2 Yük ve iyi oluş (SPEC §8.2, A-83 … A-85)**
+- [x] Saf metrikler (`metrics/load.py`): sRPE, Hooper, EWMA (akut ve kronik), ACWR, z-skorları, haftalık sıçrama ve kafa uyarısı. Birim ve özellik tabanlı testler.
+- [x] `POST /sessions`, `GET /sessions`, `POST /wellness`, `GET /players/{id}/load`, `GET /load/overview` (uyarılar).
+
+**7.3 Gizlilik ve izinler (SPEC §8.3, ADR-0014, A-86)**
+- [x] Zarf şifreleme (`core/crypto.py`), Hooper alanları şifreli, her erişim denetim kaydında.
+- [x] Kapsamlar: performans ve sağlık tam, yönetici özet, oyuncu yalnız kendi verisi; diğer roller 403. Testli.
+
+**7.4 Markaj (SPEC §7.3, ADR-0015, A-81, A-82)**
+- [x] Hava skoru ve atama (saf, testli); `GET /fixtures/{id}/marking`, `PUT /fixtures/{id}/marking` (sürümlü, denetimli).
+- [x] Hazırlık sayfasında markaj bölümü: rakip hedefleri, öneri, elle düzeltme ve kaydetme.
+
+**7.5 Rol atamaları ve görev kartı (A-87)**
+- [x] Fikstür rutinlerinde rol → oyuncu ataması; `/me` görev kartları.
+
+**7.6 Arayüz, doğrulama ve kapanış**
+- [x] `/performance` (seans ve iyi oluş girişi, takım yük tablosu, uyarılar), `/performance/players/[id]` (yük, EWMA ve Hooper grafiği).
+- [x] E2E (seans → uyarı, iyi oluş, rol izinleri, markaj düzeltme), axe; `docs/demo/faz7/` ekran görüntüleri; CLAUDE.md komutları.
 - [x] Kabul kriterleri işaretlendi, kısa rapor verildi.
 
 ---

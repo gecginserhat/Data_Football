@@ -105,6 +105,30 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/fixtures/{fixture_id}/assignments": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Assignments
+         * @description Fikstürün rutinleri (kabul edilen öneri, plan maddesi ya da önceki atama) ve rolleri.
+         */
+        get: operations["getFixtureAssignments"];
+        /**
+         * Save Assignments
+         * @description Bir rutinin rollerini kadro oyuncularına atar (A-87). Boş oyuncu atamayı kaldırır.
+         */
+        put: operations["saveFixtureAssignments"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/fixtures/{fixture_id}/briefing": {
         parameters: {
             query?: never;
@@ -124,6 +148,33 @@ export interface paths {
          *     metin döndürülmez (`status = failed`).
          */
         post: operations["generateBriefing"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/fixtures/{fixture_id}/marking": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Marking
+         * @description Rakip hedefleri, kadro, Macar algoritması önerisi ve son kayıtlı eşleşme (ADR-0015).
+         *
+         *     `zonal`: virgülle ayrılmış kadro kimlikleri; öneride sabit (alan savunması) tutulur. Verilmezse
+         *     son kayıttaki alan oyuncuları kullanılır.
+         */
+        get: operations["getFixtureMarking"];
+        /**
+         * Save Marking
+         * @description Eşleşmeyi yeni sürüm olarak kaydeder; öneriden farklı satırlar "elle değiştirildi".
+         */
+        put: operations["saveFixtureMarking"];
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -318,6 +369,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/load/overview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Load Overview
+         * @description Takım yük tablosu ve uyarılar (`all`) ya da yalnız takım özeti (`summary`).
+         */
+        get: operations["getLoadOverview"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/me": {
         parameters: {
             query?: never;
@@ -354,6 +425,26 @@ export interface paths {
          * @description Durum (tamamlandı / yapılacak), sorumlu, başlık, açıklama ya da gün.
          */
         patch: operations["updatePlanItem"];
+        trace?: never;
+    };
+    "/api/v1/players/{player_id}/load": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Player Load
+         * @description Oyuncunun günlük yük trendi, iyi oluşu, haftalık sıçrama ve kafa vuruşu, uyarıları.
+         */
+        get: operations["getPlayerLoad"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
         trace?: never;
     };
     "/api/v1/prep/overview": {
@@ -699,6 +790,131 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Sessions
+         * @description Seanslar ve takım ortalamaları (oyuncu ayrıntısı yok).
+         */
+        get: operations["listTrainingSessions"];
+        put?: never;
+        /**
+         * Create Session
+         * @description Seans ve oyuncu başına RPE, süre, kafa vuruşu ve sıçrama kaydı (A-83).
+         */
+        post: operations["createTrainingSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/squad": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Squad
+         * @description Kulübün kadrosu ve hava kapasitesi (A-79, A-81).
+         */
+        get: operations["listSquad"];
+        put?: never;
+        /** Create Squad Player */
+        post: operations["createSquadPlayer"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/squad/accounts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * List Player Accounts
+         * @description Oyuncu rolündeki üyeler ve bağlı oldukları kadro kaydı.
+         */
+        get: operations["listPlayerAccounts"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/squad/{player_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Update Squad Player
+         * @description Oyuncuyu günceller; kadrodan çıkarmak için `active=false` (kayıtlar silinmez).
+         */
+        put: operations["updateSquadPlayer"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/squad/{player_id}/account": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /**
+         * Link Account
+         * @description Oyuncu hesabını kadro kaydına bağlar (A-79). Kayıt başına en çok bir hesap.
+         */
+        put: operations["linkSquadAccount"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/squad/{player_id}/cards": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get Cards
+         * @description Oyuncunun yaklaşan maçlardaki görev kartları: rutin rolü ve markaj görevi (A-87).
+         */
+        get: operations["getPlayerCards"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/tagging-sessions": {
         parameters: {
             query?: never;
@@ -759,6 +975,27 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/targets/{target_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Update Target */
+        put: operations["updateOpponentTarget"];
+        post?: never;
+        /**
+         * Delete Target
+         * @description Hedefi listeden çıkarır. Kayıtlı markaj sürümleri değişmez.
+         */
+        delete: operations["deleteOpponentTarget"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/teams/{team_id}/profile": {
         parameters: {
             query?: never;
@@ -794,6 +1031,24 @@ export interface paths {
         get: operations["listTeamSetPieces"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/teams/{team_id}/targets": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List Targets */
+        get: operations["listOpponentTargets"];
+        put?: never;
+        /** Create Target */
+        post: operations["createOpponentTarget"];
         delete?: never;
         options?: never;
         head?: never;
@@ -899,6 +1154,26 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/wellness": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Save Wellness
+         * @description Günlük iyi oluş kaydı; aynı gün yeniden giriş üzerine yazar (A-83). Puanlar şifrelenir.
+         */
+        post: operations["saveWellness"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/healthz": {
         parameters: {
             query?: never;
@@ -937,6 +1212,11 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        /** AccountLink */
+        AccountLink: {
+            /** User Id */
+            user_id: string | null;
+        };
         /** ActiveTenantOut */
         ActiveTenantOut: {
             /** Permissions */
@@ -945,6 +1225,8 @@ export interface components {
             };
             /** Roles */
             roles: components["schemas"]["Role"][];
+            /** Squad Player Id */
+            squad_player_id?: string | null;
             /**
              * Tenant Id
              * Format: uuid
@@ -952,6 +1234,43 @@ export interface components {
             tenant_id: string;
             /** Tenant Name */
             tenant_name: string;
+        };
+        /**
+         * AerialOut
+         * @description Hava skoru (0-1) ve skora giren bileşenler (A-81).
+         */
+        AerialOut: {
+            /** Components */
+            components: string[];
+            /** Value */
+            value: number;
+        };
+        /**
+         * AlertOut
+         * @description Haftalık sıçrama ya da kafa vuruşu uyarısı: "dikkat" niteliğindedir, tanı değildir.
+         */
+        AlertOut: {
+            /** Mean */
+            mean: number;
+            /**
+             * Metric
+             * @enum {string}
+             */
+            metric: "jumps" | "headers";
+            player: components["schemas"]["PlayerRef"];
+            /** Sd */
+            sd: number;
+            /** Threshold */
+            threshold: number;
+            /** Total */
+            total: number;
+            /**
+             * Week
+             * Format: date
+             */
+            week: string;
+            /** Weeks */
+            weeks: number;
         };
         /** AssetOut */
         AssetOut: {
@@ -996,6 +1315,21 @@ export interface components {
             offset_s?: number | null;
             /** Title */
             title?: string | null;
+        };
+        /** AssignmentsIn */
+        AssignmentsIn: {
+            /**
+             * Routine Id
+             * Format: uuid
+             */
+            routine_id: string;
+            /** Slots */
+            slots: components["schemas"]["SlotIn"][];
+        };
+        /** AssignmentsOut */
+        AssignmentsOut: {
+            /** Routines */
+            routines: components["schemas"]["RoutineAssignmentOut"][];
         };
         /** BenchmarkOut */
         BenchmarkOut: {
@@ -1071,6 +1405,41 @@ export interface components {
             status: "verified" | "failed" | "none";
             /** Text */
             text?: string | null;
+        };
+        /** CardMarking */
+        CardMarking: {
+            target: components["schemas"]["TargetOut"] | null;
+            /** Zonal */
+            zonal: boolean;
+        };
+        /** CardRoutine */
+        CardRoutine: {
+            diagram: components["schemas"]["Diagram"];
+            /** Diagram Player Id */
+            diagram_player_id: string;
+            /** Label */
+            label: string | null;
+            /** Name */
+            name: string;
+            /** Number */
+            number: number | null;
+            /** Role */
+            role: string;
+            /**
+             * Routine Id
+             * Format: uuid
+             */
+            routine_id: string;
+            /** Sp Type */
+            sp_type: string;
+            /** Version */
+            version: number;
+        };
+        /** CardsOut */
+        CardsOut: {
+            /** Cards */
+            cards: components["schemas"]["TaskCard"][];
+            player: components["schemas"]["SquadPlayerOut"];
         };
         /** Change */
         Change: {
@@ -1208,6 +1577,24 @@ export interface components {
             threshold: number | boolean | null;
             /** Value */
             value: number | null;
+        };
+        /** DayPoint */
+        DayPoint: {
+            /** Acute */
+            acute: number;
+            /** Acwr */
+            acwr: number | null;
+            /** Chronic */
+            chronic: number;
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Load */
+            load: number;
+            /** Z */
+            z: number | null;
         };
         /** DecisionIn */
         DecisionIn: {
@@ -1503,6 +1890,18 @@ export interface components {
              */
             status: "ok" | "degraded";
         };
+        /** HooperPoint */
+        HooperPoint: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Value */
+            value: number;
+            /** Z */
+            z: number | null;
+        };
         /** ImportOut */
         ImportOut: {
             /** Columns */
@@ -1657,6 +2056,28 @@ export interface components {
             /** Tokens */
             tokens: number;
         };
+        /** LoadIn */
+        LoadIn: {
+            /**
+             * Headers
+             * @default 0
+             */
+            headers: number;
+            /**
+             * Jumps
+             * @default 0
+             */
+            jumps: number;
+            /** Minutes */
+            minutes: number;
+            /** Rpe */
+            rpe: number;
+            /**
+             * Squad Player Id
+             * Format: uuid
+             */
+            squad_player_id: string;
+        };
         /** MappingUpdate */
         MappingUpdate: {
             /**
@@ -1673,6 +2094,77 @@ export interface components {
             teams?: {
                 [key: string]: string | null;
             } | null;
+        };
+        /** MarkingIn */
+        MarkingIn: {
+            /** Assignments */
+            assignments: components["schemas"]["MarkingPair"][];
+            /** Base Version */
+            base_version: number;
+            /** Note */
+            note?: string | null;
+            /** Zonal */
+            zonal?: string[];
+        };
+        /** MarkingOut */
+        MarkingOut: {
+            fixture: components["schemas"]["PrepFixtureOut"];
+            saved: components["schemas"]["MarkingSaved"] | null;
+            /** Squad */
+            squad: components["schemas"]["SquadPlayerOut"][];
+            /** Suggestion */
+            suggestion: components["schemas"]["MarkingRow"][];
+            /** Targets */
+            targets: components["schemas"]["TargetOut"][];
+            /** Versions */
+            versions: number;
+            /** Zonal */
+            zonal: string[];
+        };
+        /** MarkingPair */
+        MarkingPair: {
+            /** Marker Id */
+            marker_id: string | null;
+            /**
+             * Target Id
+             * Format: uuid
+             */
+            target_id: string;
+        };
+        /** MarkingRow */
+        MarkingRow: {
+            /** Gap */
+            gap: number | null;
+            /** Marker Id */
+            marker_id: string | null;
+            /** Overridden */
+            overridden: boolean;
+            /** Suggested Marker Id */
+            suggested_marker_id: string | null;
+            /**
+             * Target Id
+             * Format: uuid
+             */
+            target_id: string;
+        };
+        /** MarkingSaved */
+        MarkingSaved: {
+            /**
+             * Created At
+             * Format: date-time
+             */
+            created_at: string;
+            created_by: components["schemas"]["UserRef"] | null;
+            /** Note */
+            note: string | null;
+            /** Overridden */
+            overridden: number;
+            /** Rows */
+            rows: components["schemas"]["MarkingRow"][];
+            /** Version */
+            version: number;
+            /** Zonal */
+            zonal: string[];
         };
         /**
          * MatchSetPieceOut
@@ -1778,6 +2270,26 @@ export interface components {
             /** Value */
             value: number;
         };
+        /** OverviewOut */
+        OverviewOut: {
+            /** Alerts */
+            alerts: components["schemas"]["AlertOut"][] | null;
+            /**
+             * As Of
+             * Format: date
+             */
+            as_of: string;
+            /** Players */
+            players: components["schemas"]["PlayerLoadRow"][] | null;
+            /**
+             * Scope
+             * @enum {string}
+             */
+            scope: "all" | "summary";
+            /** Sessions */
+            sessions: components["schemas"]["TrainingSessionOut"][];
+            summary: components["schemas"]["TeamSummary"];
+        };
         /** OverviewRecsOut */
         OverviewRecsOut: {
             /** Recommendations */
@@ -1798,7 +2310,7 @@ export interface components {
          * Permission
          * @enum {string}
          */
-        Permission: "read_analysis" | "edit_routines" | "decide_recommendations" | "mark_plan_items" | "live_tagging_video" | "load_wellness" | "medical_notes" | "rule_settings" | "user_admin_audit" | "player_cards";
+        Permission: "read_analysis" | "edit_routines" | "decide_recommendations" | "mark_plan_items" | "live_tagging_video" | "load_wellness" | "medical_notes" | "rule_settings" | "user_admin_audit" | "player_cards" | "edit_squad";
         /** PlanCreate */
         PlanCreate: {
             /**
@@ -1902,6 +2414,104 @@ export interface components {
             template: "standard" | "congested";
             /** Total */
             total: number;
+        };
+        /** PlayerAccountOut */
+        PlayerAccountOut: {
+            /** Name */
+            name: string | null;
+            /** Squad Player Id */
+            squad_player_id: string | null;
+            /**
+             * User Id
+             * Format: uuid
+             */
+            user_id: string;
+        };
+        /** PlayerLoadOut */
+        PlayerLoadOut: {
+            /** Alerts */
+            alerts: components["schemas"]["AlertOut"][];
+            /**
+             * As Of
+             * Format: date
+             */
+            as_of: string;
+            /** Days */
+            days: components["schemas"]["DayPoint"][];
+            /** Hooper */
+            hooper: components["schemas"]["HooperPoint"][];
+            /** Low Data */
+            low_data: boolean;
+            player: components["schemas"]["PlayerRef"];
+            /** Sessions */
+            sessions: components["schemas"]["PlayerSession"][];
+            /** Weeks */
+            weeks: components["schemas"]["WeekPoint"][];
+            /** Wellness */
+            wellness: components["schemas"]["WellnessOut"][];
+        };
+        /** PlayerLoadRow */
+        PlayerLoadRow: {
+            /** Acute */
+            acute: number | null;
+            /** Acwr */
+            acwr: number | null;
+            /** Chronic */
+            chronic: number | null;
+            /** Days */
+            days: number;
+            /** Headers Week */
+            headers_week: number;
+            hooper: components["schemas"]["HooperPoint"] | null;
+            /** Jumps Week */
+            jumps_week: number;
+            /** Last Session */
+            last_session: string | null;
+            /** Load 7D */
+            load_7d: number;
+            /** Low Data */
+            low_data: boolean;
+            player: components["schemas"]["PlayerRef"];
+            /** Z */
+            z: number | null;
+        };
+        /** PlayerRef */
+        PlayerRef: {
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Demo */
+            is_demo: boolean;
+            /** Name */
+            name: string;
+            /** Position */
+            position: string;
+            /** Shirt Number */
+            shirt_number: number | null;
+        };
+        /** PlayerSession */
+        PlayerSession: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Headers */
+            headers: number;
+            /** Jumps */
+            jumps: number;
+            /** Md Code */
+            md_code: ("MD-4" | "MD-3" | "MD-2" | "MD-1" | "MD" | "MD+1") | null;
+            /** Minutes */
+            minutes: number;
+            /** Rpe */
+            rpe: number;
+            /** Srpe */
+            srpe: number;
+            /** Title */
+            title: string;
         };
         /** PrepFixtureOut */
         PrepFixtureOut: {
@@ -2100,6 +2710,27 @@ export interface components {
          * @enum {string}
          */
         Role: "admin" | "head_coach" | "sp_coach" | "analyst" | "performance" | "medical" | "player" | "viewer";
+        /** RoutineAssignmentOut */
+        RoutineAssignmentOut: {
+            /** Assigned Version */
+            assigned_version: number | null;
+            diagram: components["schemas"]["Diagram"];
+            /** Name */
+            name: string;
+            /**
+             * Routine Id
+             * Format: uuid
+             */
+            routine_id: string;
+            /** Slots */
+            slots: components["schemas"]["SlotOut"][];
+            /** Sources */
+            sources: string[];
+            /** Sp Type */
+            sp_type: string;
+            /** Version */
+            version: number;
+        };
         /** RoutineCreate */
         RoutineCreate: {
             diagram?: components["schemas"]["Diagram"];
@@ -2370,6 +3001,22 @@ export interface components {
              */
             match_id: string;
         };
+        /** SessionIn */
+        SessionIn: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Fixture Id */
+            fixture_id?: string | null;
+            /** Loads */
+            loads: components["schemas"]["LoadIn"][];
+            /** Md Code */
+            md_code?: ("MD-4" | "MD-3" | "MD-2" | "MD-1" | "MD" | "MD+1") | null;
+            /** Title */
+            title: string;
+        };
         /** SessionOut */
         SessionOut: {
             /**
@@ -2451,6 +3098,82 @@ export interface components {
             teams: number;
             /** Value */
             value: number;
+        };
+        /** SlotIn */
+        SlotIn: {
+            /** Diagram Player Id */
+            diagram_player_id: string;
+            /** Squad Player Id */
+            squad_player_id: string | null;
+        };
+        /** SlotOut */
+        SlotOut: {
+            /** Diagram Player Id */
+            diagram_player_id: string;
+            /** Label */
+            label: string | null;
+            /** Number */
+            number: number | null;
+            /** Role */
+            role: string;
+            /** Squad Player Id */
+            squad_player_id: string | null;
+        };
+        /** SquadPlayerIn */
+        SquadPlayerIn: {
+            /**
+             * Active
+             * @default true
+             */
+            active: boolean;
+            /** Aerial Win Pct */
+            aerial_win_pct?: number | null;
+            /** Height Cm */
+            height_cm?: number | null;
+            /** Jump Score */
+            jump_score?: number | null;
+            /** Name */
+            name: string;
+            /**
+             * Position
+             * @enum {string}
+             */
+            position: "GK" | "DEF" | "MID" | "FWD";
+            /** Shirt Number */
+            shirt_number?: number | null;
+        };
+        /** SquadPlayerOut */
+        SquadPlayerOut: {
+            /**
+             * Active
+             * @default true
+             */
+            active: boolean;
+            aerial: components["schemas"]["AerialOut"] | null;
+            /** Aerial Win Pct */
+            aerial_win_pct?: number | null;
+            /** Has Account */
+            has_account: boolean;
+            /** Height Cm */
+            height_cm?: number | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Demo */
+            is_demo: boolean;
+            /** Jump Score */
+            jump_score?: number | null;
+            /** Name */
+            name: string;
+            /**
+             * Position
+             * @enum {string}
+             */
+            position: "GK" | "DEF" | "MID" | "FWD";
+            /** Shirt Number */
+            shirt_number?: number | null;
         };
         /** StandingRowOut */
         StandingRowOut: {
@@ -2542,6 +3265,65 @@ export interface components {
             server_seq: number;
             /** Tags */
             tags: components["schemas"]["TagOut"][];
+        };
+        /** TargetIn */
+        TargetIn: {
+            /** Aerial Win Pct */
+            aerial_win_pct?: number | null;
+            /** Height Cm */
+            height_cm?: number | null;
+            /** Name */
+            name: string;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+            /** Shirt Number */
+            shirt_number?: number | null;
+            /** Sp Goals */
+            sp_goals?: number | null;
+        };
+        /** TargetOut */
+        TargetOut: {
+            /** Aerial Win Pct */
+            aerial_win_pct?: number | null;
+            /** Height Cm */
+            height_cm?: number | null;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Name */
+            name: string;
+            /**
+             * Notes
+             * @default
+             */
+            notes: string;
+            /** Shirt Number */
+            shirt_number?: number | null;
+            /** Sp Goals */
+            sp_goals?: number | null;
+            /**
+             * Team Id
+             * Format: uuid
+             */
+            team_id: string;
+            threat: components["schemas"]["AerialOut"] | null;
+            /**
+             * Updated At
+             * Format: date-time
+             */
+            updated_at: string;
+        };
+        /** TaskCard */
+        TaskCard: {
+            fixture: components["schemas"]["PrepFixtureOut"];
+            marking: components["schemas"]["CardMarking"] | null;
+            /** Routines */
+            routines: components["schemas"]["CardRoutine"][];
         };
         /** TeamMatchOut */
         TeamMatchOut: {
@@ -2649,6 +3431,21 @@ export interface components {
             /** Name */
             name: string;
         };
+        /** TeamSummary */
+        TeamSummary: {
+            /** Mean Hooper 7D */
+            mean_hooper_7d: number | null;
+            /** Mean Load 7D */
+            mean_load_7d: number | null;
+            /** Players */
+            players: number;
+            /** Players With Data */
+            players_with_data: number;
+            /** Sessions 7D */
+            sessions_7d: number;
+            /** Wellness Entries 7D */
+            wellness_entries_7d: number;
+        };
         /** TemplateOut */
         TemplateOut: {
             diagram: components["schemas"]["Diagram"];
@@ -2686,6 +3483,33 @@ export interface components {
             confidence: "high" | "medium" | "low";
             /** Rule Id */
             rule_id: string;
+            /** Title */
+            title: string;
+        };
+        /** TrainingSessionOut */
+        TrainingSessionOut: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Headers */
+            headers: number;
+            /**
+             * Id
+             * Format: uuid
+             */
+            id: string;
+            /** Is Demo */
+            is_demo: boolean;
+            /** Jumps */
+            jumps: number;
+            /** Md Code */
+            md_code: ("MD-4" | "MD-3" | "MD-2" | "MD-1" | "MD" | "MD+1") | null;
+            /** Mean Srpe */
+            mean_srpe: number;
+            /** Players */
+            players: number;
             /** Title */
             title: string;
         };
@@ -2785,6 +3609,62 @@ export interface components {
             name: string;
             /** Version */
             version: number;
+        };
+        /** WeekPoint */
+        WeekPoint: {
+            /** Headers */
+            headers: number;
+            /** Jumps */
+            jumps: number;
+            /**
+             * Week
+             * Format: date
+             */
+            week: string;
+        };
+        /** WellnessIn */
+        WellnessIn: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Fatigue */
+            fatigue: number;
+            /** Sleep */
+            sleep: number;
+            /** Soreness */
+            soreness: number;
+            /**
+             * Squad Player Id
+             * Format: uuid
+             */
+            squad_player_id: string;
+            /** Stress */
+            stress: number;
+        };
+        /** WellnessOut */
+        WellnessOut: {
+            /**
+             * Date
+             * Format: date
+             */
+            date: string;
+            /** Fatigue */
+            fatigue: number;
+            /** Hooper */
+            hooper: number;
+            /** Sleep */
+            sleep: number;
+            /** Soreness */
+            soreness: number;
+            /**
+             * Squad Player Id
+             * Format: uuid
+             */
+            squad_player_id: string;
+            /** Stress */
+            stress: number;
         };
     };
     responses: never;
@@ -3071,6 +3951,76 @@ export interface operations {
             };
         };
     };
+    getFixtureAssignments: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                fixture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    saveFixtureAssignments: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                fixture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AssignmentsIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AssignmentsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     getBriefing: {
         parameters: {
             query?: never;
@@ -3124,6 +4074,78 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["BriefingOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getFixtureMarking: {
+        parameters: {
+            query?: {
+                zonal?: string | null;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                fixture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarkingOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    saveFixtureMarking: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                fixture_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MarkingIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MarkingOut"];
                 };
             };
             /** @description Validation Error */
@@ -3546,6 +4568,39 @@ export interface operations {
             };
         };
     };
+    getLoadOverview: {
+        parameters: {
+            query?: {
+                until?: string | null;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverviewOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     getMe: {
         parameters: {
             query?: never;
@@ -3634,6 +4689,42 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PlanOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getPlayerLoad: {
+        parameters: {
+            query?: {
+                until?: string | null;
+                days?: number;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                player_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlayerLoadOut"];
                 };
             };
             /** @description Validation Error */
@@ -4448,6 +5539,279 @@ export interface operations {
             };
         };
     };
+    listTrainingSessions: {
+        parameters: {
+            query?: {
+                since?: string | null;
+                until?: string | null;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingSessionOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    createTrainingSession: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SessionIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TrainingSessionOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listSquad: {
+        parameters: {
+            query?: {
+                include_inactive?: boolean;
+            };
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SquadPlayerOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    createSquadPlayer: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SquadPlayerIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SquadPlayerOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listPlayerAccounts: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlayerAccountOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    updateSquadPlayer: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                player_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SquadPlayerIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SquadPlayerOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    linkSquadAccount: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                player_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AccountLink"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    getPlayerCards: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                player_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CardsOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     openTaggingSession: {
         parameters: {
             query?: never;
@@ -4556,6 +5920,74 @@ export interface operations {
             };
         };
     };
+    updateOpponentTarget: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                target_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TargetIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TargetOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    deleteOpponentTarget: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                target_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
     getTeamProfile: {
         parameters: {
             query: {
@@ -4619,6 +6051,76 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SetPiecePage"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    listOpponentTargets: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                team_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TargetOut"][];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    createOpponentTarget: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path: {
+                team_id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TargetIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TargetOut"];
                 };
             };
             /** @description Validation Error */
@@ -4860,6 +6362,41 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UploadOut"];
+                };
+            };
+            /** @description Validation Error */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HTTPValidationError"];
+                };
+            };
+        };
+    };
+    saveWellness: {
+        parameters: {
+            query?: never;
+            header?: {
+                "X-Kurgu-Tenant"?: string | null;
+            };
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["WellnessIn"];
+            };
+        };
+        responses: {
+            /** @description Successful Response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["WellnessOut"];
                 };
             };
             /** @description Validation Error */

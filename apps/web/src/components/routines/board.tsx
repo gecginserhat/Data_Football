@@ -247,6 +247,7 @@ export function BoardView({
   label,
   gkLabel,
   className,
+  highlight,
 }: {
   diagram: Diagram;
   xMin?: number;
@@ -254,8 +255,12 @@ export function BoardView({
   label: string;
   gkLabel?: string;
   className?: string;
+  /** Vurgulanan oyuncu (görev kartında oyuncunun kendi rolü). */
+  highlight?: string;
 }) {
   const state = snapshot ?? keyframe(diagram, 0);
+  const marked = diagram.players.find((p) => p.id === highlight);
+  const markedAt = marked ? toSvg(state.positions[marked.id] ?? [marked.x, marked.y]) : null;
   return (
     <svg viewBox={viewBox(xMin)} role="img" aria-label={label} className={className}>
       <PitchMarkings xMin={xMin} />
@@ -273,6 +278,17 @@ export function BoardView({
           gkLabel={gkLabel}
         />
       ))}
+      {markedAt ? (
+        <circle
+          cx={markedAt[0]}
+          cy={markedAt[1]}
+          r={PLAYER_RADIUS + 0.9}
+          fill="none"
+          stroke="var(--accent)"
+          strokeWidth={0.45}
+          data-testid="board-highlight"
+        />
+      ) : null}
       {state.ball ? <BallShape at={state.ball} /> : null}
     </svg>
   );

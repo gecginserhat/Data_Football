@@ -26,6 +26,8 @@ class Permission(StrEnum):
     RULE_SETTINGS = "rule_settings"
     USER_ADMIN_AUDIT = "user_admin_audit"
     PLAYER_CARDS = "player_cards"
+    EDIT_SQUAD = "edit_squad"
+    """Kulüp kadrosunu düzenleme (A-79; SPEC §12.1 matrisine eklenen satır)."""
 
 
 Scope = Literal["all", "summary", "own"]
@@ -58,6 +60,7 @@ PERMISSION_MATRIX: dict[Permission, dict[Role, Scope]] = {
         R.ANALYST: "all",
         R.PLAYER: "own",
     },
+    Permission.EDIT_SQUAD: {r: "all" for r in (R.ADMIN, R.HEAD_COACH, R.SP_COACH, R.PERFORMANCE)},
 }
 
 MFA_REQUIRED_ROLES: frozenset[Role] = frozenset({R.ADMIN, R.MEDICAL, R.PERFORMANCE})

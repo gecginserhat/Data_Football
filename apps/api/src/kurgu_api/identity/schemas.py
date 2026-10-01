@@ -18,6 +18,8 @@ class ActiveTenantOut(BaseModel):
     tenant_name: str
     roles: list[Role]
     permissions: dict[Permission, Scope]
+    squad_player_id: uuid.UUID | None = None
+    """Oyuncu hesabının bağlı olduğu kadro kaydı (A-79)."""
 
 
 class MeOut(BaseModel):

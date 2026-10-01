@@ -1,14 +1,26 @@
 import { EmptyState } from "@kurgu/ui";
+import Link from "next/link";
 import { getTranslations } from "next-intl/server";
+import { NotLoaded } from "@/components/analysis/States";
+import { WellnessForm } from "@/components/performance/WellnessForm";
+import { TaskCards } from "@/components/squad/TaskCards";
 import { getMe } from "@/lib/api";
 import { selectTenant } from "@/lib/actions";
+import { todayIso } from "@/lib/performance";
+import { getCards, squadAccess } from "@/lib/squad";
 
-export default async function MePage() {
+type Search = { error?: string; saved?: string };
+
+export default async function MePage({ searchParams }: { searchParams: Promise<Search> }) {
+  const search = await searchParams;
   const t = await getTranslations();
   const result = await getMe();
   if (result.status !== "ok") return null;
   const { me } = result;
   const activeId = me.active_tenant?.tenant_id;
+  const access = await squadAccess();
+  const ownLoad = me.active_tenant?.permissions.load_wellness === "own";
+  const cards = access.playerId && access.cards ? await getCards(access.playerId) : null;
 
   return (
     <>
@@ -32,6 +44,56 @@ export default async function MePage() {
           </dd>
         </dl>
       </section>
+
+      {access.playerId && access.cards ? (
+        <section aria-labelledby="cards" className="mb-6">
+          <h2 id="cards" className="mb-3 font-condensed text-lg font-semibold">
+            {t("cards.title")}
+          </h2>
+          {cards?.status === "ok" ? (
+            <TaskCards cards={cards.data.cards} />
+          ) : cards ? (
+            <NotLoaded result={cards} />
+          ) : null}
+        </section>
+      ) : null}
+
+      {ownLoad && access.playerId ? (
+        <section aria-labelledby="wellness" className="mb-6">
+          <div className="mb-3 flex flex-wrap items-baseline justify-between gap-2">
+            <h2 id="wellness" className="font-condensed text-lg font-semibold">
+              {t("performance.wellness.ownTitle")}
+            </h2>
+            <Link
+              href={`/performance/players/${access.playerId}`}
+              className="text-sm text-pri underline-offset-2 hover:underline"
+            >
+              {t("performance.ownLoad")}
+            </Link>
+          </div>
+          {search.error ? (
+            <p
+              role="alert"
+              className="mb-4 rounded-md border border-neg px-3 py-2 text-sm text-neg"
+            >
+              {t("performance.errors.generic", { code: search.error })}
+            </p>
+          ) : null}
+          {search.saved === "wellness" ? (
+            <p
+              role="status"
+              className="mb-4 rounded-md border border-pos px-3 py-2 text-sm text-pos"
+            >
+              {t("performance.saved.wellness")}
+            </p>
+          ) : null}
+          <WellnessForm
+            players={[{ id: access.playerId, name: "" }]}
+            today={todayIso()}
+            returnTo="me"
+          />
+        </section>
+      ) : null}
 
       <section aria-labelledby="memberships">
         <h2 id="memberships" className="mb-3 font-condensed text-lg font-semibold">

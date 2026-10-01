@@ -30,6 +30,8 @@ x-api-env: &api-env
   KURGU_LLM_BACKEND: ${KURGU_LLM_BACKEND:-anthropic}
   KURGU_LLM_MODEL: ${KURGU_LLM_MODEL:-}
   KURGU_ANTHROPIC_API_KEY: ${KURGU_ANTHROPIC_API_KEY:-}
+  # İyi oluş alanlarının şifreleme anahtarları (ADR-0014); boşsa geliştirme anahtarı.
+  KURGU_DATA_KEYS: ${KURGU_DATA_KEYS:-}
 
 services:
   postgres:
