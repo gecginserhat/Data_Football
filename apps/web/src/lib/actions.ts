@@ -33,6 +33,11 @@ export async function signInAction(): Promise<void> {
   await signIn("keycloak", { redirectTo: "/" });
 }
 
+/** MFA adım yükseltme: Keycloak'tan düzey 2 (TOTP) ister (ADR-0016, A-90). */
+export async function stepUpAction(): Promise<void> {
+  await signIn("keycloak", { redirectTo: "/" }, { acr_values: "2" });
+}
+
 export async function signOutAction(): Promise<void> {
   (await cookies()).delete(TENANT_COOKIE);
   await signOut({ redirectTo: "/signin" });

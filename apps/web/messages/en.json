@@ -124,7 +124,10 @@
   "auth": {
     "title": "Sign in to Kurgu",
     "description": "Sign in with your club's identity provider.",
-    "signIn": "Sign in"
+    "signIn": "Sign in",
+    "mfaTitle": "Two-step verification required",
+    "mfaDescription": "Your role in this club can access health and load data, so you also need the one-time code from your authenticator app. If no app is set up yet, you will be guided through setup.",
+    "mfaContinue": "Continue with code"
   },
   "imports": {
     "title": "Imports",

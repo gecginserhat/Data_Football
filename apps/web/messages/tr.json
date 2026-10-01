@@ -124,7 +124,10 @@
   "auth": {
     "title": "Kurgu'ya giriş",
     "description": "Kulübünüzün kimlik sağlayıcısıyla giriş yapın.",
-    "signIn": "Giriş yap"
+    "signIn": "Giriş yap",
+    "mfaTitle": "İki adımlı doğrulama gerekiyor",
+    "mfaDescription": "Bu kulüpteki rolünüz sağlık ve yük verisine eriştiği için doğrulama uygulamanızdaki tek kullanımlık kodu da girmeniz gerekiyor. Uygulama kurulu değilse kurulum adımları gösterilir.",
+    "mfaContinue": "Kodla devam et"
   },
   "imports": {
     "title": "İçe aktarım",
