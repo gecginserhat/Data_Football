@@ -15,6 +15,7 @@ from kurgu_api.core.observability import setup_sentry, setup_tracing
 from kurgu_api.core.problems import install_problem_handlers
 from kurgu_api.core.security import SecurityHeadersMiddleware
 from kurgu_api.health.router import router as health_router
+from kurgu_api.identity.admin_router import router as users_router
 from kurgu_api.identity.router import router as identity_router
 from kurgu_api.imports.router import router as imports_router
 from kurgu_api.ingestion.router import router as ingestion_router
@@ -73,6 +74,7 @@ def create_app() -> FastAPI:
     install_problem_handlers(app)
     app.include_router(health_router)
     app.include_router(identity_router, prefix=API_PREFIX)
+    app.include_router(users_router, prefix=API_PREFIX)
     app.include_router(league_router, prefix=API_PREFIX)
     app.include_router(routines_router, prefix=API_PREFIX)
     app.include_router(prep_router, prefix=API_PREFIX)

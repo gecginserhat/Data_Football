@@ -53,6 +53,7 @@ async def get_principal(
             raise ProblemError(400, "invalid-tenant", f"Invalid {TENANT_HEADER}") from exc
 
     user_id = await service.resolve_user(session, claims)
+    await service.claim_invites(session, user_id, claims)
     await set_request_context(session, user_id=user_id, tenant_id=None)
     memberships = await service.list_memberships(session, user_id)
     try:
