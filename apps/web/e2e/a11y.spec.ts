@@ -38,6 +38,7 @@ const PLAN: Record<string, Route[]> = {
     "/admin/squad",
     "/admin/privacy",
     "/admin/users",
+    "/admin/audit",
   ],
   performance: ["/performance", { list: "/performance", pattern: "/performance/players/" }],
   player: ["/me"],

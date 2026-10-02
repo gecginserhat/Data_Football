@@ -1553,5 +1553,195 @@
       "legal": "Hukuki dayanaklar varsayımdır ve kulübün hukuk danışmanınca doğrulanmalıdır (A-92)."
     },
     "section": "Gizlilik"
+  },
+  "users": {
+    "title": "Kullanıcılar ve roller",
+    "subtitle": "Kulübünüzdeki kişiler ve rolleri. Parola ve iki adımlı doğrulama kimlik sağlayıcıda yönetilir.",
+    "breadcrumb": "Konum",
+    "admin": "Yönetim",
+    "adminLink": "Kullanıcılar ve roller",
+    "adminLinkDescription": "Üyeleri görün, rollerini değiştirin, e-postayla davet gönderin.",
+    "members": "Üyeler ({count})",
+    "you": "Siz",
+    "unnamed": "Adsız kullanıcı",
+    "lastSeen": "Son giriş: {date}",
+    "neverSeen": "Henüz giriş yapmadı",
+    "currentRoles": "Roller",
+    "linkedPlayer": "Kadro: {name}",
+    "edit": "{name}: rolleri düzenle",
+    "roles": "Roller",
+    "mfa": "İki adımlı doğrulama",
+    "saveRoles": "Rolleri kaydet",
+    "pending": "Kaydediliyor…",
+    "remove": "{name} kulüpten çıkar",
+    "removeNote": "Kişi bu kulübün verilerine erişemez. Kimlik sağlayıcıdaki hesabı kapanmaz.",
+    "removeConfirm": "Eminim, kulüpten çıkar",
+    "inviteTitle": "Davet gönder",
+    "inviteNote": "Kişi bu e-posta adresiyle Kurgu'ya ilk girdiğinde seçtiğiniz rollerle kulübe katılır. Adres kimlik sağlayıcıda doğrulanmış olmalıdır. Davet 14 gün geçerlidir.",
+    "email": "E-posta",
+    "inviteSend": "Davet gönder",
+    "invitesTitle": "Bekleyen davetler",
+    "invitesEmptyTitle": "Bekleyen davet yok",
+    "invitesEmpty": "Gönderdiğiniz davetler kabul edilene kadar burada görünür.",
+    "inviteMeta": "{by} · {date} · son gün {expires}",
+    "revoke": "{email} davetini geri çek",
+    "saved": {
+      "roles": "Roller kaydedildi.",
+      "removed": "Üye kulüpten çıkarıldı.",
+      "invited": "Davet oluşturuldu. Kişiye Kurgu adresini ve bu e-postayla giriş yapmasını iletin.",
+      "revoked": "Davet geri çekildi."
+    },
+    "errors": {
+      "generic": "İşlem tamamlanamadı ({code}).",
+      "invalid": "Geçersiz istek.",
+      "network": "Sunucuya ulaşılamadı. Tekrar deneyin.",
+      "no-roles": "En az bir rol seçin.",
+      "email": "Geçerli bir e-posta adresi girin.",
+      "last-admin": "Kulüpte en az bir yönetici kalmalı. Önce başka birine yönetici rolü verin.",
+      "already-member": "Bu e-posta adresi zaten kulübün üyesine ait.",
+      "invite-exists": "Bu adrese bekleyen bir davet var. Değiştirmek için önce geri çekin.",
+      "not-found": "Kayıt bulunamadı; sayfayı yenileyin.",
+      "forbidden": "Bu işlem için yetkiniz yok.",
+      "mfa-required": "Bu işlem için iki adımlı doğrulama gerekiyor."
+    }
+  },
+  "audit": {
+    "title": "Denetim kaydı",
+    "subtitle": "Kulübünüzde yapılan değişiklikler ve hassas veriye erişimler, yeniden eskiye.",
+    "breadcrumb": "Konum",
+    "link": "Denetim kaydını aç",
+    "adminLink": "Denetim kaydı",
+    "adminLinkDescription": "Kim, ne zaman, neyi değiştirdi ya da görüntüledi.",
+    "filter": "Tür",
+    "all": "Tümü",
+    "apply": "Süz",
+    "at": "Zaman",
+    "actor": "Kişi",
+    "action": "İşlem",
+    "details": "Ayrıntı",
+    "before": "önce",
+    "system": "Sistem",
+    "formerMember": "Kulüpten ayrılmış kullanıcı",
+    "emptyTitle": "Kayıt yok",
+    "empty": "Bu süzgeçle eşleşen denetim kaydı bulunmadı.",
+    "pages": "Sayfalar",
+    "older": "Daha eski kayıtlar",
+    "newest": "En yeni kayıtlar",
+    "actions": {
+      "member": {
+        "roles": "Roller değiştirildi",
+        "removed": "Üye kulüpten çıkarıldı"
+      },
+      "invite": {
+        "created": "Davet gönderildi",
+        "revoked": "Davet geri çekildi",
+        "accepted": "Davet kabul edildi"
+      },
+      "consent": {
+        "give": "Rıza verildi",
+        "withdraw": "Rıza geri çekildi"
+      },
+      "privacy": {
+        "export": "Veri dışa aktarıldı",
+        "request": "Silme talebi açıldı",
+        "erasure": "Veriler silindi",
+        "reject": "Silme talebi reddedildi",
+        "retention": "Saklama süreleri değişti"
+      },
+      "wellness": {
+        "read": "İyi oluş verisi görüntülendi",
+        "write": "İyi oluş girildi"
+      },
+      "session": {
+        "create": "Antrenman seansı kaydedildi"
+      },
+      "squad": {
+        "create": "Kadroya oyuncu eklendi",
+        "update": "Kadro kaydı güncellendi",
+        "link_account": "Oyuncu hesabı bağlandı"
+      },
+      "target": {
+        "create": "Rakip hedef oyuncu eklendi",
+        "update": "Rakip hedef oyuncu güncellendi",
+        "delete": "Rakip hedef oyuncu silindi"
+      },
+      "routine": {
+        "create": "Rutin oluşturuldu",
+        "version": "Rutinin yeni sürümü kaydedildi",
+        "archive": "Rutin arşivlendi",
+        "unarchive": "Rutin arşivden çıkarıldı"
+      },
+      "rule_set": {
+        "publish": "Öneri kuralları yayımlandı"
+      },
+      "plan": {
+        "create": "Maç planı oluşturuldu"
+      },
+      "plan_item": {
+        "create": "Plan maddesi eklendi",
+        "update": "Plan maddesi güncellendi",
+        "delete": "Plan maddesi silindi"
+      },
+      "import": {
+        "upload": "Dosya yüklendi",
+        "mapping": "Sütun eşleştirmesi kaydedildi",
+        "commit": "İçe aktarım işlendi"
+      },
+      "report": {
+        "requested": "Rapor istendi"
+      },
+      "briefing": {
+        "generated": "Brifing üretildi"
+      },
+      "llm": {
+        "settings_updated": "Yapay zekâ ayarı değişti"
+      },
+      "video": {
+        "upload_started": "Video yüklemesi başladı",
+        "upload_completed": "Video yüklendi",
+        "updated": "Video güncellendi",
+        "deleted": "Video silindi"
+      },
+      "clip": {
+        "created": "Klip oluşturuldu",
+        "updated": "Klip güncellendi",
+        "deleted": "Klip silindi"
+      },
+      "tagging_session": {
+        "open": "Canlı kayıt açıldı",
+        "sync": "Canlı kayıtlar gönderildi"
+      },
+      "marking": {
+        "save": "Markaj kaydedildi"
+      },
+      "assignments": {
+        "save": "Rol atamaları kaydedildi"
+      },
+      "keys": {
+        "rewrap": "Şifreleme anahtarı döndürüldü"
+      }
+    },
+    "groups": {
+      "member": "Üyelik",
+      "invite": "Davetler",
+      "privacy": "KVKK talepleri",
+      "consent": "Rıza",
+      "wellness": "İyi oluş",
+      "session": "Antrenman seansları",
+      "squad": "Kadro",
+      "routine": "Rutinler",
+      "rule_set": "Öneri kuralları",
+      "plan": "Maç planı",
+      "import": "İçe aktarım",
+      "report": "Raporlar",
+      "briefing": "Brifing",
+      "llm": "Yapay zekâ ayarı",
+      "video": "Video",
+      "clip": "Klipler",
+      "tagging_session": "Canlı kayıt",
+      "marking": "Markaj",
+      "assignments": "Rol atama",
+      "keys": "Şifreleme anahtarları"
+    }
   }
 }

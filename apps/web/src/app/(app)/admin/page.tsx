@@ -23,6 +23,14 @@ export default async function Page() {
       <ul className="mb-6 grid gap-3 sm:grid-cols-2">
         {imports ? (
           <li>
+            <Link href="/admin/users" className={card}>
+              <span className="font-condensed text-lg font-semibold">{t("users.adminLink")}</span>
+              <span className="text-sm text-ink-2">{t("users.adminLinkDescription")}</span>
+            </Link>
+          </li>
+        ) : null}
+        {imports ? (
+          <li>
             <Link href="/admin/imports" className={card}>
               <span className="font-condensed text-lg font-semibold">{t("imports.adminLink")}</span>
               <span className="text-sm text-ink-2">{t("imports.adminLinkDescription")}</span>
@@ -50,6 +58,14 @@ export default async function Page() {
             <Link href="/admin/privacy" className={card}>
               <span className="font-condensed text-lg font-semibold">{t("privacy.adminLink")}</span>
               <span className="text-sm text-ink-2">{t("privacy.adminLinkDescription")}</span>
+            </Link>
+          </li>
+        ) : null}
+        {imports ? (
+          <li>
+            <Link href="/admin/audit" className={card}>
+              <span className="font-condensed text-lg font-semibold">{t("audit.adminLink")}</span>
+              <span className="text-sm text-ink-2">{t("audit.adminLinkDescription")}</span>
             </Link>
           </li>
         ) : null}
