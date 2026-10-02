@@ -18,6 +18,9 @@ from kurgu_api.privacy.schemas import Retention
 
 log = logging.getLogger(__name__)
 
+INVITE_GRACE_DAYS = 30
+"""Kapanan davetin (kabul, geri çekme, süre dolumu) e-postası bu kadar gün sonra silinir (A-100)."""
+
 
 async def purge_tenant(
     conn: AsyncConnection, tenant_id: uuid.UUID, retention: Retention, today: dt.date
@@ -44,6 +47,16 @@ async def purge_tenant(
         ),
         "sessions": await count(
             "delete from training_sessions where date < :d", {"d": loads_cutoff}
+        ),
+        "invites": await count(
+            "delete from membership_invites where"
+            " coalesce(accepted_at, revoked_at, expires_at) < :c"
+            " and (accepted_at is not null or revoked_at is not null or expires_at < :c)",
+            {
+                "c": dt.datetime.combine(
+                    today - dt.timedelta(days=INVITE_GRACE_DAYS), dt.time(), dt.UTC
+                )
+            },
         ),
         "audit": int(
             (

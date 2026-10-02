@@ -108,6 +108,8 @@ def upgrade() -> None:
         op.execute(statement)
     for role in APP_ROLES:
         op.execute(f"grant select, insert, update on membership_invites to {role}")
+    # Gecelik saklama görevi kapanmış davetleri siler (A-100).
+    op.execute("grant delete on membership_invites to kurgu_worker")
     op.execute("grant execute on function kurgu_claim_invites(uuid, text) to kurgu_app")
 
 
