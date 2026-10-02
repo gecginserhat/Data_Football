@@ -114,7 +114,9 @@ async def test_squad_crud_and_aerial_score(
     assert len(everyone) == 2
 
     audit = await superuser.fetch(
-        "select action, before, after from audit_log where entity = 'squad_players' order by at"
+        "select action, before, after from audit_log where entity = 'squad_players'"
+        " and action like 'squad.%' and tenant_id = $1 order by at",
+        uuid.UUID(coach["X-Kurgu-Tenant"]),
     )
     assert [a["action"] for a in audit] == ["squad.create", "squad.create", "squad.update"]
 

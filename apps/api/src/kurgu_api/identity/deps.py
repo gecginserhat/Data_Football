@@ -65,7 +65,12 @@ async def get_principal(
 
     roles = tenant.roles if tenant else frozenset()
     settings = get_settings()
-    if settings.kurgu_require_mfa and roles & MFA_REQUIRED_ROLES and not claims.mfa:
+    if (
+        roles & MFA_REQUIRED_ROLES
+        and not claims.mfa
+        and tenant is not None
+        and (settings.mfa_enforced or await service.tenant_requires_mfa(session, tenant.tenant_id))
+    ):
         raise ProblemError(403, "mfa-required", "Multi-factor authentication is required")
 
     return Principal(

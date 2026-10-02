@@ -23,6 +23,7 @@ from kurgu_analytics.recs import Fact, Subject
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from kurgu_api.core.memo import FrameMemo
 from kurgu_api.core.problems import ProblemError
 from kurgu_api.league.metrics import SeasonMetrics, compute_season_metrics
 from kurgu_api.league.schemas import TeamRef
@@ -82,14 +83,20 @@ class FixtureInfo:
 
 @dataclass(slots=True)
 class MetricsCache:
-    """İstek boyunca sezon metrikleri bir kez hesaplanır."""
+    """İstek boyunca sezon metrikleri ve rutin özneleri bir kez hesaplanır."""
 
     by_season: dict[uuid.UUID, SeasonMetrics] = field(default_factory=dict)
+    routines: list[Subject] | None = None
 
     async def get(self, session: AsyncSession, season_id: uuid.UUID) -> SeasonMetrics:
         if season_id not in self.by_season:
             self.by_season[season_id] = await compute_season_metrics(session, season_id)
         return self.by_season[season_id]
+
+    async def routine_subjects(self, session: AsyncSession) -> list[Subject]:
+        if self.routines is None:
+            self.routines = await routine_subjects(session)
+        return self.routines
 
 
 async def club_team_id(session: AsyncSession) -> uuid.UUID | None:
@@ -162,13 +169,16 @@ def league_subject(metrics: SeasonMetrics | None) -> Subject | None:
     return Subject(metrics={k: Fact(value=v) for k, v in metrics.totals.items()})
 
 
+_routine_metrics = FrameMemo(routine_metrics)
+
+
 async def routine_subjects(session: AsyncSession) -> list[Subject]:
     """Arşivde olmayan her rutin için bir özne (kullanım, şut, gol, büzülmüş şut oranı)."""
     names = {r.id: r.name for r in await session.execute(text(ROUTINES_SQL))}
     if not names:
         return []
     rows = (await session.execute(text("select * from v_routine_stats"))).mappings().all()
-    stats = routine_metrics(pd.DataFrame([dict(r) for r in rows])) if rows else pd.DataFrame()
+    stats = _routine_metrics(pd.DataFrame([dict(r) for r in rows])) if rows else pd.DataFrame()
     raw = {r["routine_id"]: r for r in rows}
     out: list[Subject] = []
     for record in stats.to_dict("records") if len(stats) else []:
@@ -240,7 +250,7 @@ async def fixture_facts(
         "own_log.defense": await defense_subject(session, fixture.out.season.id, fixture.club_id),
     }
     facts = {k: v for k, v in subjects.items() if v is not None}
-    return facts, await routine_subjects(session)
+    return facts, await cache.routine_subjects(session)
 
 
 def md_date(kickoff: dt.datetime | None, offset_days: int) -> dt.date | None:

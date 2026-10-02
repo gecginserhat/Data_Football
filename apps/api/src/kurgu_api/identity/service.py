@@ -79,3 +79,15 @@ def select_tenant(
     if len(memberships) == 1:
         return memberships[0]
     return None
+
+
+async def tenant_requires_mfa(session: AsyncSession, tenant_id: uuid.UUID) -> bool:
+    """Kiracı ayarı `mfa_required` (geliştirmede kiracı bazında MFA denetimi; A-90)."""
+    result = await session.execute(
+        text(
+            "select coalesce((settings->>'mfa_required')::boolean, false)"
+            " from tenants where id = :t"
+        ),
+        {"t": tenant_id},
+    )
+    return bool(result.scalar_one_or_none())

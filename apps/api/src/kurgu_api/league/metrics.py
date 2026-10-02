@@ -23,7 +23,10 @@ from kurgu_analytics.metrics import METRICS, league_benchmarks, league_totals, t
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from kurgu_api.core.memo import FrameMemo
 from kurgu_api.league.schemas import BenchmarkOut, MetricValueOut, TeamRef
+
+_team_metrics = FrameMemo(team_metrics)
 
 EVENT_COLUMNS = {
     "matches": "event_matches",
@@ -145,7 +148,7 @@ async def compute_season_metrics(session: AsyncSession, season_id: uuid.UUID) ->
         return SeasonMetrics(teams=teams, values={}, benchmarks={}, totals=totals)
 
     frame = pd.DataFrame.from_dict(raw, orient="index")
-    long = team_metrics(frame)
+    long = _team_metrics(frame)
     values: dict[uuid.UUID, dict[str, MetricValueOut]] = {t: {} for t in raw}
     for row in long.itertuples(index=False):
         metric = METRICS[str(row.metric)]

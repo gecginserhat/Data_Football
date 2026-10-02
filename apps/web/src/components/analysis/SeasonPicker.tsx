@@ -25,9 +25,7 @@ export function SeasonPicker({
             aria-current={active ? "page" : undefined}
             className={cn(
               "inline-flex min-h-11 items-center rounded-md border px-3 text-sm",
-              active
-                ? "border-pri bg-pri text-brand-ink"
-                : "border-line bg-surface hover:border-pri",
+              active ? "border-pri bg-pri text-pri-ink" : "border-line bg-surface hover:border-pri",
             )}
           >
             {s.competition.name} · {s.label}

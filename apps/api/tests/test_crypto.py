@@ -1,11 +1,24 @@
 """Alan şifrelemesi (ADR-0014): zarf biçimi, AAD bağlama, anahtar döndürme ve ayar hataları."""
 
 import base64
+import json
 import uuid
 
+import asyncpg
 import pytest
 from kurgu_api.config import Settings
-from kurgu_api.core.crypto import DecryptError, KeyConfigError, Keyring, decrypt, encrypt
+from kurgu_api.core.crypto import (
+    DecryptError,
+    KeyConfigError,
+    Keyring,
+    decrypt,
+    encrypt,
+    generate_key,
+    rewrap,
+)
+from kurgu_api.ops.backup import with_database
+
+from .conftest import ADMIN_URL, DB_NAME, Seeded
 
 T1 = uuid.UUID("00000000-0000-4000-9000-0000000000a1")
 T2 = uuid.UUID("00000000-0000-4000-9000-0000000000a2")
@@ -98,3 +111,74 @@ def test_dev_key_only_outside_production() -> None:
         Keyring.from_settings(Settings(kurgu_env="production", kurgu_data_keys=None))
     ring = Keyring.from_settings(Settings(kurgu_env="production", kurgu_data_keys=f"p1:{_key(7)}"))
     assert ring.primary == "p1"
+
+
+def test_rewrap_moves_envelope_to_primary_key_without_changing_value() -> None:
+    old = Keyring.parse(f"k1:{_key(1)}")
+    new = Keyring.parse(f"k2:{_key(2)},k1:{_key(1)}")
+    tenant = uuid.uuid4()
+    envelope = encrypt({"sleep": 3}, tenant_id=tenant, table="t", field="f", keyring=old)
+    moved = rewrap(envelope, tenant_id=tenant, table="t", field="f", keyring=new)
+    assert moved["kid"] == "k2"
+    assert moved["ciphertext"] == envelope["ciphertext"]
+    only_new = Keyring.parse(f"k2:{_key(2)}")
+    assert decrypt(moved, tenant_id=tenant, table="t", field="f", keyring=only_new) == {"sleep": 3}
+    assert rewrap(moved, tenant_id=tenant, table="t", field="f", keyring=new) is moved
+    with pytest.raises(DecryptError):
+        rewrap(envelope, tenant_id=uuid.uuid4(), table="t", field="f", keyring=new)
+
+
+def test_generated_key_parses() -> None:
+    entry = generate_key("2026-10")
+    assert Keyring.parse(entry).primary == "2026-10"
+    with pytest.raises(KeyConfigError):
+        generate_key("bad,id")
+
+
+async def test_rewrap_all_rotates_stored_wellness(
+    monkeypatch: pytest.MonkeyPatch, superuser: asyncpg.Connection, tenants: Seeded
+) -> None:
+    from kurgu_api.ops import keys
+
+    old = Keyring.parse(f"old:{_key(3)}")
+    new = Keyring.parse(f"new:{_key(4)},old:{_key(3)}")
+    player = await superuser.fetchval(
+        "insert into squad_players (tenant_id, name, shirt_number, position, height_cm)"
+        " values ($1, 'Döndürme', 41, 'FWD', 182) returning id",
+        tenants.tenant_a,
+    )
+    envelope = encrypt(
+        {"sleep": 2},
+        tenant_id=tenants.tenant_a,
+        table="wellness_entries",
+        field="scores",
+        keyring=old,
+    )
+    await superuser.execute(
+        "insert into wellness_entries (tenant_id, squad_player_id, date, scores)"
+        " values ($1, $2, '2026-09-01', $3::jsonb)",
+        tenants.tenant_a,
+        player,
+        json.dumps(envelope),
+    )
+    monkeypatch.setattr(keys, "get_keyring", lambda: new)
+    counts = await keys.rewrap_all(with_database(ADMIN_URL, DB_NAME), tenant=tenants.tenant_a)
+    assert counts == {tenants.tenant_a: 1}
+    stored = json.loads(
+        await superuser.fetchval(
+            "select scores::text from wellness_entries where squad_player_id = $1", player
+        )
+    )
+    assert stored["kid"] == "new"
+    assert decrypt(
+        stored,
+        tenant_id=tenants.tenant_a,
+        table="wellness_entries",
+        field="scores",
+        keyring=Keyring.parse(f"new:{_key(4)}"),
+    ) == {"sleep": 2}
+    audit = await superuser.fetchval(
+        "select after from audit_log where tenant_id = $1 and action = 'keys.rewrap'",
+        tenants.tenant_a,
+    )
+    assert json.loads(audit)["kid"] == "new"

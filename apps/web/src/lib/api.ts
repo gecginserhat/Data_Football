@@ -32,14 +32,24 @@ export async function apiFetch(path: string, init: RequestInit): Promise<Respons
 export type MeResult =
   | { status: "ok"; me: Me }
   | { status: "unauthenticated" }
+  /** Rol MFA ister, token'da kanıt yok (ADR-0016): Keycloak'ta adım yükseltme gerekir. */
+  | { status: "mfa-required" }
   | { status: "error"; httpStatus?: number };
 
 export async function fetchMe(): Promise<MeResult> {
   try {
     const client = await apiClient();
-    const { data, response } = await client.GET("/api/v1/me");
+    const { data, error, response } = await client.GET("/api/v1/me");
     if (data) return { status: "ok", me: data };
     if (response.status === 401) return { status: "unauthenticated" };
+    const problemType = (error as { type?: unknown } | undefined)?.type;
+    if (
+      response.status === 403 &&
+      typeof problemType === "string" &&
+      problemType.endsWith("/mfa-required")
+    ) {
+      return { status: "mfa-required" };
+    }
     return { status: "error", httpStatus: response.status };
   } catch {
     return { status: "error" };

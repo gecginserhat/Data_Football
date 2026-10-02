@@ -93,6 +93,15 @@ test("airplane mode: 20 tags recorded offline reach the server once", async ({ p
     await page.keyboard.press(String((i % 8) + 1));
   }
   await expect(pending(page)).toHaveAttribute("data-count", "20");
+  // Dokunuştan yerel kayda süre bütçesi ≤ 50 ms (SPEC §17); uygulama her kayıtta ölçer.
+  const timings = await page.evaluate(() =>
+    performance.getEntriesByName("kurgu:live-record").map((e) => e.duration),
+  );
+  expect(timings).toHaveLength(20);
+  const sorted = [...timings].sort((a, b) => a - b);
+  const p95 = sorted[Math.ceil(sorted.length * 0.95) - 1]!;
+  test.info().annotations.push({ type: "live-record-p95-ms", description: p95.toFixed(1) });
+  expect(p95).toBeLessThanOrEqual(50);
   const created = await page
     .getByTestId("live-tags")
     .locator('[data-pending="1"]')

@@ -2,7 +2,7 @@
 const base =
   "inline-flex min-h-11 items-center justify-center gap-1 rounded-md border px-3 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50";
 export const btn = `${base} border-line bg-surface text-ink hover:border-pri`;
-export const btnPrimary = `${base} border-pri bg-pri text-brand-ink`;
+export const btnPrimary = `${base} border-pri bg-pri text-pri-ink`;
 /** Seçili / seçili değil durumlu düğme (araçlar, sekmeler, filtreler). */
 export function btnToggle(on: boolean): string {
   return on ? btnPrimary : btn;

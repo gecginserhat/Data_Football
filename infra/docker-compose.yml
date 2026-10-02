@@ -43,6 +43,7 @@ services:
       KURGU_OWNER_PASSWORD: ${KURGU_OWNER_PASSWORD}
       KURGU_APP_PASSWORD: ${KURGU_APP_PASSWORD}
       KURGU_WORKER_PASSWORD: ${KURGU_WORKER_PASSWORD}
+      KURGU_BACKUP_PASSWORD: ${KURGU_BACKUP_PASSWORD}
     ports: ["${POSTGRES_PORT:-5432}:5432"]
     volumes:
       - pgdata:/var/lib/postgresql/data
@@ -106,6 +107,7 @@ services:
       # Realm dosyasındaki ${...} yer tutucuları bu değişkenlerle doldurulur.
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
       KURGU_DEV_USER_PASSWORD: ${KURGU_DEV_USER_PASSWORD}
+      KURGU_DEV_OTP_SECRET: ${KURGU_DEV_OTP_SECRET}
       WEB_PORT: ${WEB_PORT:-3000}
     ports: ["${KEYCLOAK_PORT:-8080}:${KEYCLOAK_PORT:-8080}"]
     volumes:
@@ -203,6 +205,9 @@ services:
       OIDC_CLIENT_ID: ${OIDC_CLIENT_ID:-kurgu-web}
       OIDC_CLIENT_SECRET: ${OIDC_CLIENT_SECRET}
       API_INTERNAL_URL: http://api:8000
+      # CSP: tarayıcının video ve yükleme için doğrudan eriştiği adresler (ADR-0016).
+      KURGU_PUBLIC_API_URL: http://localhost:${API_PORT:-8000}
+      S3_PUBLIC_ENDPOINT_URL: http://localhost:${MINIO_PORT:-9000}
       WATCHPACK_POLLING: "true"
       NEXT_TELEMETRY_DISABLED: "1"
     ports: ["${WEB_PORT:-3000}:${WEB_PORT:-3000}"]

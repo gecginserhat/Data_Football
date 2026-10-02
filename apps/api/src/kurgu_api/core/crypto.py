@@ -138,3 +138,36 @@ def decrypt(
     except Exception as exc:  # InvalidTag, KeyError, base64 hataları
         raise DecryptError("envelope could not be decrypted") from exc
     return json.loads(plain)
+
+
+def rewrap(
+    envelope: dict[str, Any],
+    *,
+    tenant_id: uuid.UUID,
+    table: str,
+    field: str,
+    keyring: Keyring | None = None,
+) -> dict[str, Any]:
+    """Anahtar döndürme: DEK'i birincil KEK ile yeniden sarar; şifreli değer değişmez.
+
+    Zarf zaten birincil anahtarla sarılıysa aynen döner. Eski anahtar bilinmiyorsa `DecryptError`.
+    """
+    ring = keyring or get_keyring()
+    if envelope.get("kid") == ring.primary:
+        return envelope
+    # Önce tüm zarfın çözüldüğü doğrulanır; bozuk bir zarf yeni anahtarla mühürlenmez.
+    decrypt(envelope, tenant_id=tenant_id, table=table, field=field, keyring=ring)
+    aad = _aad(tenant_id, table, field)
+    old = ring.keys[str(envelope["kid"])]
+    wrapped = _b64d(envelope["wrapped_dek"])
+    dek = AESGCM(old).decrypt(wrapped[:NONCE_BYTES], wrapped[NONCE_BYTES:], aad)
+    wrap_nonce = os.urandom(NONCE_BYTES)
+    rewrapped = AESGCM(ring.keys[ring.primary]).encrypt(wrap_nonce, dek, aad)
+    return {**envelope, "kid": ring.primary, "wrapped_dek": _b64e(wrap_nonce + rewrapped)}
+
+
+def generate_key(kid: str) -> str:
+    """`KURGU_DATA_KEYS` için yeni bir `kid:base64` girdisi."""
+    if not kid or "," in kid or ":" in kid:
+        raise KeyConfigError("key id must be non-empty and contain no ',' or ':'")
+    return f"{kid}:{_b64e(os.urandom(32))}"

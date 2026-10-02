@@ -116,7 +116,7 @@ export default async function ImportsPage({
                 <div className="md:col-span-2">
                   <button
                     type="submit"
-                    className="min-h-11 rounded-md bg-pri px-5 text-sm font-semibold text-brand-ink focus-visible:outline-2 focus-visible:outline-focus"
+                    className="min-h-11 rounded-md bg-pri px-5 text-sm font-semibold text-pri-ink focus-visible:outline-2 focus-visible:outline-focus"
                   >
                     {t("upload.submit")}
                   </button>

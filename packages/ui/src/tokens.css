@@ -13,6 +13,8 @@
   --brand: #0e3b2e;
   --brand-ink: #f2f4f1;
   --pri: #0e3b2e;
+  /* Dolu --pri, --pos ve --neg zeminindeki yazı rengi (iki temada da AA). */
+  --pri-ink: #f2f4f1;
   --accent: #e3a008;
   --accent-ink: #0f1b16;
   --pos: #1b7348;
@@ -42,6 +44,7 @@
   --brand: #0a2a21;
   --brand-ink: #e8eee9;
   --pri: #3fa37a;
+  --pri-ink: #0b1310;
   --accent: #f0b429;
   --accent-ink: #0b1310;
   --pos: #4cb07e;
@@ -68,6 +71,7 @@
     --brand: #0a2a21;
     --brand-ink: #e8eee9;
     --pri: #3fa37a;
+    --pri-ink: #0b1310;
     --accent: #f0b429;
     --accent-ink: #0b1310;
     --pos: #4cb07e;

@@ -5,12 +5,39 @@ import { AppShell } from "@/components/AppShell";
 import { ServiceWorker } from "@/components/ServiceWorker";
 import { ShellFooter } from "@/components/ShellFooter";
 import { getMe, permissionSet } from "@/lib/api";
-import { signOutAction } from "@/lib/actions";
+import { signOutAction, stepUpAction } from "@/lib/actions";
 import { ROUTES, canSee } from "@/lib/routes";
 
 export default async function AppLayout({ children }: { children: ReactNode }) {
   const result = await getMe();
   const t = await getTranslations();
+
+  if (result.status === "mfa-required") {
+    return (
+      <main className="flex min-h-dvh items-center justify-center bg-brand p-6">
+        <section
+          className="w-full max-w-sm rounded-lg bg-surface p-8 shadow-lg"
+          data-testid="mfa-required"
+        >
+          <h1 className="font-condensed text-xl font-semibold">{t("auth.mfaTitle")}</h1>
+          <p className="mt-2 text-sm text-ink-2">{t("auth.mfaDescription")}</p>
+          <form action={stepUpAction} className="mt-6">
+            <button
+              type="submit"
+              className="min-h-11 w-full rounded-md bg-pri px-4 font-medium text-pri-ink hover:opacity-90"
+            >
+              {t("auth.mfaContinue")}
+            </button>
+          </form>
+          <form action={signOutAction} className="mt-3">
+            <button type="submit" className="min-h-11 w-full text-sm text-ink-2 underline">
+              {t("app.signOut")}
+            </button>
+          </form>
+        </section>
+      </main>
+    );
+  }
 
   if (result.status !== "ok") {
     return (
@@ -22,10 +49,7 @@ export default async function AppLayout({ children }: { children: ReactNode }) {
         />
         {result.status === "unauthenticated" ? (
           <form action={signOutAction} className="mt-4">
-            <button
-              type="submit"
-              className="min-h-11 rounded-md bg-pri px-4 text-sm text-brand-ink"
-            >
+            <button type="submit" className="min-h-11 rounded-md bg-pri px-4 text-sm text-pri-ink">
               {t("app.signOut")}
             </button>
           </form>

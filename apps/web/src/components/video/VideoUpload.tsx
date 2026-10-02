@@ -163,7 +163,7 @@ export function VideoUpload({ matches }: { matches: MatchOption[] }) {
         <button
           type="submit"
           disabled={busy || !file}
-          className="min-h-11 rounded-md bg-pri px-4 font-medium text-brand-ink disabled:opacity-50"
+          className="min-h-11 rounded-md bg-pri px-4 font-medium text-pri-ink disabled:opacity-50"
         >
           {t("upload")}
         </button>

@@ -34,6 +34,8 @@ EXPOSE 8000
 FROM base AS prod
 RUN uv sync --frozen --no-dev --all-packages --no-editable \
  && useradd --system --uid 10001 kurgu
+COPY --chmod=0755 infra/docker/api-start.sh /usr/local/bin/kurgu-api-start
 USER kurgu
 EXPOSE 8000
-CMD ["uvicorn", "kurgu_api.main:app", "--host", "0.0.0.0", "--port", "8000"]
+# İşçi sayısı KURGU_API_WORKERS ile (varsayılan 2; A-99).
+CMD ["kurgu-api-start"]

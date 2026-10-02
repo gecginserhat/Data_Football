@@ -22,6 +22,14 @@ dependencies = [
   "playwright>=1.48",
   "anthropic>=0.70",
   "cryptography>=43",
+  "opentelemetry-sdk>=1.27",
+  "opentelemetry-exporter-otlp-proto-http>=1.27",
+  "opentelemetry-instrumentation-fastapi>=0.48b0",
+  "opentelemetry-instrumentation-sqlalchemy>=0.48b0",
+  "opentelemetry-instrumentation-redis>=0.48b0",
+  "opentelemetry-instrumentation-httpx>=0.48b0",
+  "sentry-sdk>=2.14",
+  "prometheus-client>=0.21",
 ]
 
 [project.scripts]
@@ -29,6 +37,8 @@ kurgu-openapi = "kurgu_api.openapi:main"
 kurgu-dev-identities = "kurgu_api.dev_identities:main"
 kurgu-seed = "kurgu_api.league.seed:main"
 kurgu-ingest = "kurgu_api.ingestion.jobs:main"
+kurgu-backup = "kurgu_api.ops.backup:main"
+kurgu-keys = "kurgu_api.ops.keys:main"
 
 [build-system]
 requires = ["hatchling"]

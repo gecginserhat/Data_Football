@@ -7,6 +7,7 @@ from fastapi import APIRouter, Depends
 
 from kurgu_api.config import get_settings
 from kurgu_api.core.audit import write_audit
+from kurgu_api.core.ratelimit import BRIEFINGS, rate_limit
 from kurgu_api.identity.deps import PrincipalDep, SessionDep, require
 from kurgu_api.identity.roles import Permission
 from kurgu_api.llm import service
@@ -21,7 +22,7 @@ router = APIRouter(tags=["llm"])
     "/fixtures/{fixture_id}/briefing",
     response_model=BriefingOut,
     operation_id="generateBriefing",
-    dependencies=[Depends(require(Permission.EDIT_ROUTINES))],
+    dependencies=[Depends(require(Permission.EDIT_ROUTINES)), Depends(rate_limit(BRIEFINGS))],
 )
 async def generate_briefing(
     session: SessionDep,

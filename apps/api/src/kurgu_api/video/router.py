@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from kurgu_api.core.audit import write_audit
 from kurgu_api.core.problems import ProblemError
+from kurgu_api.core.ratelimit import VIDEO_UPLOADS, rate_limit
 from kurgu_api.identity.deps import PrincipalDep, SessionDep, require
 from kurgu_api.identity.roles import Permission
 from kurgu_api.ingestion.router import get_queue
@@ -114,7 +115,7 @@ async def _visible_match(session: AsyncSession, match_id: uuid.UUID) -> None:
     "/video/uploads",
     response_model=UploadOut,
     operation_id="createVideoUpload",
-    dependencies=WRITE,
+    dependencies=[*WRITE, Depends(rate_limit(VIDEO_UPLOADS))],
 )
 async def create_upload(
     session: SessionDep,

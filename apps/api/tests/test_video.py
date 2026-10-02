@@ -41,7 +41,7 @@ def local_storage(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Iterator[P
 def sample_video(tmp_path_factory: pytest.TempPathFactory) -> Path:
     """4 sn sentetik test görüntüsü ve ses (A-64); gerçek maç görüntüsü kullanılmaz."""
     path = tmp_path_factory.mktemp("video") / "sample.mp4"
-    subprocess.run(  # noqa: S603
+    subprocess.run(
         [
             ffmpeg_exe(),
             "-hide_banner",

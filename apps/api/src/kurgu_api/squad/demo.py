@@ -15,6 +15,7 @@ from sqlalchemy.ext.asyncio import AsyncConnection
 
 from kurgu_api.core.crypto import encrypt
 from kurgu_api.performance.service import WELLNESS_FIELD, WELLNESS_TABLE, today
+from kurgu_api.privacy.consent import CONSENT_VERSION
 
 # (forma, mevki, boy cm, hava topu oranı, sıçrama skoru)
 DEMO_SQUAD: list[tuple[int, str, int, float | None, float | None]] = [
@@ -141,3 +142,17 @@ async def seed_demo_squad(conn: AsyncConnection, tenant_id: uuid.UUID) -> bool:
                 {"t": tenant_id, "p": players[shirt], "d": day, "s": json.dumps(envelope)},
             )
     return True
+
+
+async def seed_demo_consents(conn: AsyncConnection, tenant_id: uuid.UUID) -> int:
+    """Örnek oyuncular için örnek kâğıt rıza (A-92); rızası olmayanlara eklenir. İdempotenttir."""
+    result = await conn.execute(
+        text(
+            "insert into health_consents (tenant_id, squad_player_id, text_version, method,"
+            " reference, is_demo) select :t, p.id, :v, 'paper', 'Örnek veri', true"
+            " from squad_players p where p.tenant_id = :t and p.is_demo and p.erased_at is null"
+            " and not exists (select 1 from health_consents c where c.squad_player_id = p.id)"
+        ),
+        {"t": tenant_id, "v": CONSENT_VERSION},
+    )
+    return int(getattr(result, "rowcount", 0) or 0)
