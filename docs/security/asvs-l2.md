@@ -38,6 +38,8 @@ Her bölüm ASVS'nin ilgili denetimlerini özetler. Kanıt sütunu kodu, testi y
 | Kiracı yalıtımı (IDOR) | ✅ | Her kiracı tablosunda `tenant_id` + RLS (FORCE); istek başına `SET LOCAL app.tenant_id`; `test_rls.py`, `test_rls_data.py` |
 | Sağlık ve iyi oluş verisine erişim denetimli | ✅ | Her okuma `audit_log`'a yazılır; `audit_log` yalnız ekleme (`0002_data_core.py`) |
 | Yönetim arayüzü MFA arkasında | ✅ | V2 |
+| Rol yönetimi yalnız yöneticide; ayrıcalık kaybı önlenir | ✅ | `/admin/users` `user_admin_audit` ister; son yönetici düşürülemez (satır kilidi); davet yalnız IdP'de doğrulanmış e-postayla açılır (A-100, `test_members.py`) |
+| Denetim kaydı okunabilir | ✅ | `/admin/audit`, yalnız yönetici, kiracıya göre RLS |
 
 ## V5 Doğrulama, temizleme ve kodlama
 | Denetim | Durum | Kanıt |

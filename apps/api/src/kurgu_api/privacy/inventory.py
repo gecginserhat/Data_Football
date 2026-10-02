@@ -40,6 +40,20 @@ INVENTORY: tuple[InventoryItem, ...] = (
         retention="Üyelik sürdükçe; üyelik kaldırılınca hesap pasifleşir",
     ),
     InventoryItem(
+        key="invites",
+        title="Üyelik davetleri",
+        tables=("membership_invites",),
+        fields=("e-posta", "davet edilen roller", "daveti veren"),
+        subjects="Kulübe davet edilen kişiler",
+        purpose="Kişinin ilk girişte kulübe doğru rollerle katılması",
+        legal_basis="Sözleşmenin ifası (KVKK m.5/2-c)",
+        special_category=False,
+        encrypted=False,
+        retention=(
+            "En çok 14 gün bekler; kabul, geri çekme ya da süre dolumundan 30 gün sonra silinir"
+        ),
+    ),
+    InventoryItem(
         key="squad",
         title="Kadro kaydı",
         tables=("squad_players",),

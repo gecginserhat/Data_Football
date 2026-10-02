@@ -35,5 +35,23 @@ Bkz. [Performans, kadro ve markaj](06-performans-ve-kadro.md#kadro).
 
 ![Gizlilik](../demo/faz8/tablet-admin-privacy.png)
 
-## Kullanıcılar
-Yeni kullanıcı ekleme ve rol atama şimdilik teknik ekip tarafından yapılır (`docs/runbooks/users-mfa.md`).
+## Kullanıcılar ve roller
+**Yönetim → Kullanıcılar ve roller** (`/admin/users`) kulübünüzdeki kişileri ve rollerini gösterir.
+
+- **Rolleri değiştirmek:** kişinin kartında **rolleri düzenle**'yi açın, rolleri işaretleyip **Rolleri kaydet**. Bir kişinin birden çok rolü olabilir. Yönetici, sağlık ve performans rolleri iki adımlı doğrulama ister.
+- **Kulüpten çıkarmak:** aynı bölümde **Eminim, kulüpten çıkar** kutusunu işaretleyip çıkar düğmesine basın. Kişi kulübün verilerine erişemez; kimlik sağlayıcıdaki hesabı açık kalır.
+- Kulüpte en az bir yönetici kalmalıdır. Son yönetici kendi yönetici rolünü bırakamaz; önce başka birine yönetici rolü verin.
+
+![Kullanıcılar](../demo/uyelik/tablet-users.png)
+
+### Davet
+**Davet gönder** bölümüne kişinin e-postasını yazın, rollerini seçip **Davet gönder**'e basın. Kişi bu e-postayla Kurgu'ya ilk girdiğinde seçtiğiniz rollerle kulübe katılır. Davet 14 gün geçerlidir; **Bekleyen davetler** listesinden geri çekebilirsiniz.
+
+Kurgu e-posta göndermez: kişiye Kurgu adresini siz iletin. Kişinin kimlik sağlayıcıda (yerelde Keycloak, canlıda kulübün giriş sistemi) bu e-postayla doğrulanmış bir hesabı olmalıdır.
+
+![Davet](../demo/uyelik/tablet-invite.png)
+
+## Denetim kaydı
+**Yönetim → Denetim kaydı** (`/admin/audit`) kimin, ne zaman, neyi değiştirdiğini ya da hassas veriyi görüntülediğini gösterir. **Tür** süzgeciyle (ör. Davetler, KVKK talepleri, İyi oluş) daraltın; **Daha eski kayıtlar** ile geriye gidin. Kayıtlar değiştirilemez; saklama süresi **Kişisel veriler (KVKK)** sayfasında ayarlanır.
+
+![Denetim kaydı](../demo/uyelik/tablet-audit.png)

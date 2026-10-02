@@ -340,6 +340,15 @@ async def test_retention_job_purges_expired_records(
     from kurgu_api.config import get_settings
     from kurgu_api.core.db import dispose_engine
 
+    # Kapanmış eski davet silinir; bekleyen davet kalır (A-100).
+    await superuser.execute(
+        "insert into membership_invites (tenant_id, email, roles, expires_at, revoked_at)"
+        " values ($1, 'eski@kulup.org', '{viewer}', $2, $2),"
+        " ($1, 'bekleyen@kulup.org', '{viewer}', now() + interval '14 days', null)",
+        ctx.tenants.tenant_a,
+        dt.datetime(2026, 8, 1, tzinfo=dt.UTC),
+    )
+
     # Worker kendi rolüyle bağlanır (RLS altında, kiracıları yalnız okuyabilir).
     worker_url = get_settings().database_url.replace(
         "kurgu_app:test-app", "kurgu_worker:test-worker"
@@ -361,6 +370,11 @@ async def test_retention_job_purges_expired_records(
     assert removed["loads"] == 1
     assert removed["sessions"] == 1
     assert removed["audit"] >= 1
+    assert removed["invites"] == 1
+    invites = await superuser.fetch(
+        "select email from membership_invites where tenant_id = $1", ctx.tenants.tenant_a
+    )
+    assert [i["email"] for i in invites] == ["bekleyen@kulup.org"]
     left = await superuser.fetchval(
         "select count(*) from wellness_entries where squad_player_id = $1", ctx.player
     )

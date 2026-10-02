@@ -18,6 +18,8 @@ class TokenClaims:
     name: str | None
     mfa: bool
     raw: dict[str, Any]
+    email_verified: bool = False
+    """IdP e-postayı doğruladıysa davetler bu adresle üyeliğe dönüşür (A-100)."""
 
 
 class InvalidTokenError(Exception):
@@ -43,6 +45,7 @@ def claims_from_payload(payload: dict[str, Any]) -> TokenClaims:
         name=str(name) if name else None,
         mfa=mfa,
         raw=payload,
+        email_verified=payload.get("email_verified") is True,
     )
 
 

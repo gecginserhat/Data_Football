@@ -43,6 +43,20 @@ async def resolve_user(session: AsyncSession, claims: TokenClaims) -> uuid.UUID:
     return uuid.UUID(str(result.scalar_one()))
 
 
+async def claim_invites(session: AsyncSession, user_id: uuid.UUID, claims: TokenClaims) -> int:
+    """Doğrulanmış e-postaya verilmiş bekleyen davetleri üyeliğe çevirir (A-100).
+
+    Davetler kiracı bağlamı olmadan okunamaz; iş SECURITY DEFINER fonksiyonda yapılır (alembic
+    0010). E-postası doğrulanmamış token davet açamaz.
+    """
+    if not claims.email or not claims.email_verified:
+        return 0
+    result = await session.execute(
+        text("select kurgu_claim_invites(:u, :e)"), {"u": user_id, "e": claims.email}
+    )
+    return int(result.scalar_one())
+
+
 async def list_memberships(session: AsyncSession, user_id: uuid.UUID) -> tuple[MembershipView, ...]:
     """Kullanıcının tüm kiracılardaki üyelikleri. `app.user_id` ayarlı olmalıdır."""
     rows = (

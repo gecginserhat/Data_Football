@@ -1553,5 +1553,195 @@
       "legal": "Legal bases are assumptions and must be confirmed by the club's counsel (A-92)."
     },
     "section": "Privacy"
+  },
+  "users": {
+    "title": "Users and roles",
+    "subtitle": "People in your club and their roles. Passwords and two-step verification are managed in the identity provider.",
+    "breadcrumb": "Location",
+    "admin": "Admin",
+    "adminLink": "Users and roles",
+    "adminLinkDescription": "See members, change their roles, invite people by e-mail.",
+    "members": "Members ({count})",
+    "you": "You",
+    "unnamed": "Unnamed user",
+    "lastSeen": "Last sign-in: {date}",
+    "neverSeen": "Not signed in yet",
+    "currentRoles": "Roles",
+    "linkedPlayer": "Squad: {name}",
+    "edit": "{name}: edit roles",
+    "roles": "Roles",
+    "mfa": "Two-step verification",
+    "saveRoles": "Save roles",
+    "pending": "Saving…",
+    "remove": "Remove {name} from club",
+    "removeNote": "The person loses access to this club's data. Their identity provider account stays open.",
+    "removeConfirm": "I'm sure, remove from club",
+    "inviteTitle": "Send invite",
+    "inviteNote": "When the person first signs in to Kurgu with this e-mail, they join the club with the roles you choose. The address must be verified in the identity provider. Invites are valid for 14 days.",
+    "email": "E-mail",
+    "inviteSend": "Send invite",
+    "invitesTitle": "Pending invites",
+    "invitesEmptyTitle": "No pending invites",
+    "invitesEmpty": "Invites you send appear here until they are accepted.",
+    "inviteMeta": "{by} · {date} · expires {expires}",
+    "revoke": "Revoke invite for {email}",
+    "saved": {
+      "roles": "Roles saved.",
+      "removed": "Member removed from club.",
+      "invited": "Invite created. Send the person the Kurgu address and ask them to sign in with this e-mail.",
+      "revoked": "Invite revoked."
+    },
+    "errors": {
+      "generic": "Could not complete the action ({code}).",
+      "invalid": "Invalid request.",
+      "network": "Could not reach the server. Try again.",
+      "no-roles": "Choose at least one role.",
+      "email": "Enter a valid e-mail address.",
+      "last-admin": "The club must keep at least one admin. Give someone else the admin role first.",
+      "already-member": "This e-mail already belongs to a club member.",
+      "invite-exists": "There is a pending invite for this address. Revoke it first to change it.",
+      "not-found": "Record not found; refresh the page.",
+      "forbidden": "You don't have permission for this action.",
+      "mfa-required": "Two-step verification is required for this action."
+    }
+  },
+  "audit": {
+    "title": "Audit log",
+    "subtitle": "Changes made in your club and access to sensitive data, newest first.",
+    "breadcrumb": "Location",
+    "link": "Open the audit log",
+    "adminLink": "Audit log",
+    "adminLinkDescription": "Who changed or viewed what, and when.",
+    "filter": "Type",
+    "all": "All",
+    "apply": "Filter",
+    "at": "Time",
+    "actor": "Person",
+    "action": "Action",
+    "details": "Details",
+    "before": "before",
+    "system": "System",
+    "formerMember": "Former club member",
+    "emptyTitle": "No entries",
+    "empty": "No audit entries match this filter.",
+    "pages": "Pages",
+    "older": "Older entries",
+    "newest": "Newest entries",
+    "actions": {
+      "member": {
+        "roles": "Roles changed",
+        "removed": "Member removed from club"
+      },
+      "invite": {
+        "created": "Invite sent",
+        "revoked": "Invite revoked",
+        "accepted": "Invite accepted"
+      },
+      "consent": {
+        "give": "Consent given",
+        "withdraw": "Consent withdrawn"
+      },
+      "privacy": {
+        "export": "Data exported",
+        "request": "Erasure requested",
+        "erasure": "Data erased",
+        "reject": "Erasure request rejected",
+        "retention": "Retention periods changed"
+      },
+      "wellness": {
+        "read": "Wellness data viewed",
+        "write": "Wellness entered"
+      },
+      "session": {
+        "create": "Training session recorded"
+      },
+      "squad": {
+        "create": "Player added to squad",
+        "update": "Squad record updated",
+        "link_account": "Player account linked"
+      },
+      "target": {
+        "create": "Opponent target added",
+        "update": "Opponent target updated",
+        "delete": "Opponent target deleted"
+      },
+      "routine": {
+        "create": "Routine created",
+        "version": "Routine version saved",
+        "archive": "Routine archived",
+        "unarchive": "Routine unarchived"
+      },
+      "rule_set": {
+        "publish": "Recommendation rules published"
+      },
+      "plan": {
+        "create": "Match plan created"
+      },
+      "plan_item": {
+        "create": "Plan item added",
+        "update": "Plan item updated",
+        "delete": "Plan item deleted"
+      },
+      "import": {
+        "upload": "File uploaded",
+        "mapping": "Column mapping saved",
+        "commit": "Import committed"
+      },
+      "report": {
+        "requested": "Report requested"
+      },
+      "briefing": {
+        "generated": "Briefing generated"
+      },
+      "llm": {
+        "settings_updated": "AI setting changed"
+      },
+      "video": {
+        "upload_started": "Video upload started",
+        "upload_completed": "Video uploaded",
+        "updated": "Video updated",
+        "deleted": "Video deleted"
+      },
+      "clip": {
+        "created": "Clip created",
+        "updated": "Clip updated",
+        "deleted": "Clip deleted"
+      },
+      "tagging_session": {
+        "open": "Live tagging opened",
+        "sync": "Live tags synced"
+      },
+      "marking": {
+        "save": "Marking saved"
+      },
+      "assignments": {
+        "save": "Role assignments saved"
+      },
+      "keys": {
+        "rewrap": "Encryption key rotated"
+      }
+    },
+    "groups": {
+      "member": "Membership",
+      "invite": "Invites",
+      "privacy": "Privacy requests",
+      "consent": "Consent",
+      "wellness": "Wellness",
+      "session": "Training sessions",
+      "squad": "Squad",
+      "routine": "Routines",
+      "rule_set": "Recommendation rules",
+      "plan": "Match plan",
+      "import": "Imports",
+      "report": "Reports",
+      "briefing": "Briefing",
+      "llm": "AI setting",
+      "video": "Video",
+      "clip": "Clips",
+      "tagging_session": "Live tagging",
+      "marking": "Marking",
+      "assignments": "Role assignment",
+      "keys": "Encryption keys"
+    }
   }
 }
